@@ -1,13 +1,12 @@
 Package: ratlas
-Title: What the Package Does (One Line, Title Case)
+Title: R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec 
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Vincent",
+           family = "Beauregard",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+           email = "vincent.beauregard@usherbrooke.ca")
+Description: ratlas est un paquet R permettant l'accès et l'analyse des données de biodiversité aggrégée par le réseau d'observation de la biodiversité du Québec.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
