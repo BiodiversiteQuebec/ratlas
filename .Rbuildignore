@@ -1,3 +1,7 @@
+^renv$
+^renv\.lock$
 ^dev\.R$
 ^LICENSE\.md$
 ^dev_scratch$
+^.*\.Rproj$
+^\.Rproj\.user$

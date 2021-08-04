@@ -1,1 +1,12 @@
 *.ipynb_checkpoints
+.Rproj.user
+.Renviron
+.Rhistory
+.Rprofile
+*.Rproj
+renv*
+.vscode/launch.json
+.vscode/settings.json
+dev_scratch/*
+man/get_taxa.Rd
+man/get_timeseries.Rd

@@ -12,15 +12,23 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Suggests: 
-    testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
+    tidyr,
+    usethis (>= 2.0.1.9000),
+    devtools (>= 2.4.2),
+    IRkernel (>= 1.2.0.9000),
+    languageserver (>= 0.3.10),
+    vscDebugger (>= 0.4.6),
+    testthat (>= 3.0.4.9000)
+Remotes: 
+    r-lib/usethis,
+    r-lib/devtools,
+    IRkernel/IRkernel,
+    REditorSupport/languageserver,
+    r-lib/testthat,
+    github::ManuelHentschel/vscDebugger
+Depends: 
     httr,
     dplyr,
-    tidyr,
-    usethis (>= 2.0.1),
-    devtools (>= 2.4.1)
-Remotes:  
-    r-lib/usethis,
-    r-lib/devtools
+    sf
