@@ -4,14 +4,14 @@
 \alias{get_taxa}
 \title{Get taxa}
 \usage{
-get_taxa(id)
+get_taxa(id = NULL, scientific_name = NULL, ...)
 }
 \arguments{
-\item{id}{Optional. Returns a dataframe for the taxon with the specified id}
-}
-\value{
-list or dataframe containing a taxonomic description for each
-requested
+\item{id}{Optional. \code{char} scalar or vector. Returns a dataframe for the
+taxon with the specified scientific name}
+
+\item{...}{Optional. scalar or vector. Returns a dataframe filtered for the
+parameters specified as columns}
 }
 \description{
 The function downloads and returns a list or dataframe containing a taxonomic

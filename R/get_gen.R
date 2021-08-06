@@ -1,39 +1,52 @@
-#' Fonction générique pour retirer de l'information depuis l'API de Coléo
-#'
-#' @param endpoint `character` désignant le point d'entrée pour le retrait
-#' des données. Un point d'entrée peut être vu comme une table de la base
-#' de données.
-#' @param ... Paramètres de la requête url
-#' @param .schema Schema de la base de données où se situe la table. Options
-#' disponibles : `api` ou `public` (par défaut)
-#' @param .page_count count of objects returned through pagination
-#' @param .token  `character` jeton d'accès pour authentification auprès de l'API
-#' @return
-#' Retourne un objet de type `list` contenant les réponses de l'API. Chaque
-#' niveau de la liste correspond à une page. Pour chacun des appels sur l'API
-#' (page), la classe retourné est `getSuccess` ou `getError`. Une réponse de
-#' classe `getSuccess` est une liste à deux niveaux composé du contenu (`body`),
-#' et la réponse [httr::response]. Une réponse de classe `getError` dispose de
-#' la même structure mais ne contiendra pas de body, seulement la réponse de
-#' l'API.
-#' @details
-#' Les points d'accès de l'API sont énuméré dans l'environment de atlas, voir
-#' `print(endpoints)`
-#' @examples
-#' \dontrun{
-#' resp <- get_gen("/taxa")
-#' length(resp) # Nombre de pages retourné par l'appel sur le point d'accès de l'API.
-#' str(resp[[1]])
-#' }
-#' @export
-
 SCHEMA_VALUES <- c("public", "api")
+
+#' Generic function to access data from Atlas databases
+#'
+#' Returns Atlas data objects stored within the database.
+#' Queried data objects are obtained through endpoints corresponding to the name
+#' of the database object storing the required data
+#' (ie. taxa, observations, datasets, etc).
+#'
+#' This function is designed to interface with a web API deployed with PostgREST
+#'
+#' @param endpoint `character`. Name of the atlas data object to be accessed.
+#' Corresponds to the name of a table, view or stored procedure within Atlas
+#' Postgresql database, stored within schema `public` ou `api`
+#' @param ... `character` or `numeric` scalar or vector.
+#' Additional parameters to filter the returned objects. Accepts
+#' parameters corresponding to an object attribute or table columns
+#' (ie. `id = c(3,4)`) or a specific parameters related to postgrest http
+#' request parameters and syntax(`select = ...`)
+#' @param .schema `character` Schema from the database where is located the data
+#' object is located. Accept either values `api` or `public` (default)
+#' @param .page_count `integer` Count of objects returned through pagination
+#' @param .token  `character` Bearer token providing access to the web api
+#' @return `tibble` with rows associated with Atlas data object
+#' @examples
+#' # Returns all available taxa records in atlas
+#' taxa <- get_gen("taxa")
+#'
+#' # Returns all taxa filtered by the column id values
+#' taxa <- get_gen("taxa", id = c(188, 201, 294, 392))
+#'
+#' # Returns first 100 sampling_points from schema `api`
+#' sampling_points <- get_gen(
+#'  "bird_sampling_points",
+#'  .schema = 'api',
+#'  limit = 100)
+#'
+#' # Returns first 100 observations with selected columns and joined columns
+#' get_gen('observations',
+#'  limit=100,
+#'  select='geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)')
+#' @export
 
 get_gen <- function(
   endpoint,
-  .page_count = 200000,
+  .page_count = 10000,
   .schema = "public",
-  .token = ATLAS_API_TOKEN, ...) {
+  .token = ATLAS_API_TOKEN,
+  ...) {
 
   # Argument validation
   if (! .schema %in% SCHEMA_VALUES) {
@@ -41,9 +54,9 @@ get_gen <- function(
   }
 
   # PREPARE HTTP REQUEST
-
-  url <- httr::modify_url(ATLAS_API_V2_HOST, path = paste0(endpoint))
-  query <- list(...)
+  url <- httr::modify_url(ATLAS_API_V2_HOST,
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST)$path, endpoint, sep = "/"))
+  query <- postgrest_filter(list(...))
 
 
   # Add pagination parameters
@@ -65,12 +78,12 @@ get_gen <- function(
   }
   out <- list()
   while (TRUE) {
-    resp <- mem_get(url,
+    resp <- httr::GET(url,
                     config = do.call(httr::add_headers, header),
                     query = query)
 
     if (! httr::status_code(resp) == 200) {
-      stop(httr::message_for_status(resp))
+      stop(httr::message_for_status(resp, httr::content(resp)$message))
     }
     rows <- resp_df(resp)
     n_rows <- nrow(rows)
@@ -101,9 +114,29 @@ mem_get <- memoise::memoise(httr::GET)
 #' @export
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
-resp_df <- function(x){
+resp_df <- function(x) {
   textresp <- httr::content(x, type = "text", encoding = "UTF-8")
-  df_from_json <- jsonlite::fromJSON(textresp, flatten = TRUE, simplifyDataFrame = TRUE)
+  df_from_json <- jsonlite::fromJSON(
+    textresp, flatten = TRUE, simplifyDataFrame = TRUE)
   tibble::as_tibble(df_from_json)
 
+}
+
+POSTGREST_QUERY_PARAMETERS = c(
+  "select", "limit", "offset"
+)
+
+postgrest_filter <- function(parameters) {
+  for (name in names(parameters)) {
+    if (name %in% POSTGREST_QUERY_PARAMETERS) {
+      next
+    }
+    if (length(parameters[[name]]) > 1) {
+      v_array <- paste0(parameters[[name]], collapse = ",")
+      parameters[[name]] <- paste0("in.(", v_array, ")", sep = "")
+    } else {
+      parameters[[name]] <-  paste0("eq.", parameters[[name]], sep = "")
+    }
+  }
+  return(parameters)
 }

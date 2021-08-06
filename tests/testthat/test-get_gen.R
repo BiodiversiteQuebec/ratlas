@@ -27,3 +27,28 @@ test_that("endpoint in api schema works", {
     limit = 100)
   testthat::expect_true(nrow(results) == 100)
 })
+
+test_that("endpoint in api schema works", {
+  results <- get_gen(
+    endpoint = "bird_sampling_points",
+    .schema = "api",
+    limit = 100)
+  testthat::expect_true(nrow(results) == 100)
+})
+
+test_that("filter by column works", {
+  results <- get_gen(
+    endpoint = "taxa",
+    id = 100)
+  testthat::expect_true(nrow(results) == 1)
+
+  results <- get_gen(
+    endpoint = "taxa",
+    id = c(100, 101))
+  testthat::expect_true(nrow(results) == 2)
+
+  results <- get_gen(
+    endpoint = "taxa",
+    scientific_name = "Antigone canadensis")
+  testthat::expect_true(nrow(results) == 1)
+})
