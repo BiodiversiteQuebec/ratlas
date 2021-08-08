@@ -1,3 +1,6 @@
+library(doParallel)
+library(foreach)
+
 SCHEMA_VALUES <- c("public", "api")
 
 #' Generic function to access data from Atlas databases
@@ -19,8 +22,10 @@ SCHEMA_VALUES <- c("public", "api")
 #' request parameters and syntax(`select = ...`)
 #' @param .schema `character` Schema from the database where is located the data
 #' object is located. Accept either values `api` or `public` (default)
-#' @param .page_count `integer` Count of objects returned through pagination
+#' @param .page_limit `integer` Count of objects returned through pagination
 #' @param .token  `character` Bearer token providing access to the web api
+#' @param .cores `integer` default `4`. Number of cores used to parallelize and
+#' improve rapidity
 #' @return `tibble` with rows associated with Atlas data object
 #' @examples
 #' # Returns all available taxa records in atlas
@@ -43,61 +48,67 @@ SCHEMA_VALUES <- c("public", "api")
 
 get_gen <- function(
   endpoint,
-  .page_count = 10000,
+  ...,
+  .page_limit = 10000,
   .schema = "public",
   .token = ATLAS_API_TOKEN,
-  ...) {
+  .cores = 4) {
 
   # Argument validation
   if (! .schema %in% SCHEMA_VALUES) {
     stop("Bad input: Unexpected value for argument `.schema`")
   }
 
-  # PREPARE HTTP REQUEST
+  # Prepare HTTP request with url, header abd query parameters
   url <- httr::modify_url(ATLAS_API_V2_HOST,
     path = paste(httr::parse_url(ATLAS_API_V2_HOST)$path, endpoint, sep = "/"))
-  query <- postgrest_filter(list(...))
-
-
-  # Add pagination parameters
-  pagination_break <- "limit" %in% names(query)
-  offset <- 0
-  if (! pagination_break) {
-    query$limit <- format(.page_count, scientific = FALSE)
-    query$offset <- format(offset, scientific = FALSE)
-  }
-
+  query <- postgrest_query_filter(list(...))
   header <- list(
     Authorization = paste("Bearer", .token),
-    `User-Agent` = USER_AGENT # defined in zzz.R
+    `User-Agent` = USER_AGENT, # defined in zzz.R
+    Prefer = "count=planned" # header parameter from postgrest
   )
-
-  # Add the .schema
   if (.schema != "public") {
     header$`Accept-Profile` <- .schema
   }
-  out <- list()
-  while (TRUE) {
-    resp <- httr::GET(url,
-                    config = do.call(httr::add_headers, header),
-                    query = query)
 
-    if (! httr::status_code(resp) == 200) {
-      stop(httr::message_for_status(resp, httr::content(resp)$message))
-    }
-    rows <- resp_df(resp)
-    n_rows <- nrow(rows)
-    out <- rbind(out, rows)
+  # Get data through pagination (or not)
+  n_pages <- ceiling(endpoint_range_count(url, header) / .page_limit)
+  do_pagination <- ! "limit" %in% names(query) & n_pages > 1
 
-    pagination_break <- pagination_break |
-      n_rows == 0 |
-      n_rows %% .page_count != 0
-    if (pagination_break) {
-      break
+  if (do_pagination) {
+    registerDoParallel(cores = min(.cores, n_pages))
+    responses <- foreach(
+      page = 1:n_pages,
+      .combine = list,
+      .export = "postgrest_get_page"
+      ) %dopar% postgrest_get_page(url, header, query, page, .page_limit)
+    stopImplicitCluster()
+    # responses <- list()
+    # for (page in 1:n_pages) {
+    #   response <- postgrest_get_page(url, header, query, page, .page_limit)
+    #   responses <- list(responses, response)
+    # }
+    # print(paste0("Time download : ", (proc.time() - tic)[3])) 
+    # tic <- proc.time()
+    out <- list()
+    tmp_responses <- list()
+    for (i in 1:n_pages) {
+      if (i < n_pages) {
+        response <- responses[[2]]
+        responses <- responses[[1]]
+      } else {
+        response <- responses
       }
+      postgrest_stop_if_err(response)
+      out <- rbind(out, postgrest_resp_to_data(response))
+    }
+    # print(paste0("Time bind : ", (proc.time() - tic)[3])) 
 
-    offset <- offset + n_rows
-    query$offset <- format(offset, scientific = FALSE)
+  } else {
+    response <- postgrest_get(url, header, query)
+    postgrest_stop_if_err(response)
+    out <- postgrest_resp_to_data(response)
   }
 
   return(out)
@@ -114,19 +125,19 @@ mem_get <- memoise::memoise(httr::GET)
 #' @export
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
-resp_df <- function(x) {
-  textresp <- httr::content(x, type = "text", encoding = "UTF-8")
-  df_from_json <- jsonlite::fromJSON(
-    textresp, flatten = TRUE, simplifyDataFrame = TRUE)
-  tibble::as_tibble(df_from_json)
-
+endpoint_range_count <- function(url, header) {
+  response <- postgrest_get(url, header, query = list(limit = 1))
+  postgrest_stop_if_err(response)
+  tmp <- unlist(strsplit(httr::headers(response)$"content-range", split = "\\D"))
+  range_count <- as.numeric(tmp[grepl("\\d", tmp)])[3L]
+  return(range_count)
 }
 
 POSTGREST_QUERY_PARAMETERS = c(
   "select", "limit", "offset"
 )
 
-postgrest_filter <- function(parameters) {
+postgrest_query_filter <- function(parameters) {
   for (name in names(parameters)) {
     if (name %in% POSTGREST_QUERY_PARAMETERS) {
       next
@@ -139,4 +150,36 @@ postgrest_filter <- function(parameters) {
     }
   }
   return(parameters)
+}
+
+postgrest_stop_if_err <- function(response) {
+    if (httr::http_error(response)) {
+    stop(httr::message_for_status(response, httr::content(response)$message))
+  }
+}
+
+postgrest_get <- function(url, header, query) {
+  response <- httr::GET(url,
+                  config = do.call(httr::add_headers, header),
+                  query = query)
+  return(response)
+}
+
+postgrest_resp_to_data <- function(response) {
+  textresp <- httr::content(response, type = "text", encoding = "UTF-8")
+  df_from_json <- jsonlite::fromJSON(
+  textresp, flatten = TRUE, simplifyDataFrame = TRUE)
+  data <- tibble::as_tibble(df_from_json)
+  return(data)
+}
+
+postgrest_get_page <- function(url, header, query, page, limit) {
+  offset <- (page - 1) * limit
+  query$limit <- format(limit, scientific = FALSE)
+  query$offset <- format(offset, scientific = FALSE)
+
+  response <- httr::GET(url,
+                  config = do.call(httr::add_headers, header),
+                  query = query)
+  return(response)
 }

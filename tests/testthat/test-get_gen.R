@@ -5,8 +5,8 @@ test_that("taxa endpoint works", {
 })
 
 test_that("pagination works", {
-  results <- get_gen(endpoint = "taxa", .page_count = 100)
-  testthat::expect_true(nrow(results) > 100)
+  results <- get_gen(endpoint = "taxa", .page_limit = 1000)
+  testthat::expect_true(nrow(results) > 1000)
 })
 
 test_that("no pagination on limited query", {
