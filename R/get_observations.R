@@ -1,0 +1,58 @@
+#' Get observations
+#'
+#' The function downloads and returns a list or dataframe containing
+#' observations with a single record per row. The function returns a dataframe
+#' containing all records if no parameters are specified (STRONGLY DISCOURAGED
+#' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+#' The function filters returned records by attributes corresponding to atlas
+#' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa`,
+#' `id_datasets`, `id_variables`, `etc`) with accepted values either being
+#' scalar or vector for single or multiple records.
+#'
+#' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
+#' observation with the specified id
+#' @param year Optional. `integer` scalar or vector. Returns a dataframe for
+#' the observations related to the `id_taxa`
+#' @param id_taxa Optional. `integer` scalar or vector. Returns a dataframe
+#' for the observations related to the `id_taxa`
+#' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
+#' atlas `observations` table columns specified as parameter
+#' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
+#' @param .cores Optional. `integer` default `4`. Number of cores used to
+#' parallelize and improve rapidity
+#' @return `tibble` with rows associated with Atlas observations
+#'
+#' @examples
+#' # Returns all taxa filtered by the column `id_taxa` values
+#' obs <- get_taxa(id_taxa = c(188, 201, 294, 392))
+#'
+#' # Returns all observations from 2010 to 2015 for taxa
+#' "Cyanocitta cristata" (`id_taxa` = 188) from ebird datasets
+#' (`id_datasets` = 55:102)
+#' obs <- get_taxa(id_taxa = 188, year = 2000:2015, id_datasets = 55:102)
+#'
+#' @export
+
+get_observations <- function(
+  id = NULL,
+  year = NULL,
+  id_taxa = NULL,
+  ...
+) {
+  query <- list(...)
+  query$endpoint <- "observations"
+  query$.schema <- "public"
+
+  if (! is.null(id)) {
+    query$id <- id
+  }
+  if (! is.null(id_taxa)) {
+    query$id_taxa <- id_taxa
+  }
+  if (! is.null(year)) {
+    query$year_obs <- year
+  }
+
+  observations <- do.call(get_gen, query)
+  return(observations)
+}

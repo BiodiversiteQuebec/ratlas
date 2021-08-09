@@ -73,11 +73,10 @@ get_gen <- function(
   }
 
   # Get data through pagination (or not)
-  n_pages <- ceiling(endpoint_range_count(url, header) / .page_limit)
+  n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
   .cores <- min(.cores, n_pages)
   do_pagination <- ! "limit" %in% names(query) & n_pages > 1
 
-  tic <- proc.time()
   if (do_pagination) {
     registerDoParallel(cores = .cores)
     on.exit(stopImplicitCluster())
@@ -112,8 +111,9 @@ mem_get <- memoise::memoise(httr::GET)
 #' @export
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
-endpoint_range_count <- function(url, header) {
-  response <- postgrest_get(url, header, query = list(limit = 1))
+endpoint_range_count <- function(url, header, query) {
+  query$limit = 1
+  response <- postgrest_get(url, header, query)
   postgrest_stop_if_err(response)
   tmp <- unlist(strsplit(httr::headers(response)$"content-range", split = "\\D"))
   range_count <- as.numeric(tmp[grepl("\\d", tmp)])[3L]

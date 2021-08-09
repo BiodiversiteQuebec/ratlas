@@ -7,15 +7,38 @@
 get_taxa(id = NULL, scientific_name = NULL, ...)
 }
 \arguments{
-\item{id}{Optional. \code{char} scalar or vector. Returns a dataframe for the
-taxon with the specified scientific name}
+\item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
+taxon with the specified id}
 
-\item{...}{Optional. scalar or vector. Returns a dataframe filtered for the
-parameters specified as columns}
+\item{scientific_name}{Optional. \code{char} scalar or vector. Returns a dataframe
+for the taxon with the specified scientific name}
+
+\item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
+atlas \code{taxa} table columns specified as parameter}
+}
+\value{
+\code{tibble} with rows associated with Atlas data object
 }
 \description{
 The function downloads and returns a list or dataframe containing a taxonomic
 description for each requested species where a row corresponds to an
 individual species. The function returns a dataframe for all species if no
-options are specified.
+parameters are specified. The function filters returned taxa record by
+attributes corresponding to atlas table columns specified as parameters
+(ie. \code{id}, \code{scientific_name}, \code{col}, \code{gbif}, \code{etc})
+with accepted values either being scalar or vector for single or multiple
+records
+}
+\examples{
+# Returns all available taxa records in atlas
+taxa <- get_taxa()
+
+# Returns all taxa filtered by the column id values
+taxa <- get_taxa(id = c(188, 201, 294, 392))
+
+# Returns taxa record for the scientific name
+taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
+
+# Return taxa filtered by the atlas table column `col`
+results <- get_taxa(col = 35520954)
 }

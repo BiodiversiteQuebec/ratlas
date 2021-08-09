@@ -15,12 +15,17 @@ usethis::use_package("dplyr", type = "Imports")
 usethis::use_package("httr", type = "Imports")
 usethis::use_package("sf",  type = "Imports")
 usethis::use_package("tidyr",  type = "Imports")
+usethis::use_package("foreach",  type = "Imports")
+usethis::use_package("doParallel", type = "Imports")
 
 usethis::use_r("get_taxa")
 usethis::use_test("get_taxa")
 
 usethis::use_r("get_taxa_group")
-usethis::use_test("get_taxa")
+usethis::use_test("get_taxa_group")
+
+usethis::use_r("get_observations")
+usethis::use_test("get_observations")
 
 usethis::use_r("get_timeseries")
 usethis::use_test("get_timeseries")
