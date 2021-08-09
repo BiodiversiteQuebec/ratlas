@@ -6,10 +6,11 @@
 \usage{
 get_gen(
   endpoint,
-  .page_count = 2e+05,
+  ...,
+  .page_limit = 10000,
   .schema = "public",
   .token = ATLAS_API_TOKEN,
-  ...
+  .cores = 4
 )
 }
 \arguments{
@@ -17,18 +18,21 @@ get_gen(
 Corresponds to the name of a table, view or stored procedure within Atlas
 Postgresql database, stored within schema \code{public} ou \code{api}}
 
-\item{.page_count}{\code{integer} Count of objects returned through pagination}
+\item{...}{\code{character} or \code{numeric} scalar or vector.
+Additional parameters to filter the returned objects. Accepts
+parameters corresponding to an object attribute or table columns
+(ie. \code{id = c(3,4)}) or a specific parameters related to postgrest http
+request parameters and syntax(\code{select = ...})}
+
+\item{.page_limit}{\code{integer} Count of objects returned through pagination}
 
 \item{.schema}{\code{character} Schema from the database where is located the data
 object is located. Accept either values \code{api} or \code{public} (default)}
 
 \item{.token}{\code{character} Bearer token providing access to the web api}
 
-\item{...}{\code{character} or \code{numeric} scalar or vector.
-Additional parameters to filter the returned objects. Accepts
-parameters corresponding to an object attribute or table columns
-(ie. \code{id = c(3,4)}) or a specific parameters related to postgrest http
-request parameters and syntax(\code{select = ...})}
+\item{.cores}{\code{integer} default \code{4}. Number of cores used to parallelize and
+improve rapidity}
 }
 \value{
 \code{tibble} with rows associated with Atlas data object

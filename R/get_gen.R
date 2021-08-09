@@ -74,43 +74,30 @@ get_gen <- function(
 
   # Get data through pagination (or not)
   n_pages <- ceiling(endpoint_range_count(url, header) / .page_limit)
+  .cores <- min(.cores, n_pages)
   do_pagination <- ! "limit" %in% names(query) & n_pages > 1
 
+  tic <- proc.time()
   if (do_pagination) {
-    registerDoParallel(cores = min(.cores, n_pages))
-    responses <- foreach(
+    registerDoParallel(cores = .cores)
+    on.exit(stopImplicitCluster())
+    out <- foreach(
       page = 1:n_pages,
-      .combine = list,
-      .export = "postgrest_get_page"
-      ) %dopar% postgrest_get_page(url, header, query, page, .page_limit)
-    stopImplicitCluster()
-    # responses <- list()
-    # for (page in 1:n_pages) {
-    #   response <- postgrest_get_page(url, header, query, page, .page_limit)
-    #   responses <- list(responses, response)
-    # }
-    # print(paste0("Time download : ", (proc.time() - tic)[3])) 
-    # tic <- proc.time()
-    out <- list()
-    tmp_responses <- list()
-    for (i in 1:n_pages) {
-      if (i < n_pages) {
-        response <- responses[[2]]
-        responses <- responses[[1]]
-      } else {
-        response <- responses
-      }
-      postgrest_stop_if_err(response)
-      out <- rbind(out, postgrest_resp_to_data(response))
-    }
-    # print(paste0("Time bind : ", (proc.time() - tic)[3])) 
-
+      .combine = rbind,
+      .export = c(
+        "postgrest_get_page",
+        "postgrest_stop_if_err",
+        "postgrest_resp_to_data")
+      ) %dopar% {
+        response <- postgrest_get_page(url, header, query, page, .page_limit)
+        postgrest_stop_if_err(response)
+        postgrest_resp_to_data(response)
+        }
   } else {
     response <- postgrest_get(url, header, query)
     postgrest_stop_if_err(response)
     out <- postgrest_resp_to_data(response)
   }
-
   return(out)
 }
 
