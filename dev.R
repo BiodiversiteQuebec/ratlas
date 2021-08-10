@@ -18,6 +18,12 @@ usethis::use_package("tidyr",  type = "Imports")
 usethis::use_package("foreach",  type = "Imports")
 usethis::use_package("doParallel", type = "Imports")
 
+usethis::use_r("get_gen")
+usethis::use_test("get_gen")
+
+usethis::use_r("get_datasets")
+usethis::use_test("get_datasets")
+
 usethis::use_r("get_taxa")
 usethis::use_test("get_taxa")
 
@@ -29,9 +35,6 @@ usethis::use_test("get_observations")
 
 usethis::use_r("get_timeseries")
 usethis::use_test("get_timeseries")
-
-usethis::use_r("get_gen")
-usethis::use_test("get_gen")
 
 usethis::use_r("get_bird_occurrences")
 usethis::use_test("get_bird_occurrences")
