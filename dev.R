@@ -21,6 +21,9 @@ usethis::use_package("doParallel", type = "Imports")
 usethis::use_r("get_gen")
 usethis::use_test("get_gen")
 
+usethis::use_r("post_gen")
+usethis::use_test("post_gen")
+
 usethis::use_r("get_datasets")
 usethis::use_test("get_datasets")
 

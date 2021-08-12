@@ -49,7 +49,7 @@ SCHEMA_VALUES <- c("public", "api")
 get_gen <- function(
   endpoint,
   ...,
-  .page_limit = 10000,
+  .page_limit = 50000,
   .schema = "public",
   .token = ATLAS_API_TOKEN,
   .cores = 4) {
