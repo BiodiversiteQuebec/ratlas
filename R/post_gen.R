@@ -36,7 +36,7 @@ post_gen <- function(
     ...,
     .schema = "public",
     .page_limit = 50000,
-    .token = ATLAS_API_TOKEN,
+    .token = ATLAS_API_TOKEN(),
     .cores = 4) {
 
     # Argument validation
@@ -44,14 +44,14 @@ post_gen <- function(
         stop("Bad input: Unexpected value for argument `.schema`")
         }
     # Prepare HTTP request with url, header abd query parameters
-    url <- httr::modify_url(ATLAS_API_V2_HOST,
+    url <- httr::modify_url(ATLAS_API_V2_HOST(),
         path = paste(
-            httr::parse_url(ATLAS_API_V2_HOST)$path,
+            httr::parse_url(ATLAS_API_V2_HOST())$path,
             endpoint, sep = "/"))
     body <- jsonlite::toJSON(as.data.frame(data))
     header <- list(
         Authorization = paste("Bearer", .token),
-        `User-Agent` = USER_AGENT, # defined in zzz.R
+        `User-Agent` = USER_AGENT(), # defined in zzz.R
         Prefer = "count=planned", # header parameter from postgrest
         `Content-type` = "application/json;charset=UTF-8"
         )

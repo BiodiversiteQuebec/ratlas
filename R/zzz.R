@@ -1,9 +1,13 @@
-ATLAS_API_V1_HOST <- "https://atlas.biodiversite-quebec.ca/api/v1"
-ATLAS_API_V2_HOST <- "https://atlas.biodiversite-quebec.ca/api/v2"
-
-if (nchar(Sys.getenv("ATLAS_API_HOST")) > 0) {
-    ATLAS_API_V2_HOST <- Sys.getenv("ATLAS_API_HOST")
+ATLAS_API_V1_HOST <- function() "https://atlas.biodiversite-quebec.ca/api/v1"
+ATLAS_API_V2_HOST <- function() {
+    env_host <- Sys.getenv("ATLAS_API_HOST")
+    if (nchar(env_host) > 0) {
+        return(env_host)
+    } else {
+        return("https://atlas.biodiversite-quebec.ca/api/v2")
+    }
 }
-ATLAS_API_TOKEN <- Sys.getenv("ATLAS_API_TOKEN")
 
-USER_AGENT <- "ratlas"
+ATLAS_API_TOKEN <- function() Sys.getenv("ATLAS_API_TOKEN")
+
+USER_AGENT <- function() "ratlas"

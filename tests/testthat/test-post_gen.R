@@ -1,6 +1,6 @@
 stopifnot(
   "Expecting local db environment to test injections" =
-    grepl("localhost", ATLAS_API_V2_HOST)
+    grepl("localhost", ATLAS_API_V2_HOST())
 )
 
 random_value <- list(
@@ -34,7 +34,8 @@ random_value <- list(
   "enum_sp_categories" = function(...) NULL
   # "enum_qc" = function(...) sample(c(
   #   "Menacée", "Susceptible", "Vulnérable", "Vulnérable à la récolte"), 1),
-  # "enum_ranks" = function(...) sample(c("species", "genus", "family", "order"), 1),
+  # "enum_ranks" = function(...) sample(
+    # c("species", "genus", "family", "order"), 1),
   # "enum_sp_categories" = function(...) sample(c(
   #   "Amphibiens", "Oiseaux", "Mammifères", "Reptiles", "Poissons"), 1)
 )

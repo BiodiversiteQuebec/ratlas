@@ -51,7 +51,7 @@ get_gen <- function(
   ...,
   .page_limit = 50000,
   .schema = "public",
-  .token = ATLAS_API_TOKEN,
+  .token = ATLAS_API_TOKEN(),
   .cores = 4) {
 
   # Argument validation
@@ -60,12 +60,12 @@ get_gen <- function(
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- httr::modify_url(ATLAS_API_V2_HOST,
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST)$path, endpoint, sep = "/"))
+  url <- httr::modify_url(ATLAS_API_V2_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/"))
   query <- postgrest_query_filter(list(...))
   header <- list(
     Authorization = paste("Bearer", .token),
-    `User-Agent` = USER_AGENT, # defined in zzz.R
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
     Prefer = "count=planned" # header parameter from postgrest
   )
   if (.schema != "public") {
