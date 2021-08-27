@@ -10,7 +10,7 @@ post_gen(
   ...,
   .schema = "public",
   .page_limit = 50000,
-  .token = ATLAS_API_TOKEN,
+  .token = ATLAS_API_TOKEN(),
   .cores = 4
 )
 }

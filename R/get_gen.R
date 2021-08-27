@@ -2,6 +2,7 @@ library(doParallel)
 library(foreach)
 
 SCHEMA_VALUES <- c("public", "api")
+DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 
 #' Generic function to access data from Atlas databases
 #'
@@ -26,6 +27,9 @@ SCHEMA_VALUES <- c("public", "api")
 #' @param .token  `character` Bearer token providing access to the web api
 #' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' improve rapidity
+#' @param .page_parameters `list` default
+#'  `list(limit = "limit", offset = "offset")`. Parameters names sent to http
+#'  query to be consumed by the endpoint for pagination
 #' @return `tibble` with rows associated with Atlas data object
 #' @examples
 #' # Returns all available taxa records in atlas
@@ -36,32 +40,35 @@ SCHEMA_VALUES <- c("public", "api")
 #'
 #' # Returns first 100 sampling_points from schema `api`
 #' sampling_points <- get_gen(
-#'  "bird_sampling_points",
-#'  .schema = 'api',
-#'  limit = 100)
+#'   "bird_sampling_points",
+#'   .schema = "api",
+#'   limit = 100
+#' )
 #'
 #' # Returns first 100 observations with selected columns and joined columns
-#' get_gen('observations',
-#'  limit=100,
-#'  select='geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)')
+#' get_gen("observations",
+#'   limit = 100,
+#'   select = "geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"
+#' )
 #' @export
 
-get_gen <- function(
-  endpoint,
-  ...,
-  .page_limit = 50000,
-  .schema = "public",
-  .token = ATLAS_API_TOKEN(),
-  .cores = 4) {
+get_gen <- function(endpoint,
+                    ...,
+                    .page_limit = 50000,
+                    .schema = "public",
+                    .token = ATLAS_API_TOKEN(),
+                    .cores = 4,
+                    .page_parameters = DEFAULT_PAGE_PARAMETERS) {
 
   # Argument validation
-  if (! .schema %in% SCHEMA_VALUES) {
+  if (!.schema %in% SCHEMA_VALUES) {
     stop("Bad input: Unexpected value for argument `.schema`")
   }
 
   # Prepare HTTP request with url, header abd query parameters
   url <- httr::modify_url(ATLAS_API_V2_HOST(),
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/"))
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  )
   query <- postgrest_query_filter(list(...))
   header <- list(
     Authorization = paste("Bearer", .token),
@@ -75,7 +82,7 @@ get_gen <- function(
   # Get data through pagination (or not)
   n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
   .cores <- min(.cores, n_pages)
-  do_pagination <- ! "limit" %in% names(query) & n_pages > 1
+  do_pagination <- !"limit" %in% names(query) & n_pages > 1
 
   if (do_pagination) {
     registerDoParallel(cores = .cores)
@@ -86,12 +93,14 @@ get_gen <- function(
       .export = c(
         "postgrest_get_page",
         "postgrest_stop_if_err",
-        "postgrest_resp_to_data")
-      ) %dopar% {
-        response <- postgrest_get_page(url, header, query, page, .page_limit)
-        postgrest_stop_if_err(response)
-        postgrest_resp_to_data(response)
-        }
+        "postgrest_resp_to_data"
+      )
+    ) %dopar% {
+      response <- postgrest_get_page(url, header, query, page,
+        .page_limit, .page_parameters)
+      postgrest_stop_if_err(response)
+      postgrest_resp_to_data(response)
+    }
   } else {
     response <- postgrest_get(url, header, query)
     postgrest_stop_if_err(response)
@@ -112,7 +121,7 @@ mem_get <- memoise::memoise(httr::GET)
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
 endpoint_range_count <- function(url, header, query) {
-  query$limit = 1
+  query$limit <- 1
   response <- postgrest_get(url, header, query)
   postgrest_stop_if_err(response)
   tmp <- unlist(strsplit(httr::headers(response)$"content-range", split = "\\D"))
@@ -120,7 +129,7 @@ endpoint_range_count <- function(url, header, query) {
   return(range_count)
 }
 
-POSTGREST_QUERY_PARAMETERS = c(
+POSTGREST_QUERY_PARAMETERS <- c(
   "select", "limit", "offset"
 )
 
@@ -133,40 +142,50 @@ postgrest_query_filter <- function(parameters) {
       v_array <- paste0(parameters[[name]], collapse = ",")
       parameters[[name]] <- paste0("in.(", v_array, ")", sep = "")
     } else {
-      parameters[[name]] <-  paste0("eq.", parameters[[name]], sep = "")
+      parameters[[name]] <- paste0("eq.", parameters[[name]], sep = "")
     }
   }
   return(parameters)
 }
 
 postgrest_stop_if_err <- function(response) {
-    if (httr::http_error(response)) {
+  if (httr::http_error(response)) {
     stop(httr::message_for_status(response, httr::content(response)$message))
   }
 }
 
 postgrest_get <- function(url, header, query) {
   response <- httr::GET(url,
-                  config = do.call(httr::add_headers, header),
-                  query = query)
+    config = do.call(httr::add_headers, header),
+    query = query
+  )
   return(response)
 }
 
 postgrest_resp_to_data <- function(response) {
   textresp <- httr::content(response, type = "text", encoding = "UTF-8")
   df_from_json <- jsonlite::fromJSON(
-  textresp, flatten = TRUE, simplifyDataFrame = TRUE)
+    textresp,
+    flatten = TRUE, simplifyDataFrame = TRUE
+  )
   data <- tibble::as_tibble(df_from_json)
   return(data)
 }
 
-postgrest_get_page <- function(url, header, query, page, limit) {
+postgrest_get_page <- function(url,
+                               header,
+                               query,
+                               page,
+                               limit,
+                               page_parameters = DEFAULT_PAGE_PARAMETERS) {
+
   offset <- (page - 1) * limit
-  query$limit <- format(limit, scientific = FALSE)
-  query$offset <- format(offset, scientific = FALSE)
+  query[page_parameters$limit] <- format(limit, scientific = FALSE)
+  query[page_parameters$offset] <- format(offset, scientific = FALSE)
 
   response <- httr::GET(url,
-                  config = do.call(httr::add_headers, header),
-                  query = query)
+    config = do.call(httr::add_headers, header),
+    query = query
+  )
   return(response)
 }

@@ -9,8 +9,9 @@ get_gen(
   ...,
   .page_limit = 50000,
   .schema = "public",
-  .token = ATLAS_API_TOKEN,
-  .cores = 4
+  .token = ATLAS_API_TOKEN(),
+  .cores = 4,
+  .page_parameters = DEFAULT_PAGE_PARAMETERS
 )
 }
 \arguments{
@@ -33,6 +34,10 @@ object is located. Accept either values \code{api} or \code{public} (default)}
 
 \item{.cores}{\code{integer} default \code{4}. Number of cores used to parallelize and
 improve rapidity}
+
+\item{.page_parameters}{\code{list} default
+\code{list(limit = "limit", offset = "offset")}. Parameters names sent to http
+query to be consumed by the endpoint for pagination}
 }
 \value{
 \code{tibble} with rows associated with Atlas data object
@@ -55,12 +60,14 @@ taxa <- get_gen("taxa", id = c(188, 201, 294, 392))
 
 # Returns first 100 sampling_points from schema `api`
 sampling_points <- get_gen(
- "bird_sampling_points",
- .schema = 'api',
- limit = 100)
+  "bird_sampling_points",
+  .schema = "api",
+  limit = 100
+)
 
 # Returns first 100 observations with selected columns and joined columns
-get_gen('observations',
- limit=100,
- select='geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)')
+get_gen("observations",
+  limit = 100,
+  select = "geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"
+)
 }
