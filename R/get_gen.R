@@ -96,8 +96,10 @@ get_gen <- function(endpoint,
         "postgrest_resp_to_data"
       )
     ) %dopar% {
-      response <- postgrest_get_page(url, header, query, page,
-        .page_limit, .page_parameters)
+      response <- postgrest_get_page(
+        url, header, query, page,
+        .page_limit, .page_parameters
+      )
       postgrest_stop_if_err(response)
       postgrest_resp_to_data(response)
     }
@@ -125,7 +127,7 @@ endpoint_range_count <- function(url, header, query) {
   response <- postgrest_get(url, header, query)
   postgrest_stop_if_err(response)
   tmp <- unlist(strsplit(httr::headers(response)$"content-range", split = "\\D"))
-  range_count <- as.numeric(tmp[grepl("\\d", tmp)])[3L]
+  range_count <- as.numeric(tmp[3])
   return(range_count)
 }
 
@@ -178,7 +180,6 @@ postgrest_get_page <- function(url,
                                page,
                                limit,
                                page_parameters = DEFAULT_PAGE_PARAMETERS) {
-
   offset <- (page - 1) * limit
   query[page_parameters$limit] <- format(limit, scientific = FALSE)
   query[page_parameters$offset] <- format(offset, scientific = FALSE)
