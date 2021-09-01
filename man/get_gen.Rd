@@ -11,7 +11,8 @@ get_gen(
   .schema = "public",
   .token = ATLAS_API_TOKEN(),
   .cores = 4,
-  .page_parameters = DEFAULT_PAGE_PARAMETERS
+  .page_parameters = DEFAULT_PAGE_PARAMETERS,
+  .n_pages = NULL
 )
 }
 \arguments{
@@ -38,6 +39,8 @@ improve rapidity}
 \item{.page_parameters}{\code{list} default
 \code{list(limit = "limit", offset = "offset")}. Parameters names sent to http
 query to be consumed by the endpoint for pagination}
+
+\item{..n_pages}{\code{integer} default NULL. Estimated if none provided}
 }
 \value{
 \code{tibble} with rows associated with Atlas data object

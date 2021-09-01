@@ -30,6 +30,7 @@ DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 #' @param .page_parameters `list` default
 #'  `list(limit = "limit", offset = "offset")`. Parameters names sent to http
 #'  query to be consumed by the endpoint for pagination
+#' @param ..n_pages `integer` default NULL. Estimated if none provided
 #' @return `tibble` with rows associated with Atlas data object
 #' @examples
 #' # Returns all available taxa records in atlas
@@ -58,7 +59,8 @@ get_gen <- function(endpoint,
                     .schema = "public",
                     .token = ATLAS_API_TOKEN(),
                     .cores = 4,
-                    .page_parameters = DEFAULT_PAGE_PARAMETERS) {
+                    .page_parameters = DEFAULT_PAGE_PARAMETERS,
+                    .n_pages = NULL) {
 
   # Argument validation
   if (!.schema %in% SCHEMA_VALUES) {
@@ -69,37 +71,61 @@ get_gen <- function(endpoint,
   url <- httr::modify_url(ATLAS_API_V2_HOST(),
     path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
   )
-  query <- postgrest_query_filter(list(...))
+  
+  # Postgrest query value filter format if not stored procedure
+  if (! grepl("rpc", endpoint)) {
+    query <- postgrest_query_filter(list(...))
+  } else {
+    query <- list(...)
+  }
+
+  # Header for postgrest authorization token and schema
   header <- list(
     Authorization = paste("Bearer", .token),
     `User-Agent` = USER_AGENT(), # defined in zzz.R
     Prefer = "count=planned" # header parameter from postgrest
   )
+
   if (.schema != "public") {
     header$`Accept-Profile` <- .schema
   }
 
   # Get data through pagination (or not)
-  n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
-  .cores <- min(.cores, n_pages)
-  do_pagination <- !"limit" %in% names(query) & n_pages > 1
+  if (is.null(.n_pages)) {
+    .n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
+  }
+  .cores <- min(.cores, .n_pages)
+  do_pagination <- !"limit" %in% names(query) & .n_pages > 1
 
+  debug <- as.logical(Sys.getenv("DEBUG"))
   if (do_pagination) {
-    registerDoParallel(cores = .cores)
-    on.exit(stopImplicitCluster())
-    out <- foreach(
-      page = 1:n_pages,
-      .combine = rbind,
-      .export = c(
-        "postgrest_get_page",
-        "postgrest_stop_if_err",
-        "postgrest_resp_to_data"
-      )
-    ) %dopar% {
-      response <- postgrest_get_page(
-        url, header, query, page,
-        .page_limit, .page_parameters
-      )
+    if (debug) {
+      out <- list()
+      for (page in 1:.n_pages) {
+        response <- postgrest_get_page(
+          url, header, query, page,
+          .page_limit, .page_parameters
+        )
+        out <- rbind(out, response)
+      }
+    } else {
+      registerDoParallel(cores = .cores)
+      on.exit(stopImplicitCluster())
+      out <- foreach(
+        page = 1:.n_pages,
+        .combine = rbind,
+        .export = c(
+          "postgrest_get_page",
+          "postgrest_stop_if_err",
+          "postgrest_resp_to_data",
+          ".page_parameters"
+        )
+      ) %dopar% {
+        response <- postgrest_get_page(
+          url, header, query, page,
+          .page_limit, .page_parameters
+        )
+      }      
       postgrest_stop_if_err(response)
       postgrest_resp_to_data(response)
     }
