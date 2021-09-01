@@ -39,9 +39,6 @@ usethis::use_test("get_observations")
 usethis::use_r("get_timeseries")
 usethis::use_test("get_timeseries")
 
-usethis::use_r("get_bird_occurrences")
-usethis::use_test("get_bird_occurrences")
-
 devtools::document()
 devtools::load_all()
 devtools::test()

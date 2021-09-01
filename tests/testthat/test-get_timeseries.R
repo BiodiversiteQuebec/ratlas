@@ -1,3 +1,5 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
+test_that("get timeseries works", {
+  results <- get_timeseries(limit = 10)
+  testthat::expect_type(results, "list")
+  testthat::expect_true(nrow(results) == 10)
 })
