@@ -33,11 +33,11 @@ capitalize_taxa <- function(taxas) {
 #'
 #' @examples
 #' # Returns all taxa references for list of scientific names
-#' taxa <- get_taxa_ref(c("Cyanocitta cristata", "Grus Canadensis"))
+#' taxa <- get_taxa_global_names(c("Cyanocitta cristata", "Grus Canadensis"))
 
 #' @export
 
-get_taxa_ref <- function(
+get_taxa_global_names <- function(
     names,
     sources = PREF_SOURCE
 ) {

@@ -39,8 +39,11 @@ usethis::use_test("get_observations")
 usethis::use_r("get_timeseries")
 usethis::use_test("get_timeseries")
 
-usethis::use_r("get_taxa_ref")
-usethis::use_test("get_taxa_ref")
+usethis::use_r("get_taxa_global_names")
+usethis::use_test("get_taxa_global_names")
+
+usethis::use_r("taxa")
+usethis::use_test("taxa")
 
 devtools::document()
 devtools::load_all()
