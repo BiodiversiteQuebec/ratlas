@@ -45,6 +45,10 @@ usethis::use_test("get_taxa_global_names")
 usethis::use_r("taxa")
 usethis::use_test("taxa")
 
+# Use raw data
+usethis::use_data_raw("taxa_data")
+source("data-raw//taxa_data.R")
+
 devtools::document()
 devtools::load_all()
 devtools::test()
