@@ -14,18 +14,13 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Config/testthat/edition: 3
 Imports: 
-    devtools (>= 2.4.1.9000),
+    devtools (>= 2.4.2),
     doParallel,
     dplyr,
     foreach,
     httr,
-    IRkernel (>= 1.2.0.9000),
-    languageserver (>= 0.3.11),
     sf,
-    testthat (>= 3.0.4.9000),
-    tidyr,
-    usethis (>= 2.0.1.9000),
-    vscDebugger (>= 0.4.7)
+    tidyr
 Remotes: 
     r-lib/usethis,
     r-lib/testthat,
@@ -35,3 +30,9 @@ Remotes:
     github::ManuelHentschel/vscDebugger
 Depends: 
     R (>= 2.10)
+Suggests: 
+    languageserver (>= 0.3.11),
+    IRkernel (>= 1.2.0.9000),
+    testthat (>= 3.0.4.9000),
+    usethis (>= 2.0.1.9000),
+    vscDebugger (>= 0.4.7)

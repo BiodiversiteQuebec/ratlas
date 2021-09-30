@@ -3,12 +3,12 @@ usethis::use_build_ignore("dev.R")
 usethis::use_build_ignore("dev_scratch")
 usethis::use_mit_license(copyright_holder = "Vincent Beauregard")
 
-usethis::use_dev_package("usethis", type = "Imports", remote = NULL)
-usethis::use_dev_package("testthat", type = "Imports", remote = NULL)
+usethis::use_dev_package("usethis", type = "Suggests", remote = NULL)
+usethis::use_dev_package("testthat", type = "Suggests", remote = NULL)
 usethis::use_dev_package("devtools", type = "Imports", remote = NULL)
-usethis::use_dev_package("IRkernel", type = "Imports", remote = NULL)
-usethis::use_dev_package("languageserver", type = "Imports", remote = NULL)
-usethis::use_dev_package("vscDebugger", type = "Imports",
+usethis::use_dev_package("IRkernel", type = "Suggests", remote = NULL)
+usethis::use_dev_package("languageserver", type = "Suggests", remote = NULL)
+usethis::use_dev_package("vscDebugger", type = "Suggests",
     remote = "github::ManuelHentschel/vscDebugger")
 
 usethis::use_package("dplyr", type = "Imports")
