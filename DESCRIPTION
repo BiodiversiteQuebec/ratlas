@@ -21,13 +21,15 @@ Imports:
     httr,
     sf,
     tidyr
-Remotes: 
+Remotes:  
     r-lib/usethis,
     r-lib/testthat,
     r-lib/devtools,
     IRkernel/IRkernel,
     REditorSupport/languageserver,
-    github::ManuelHentschel/vscDebugger
+    github::ManuelHentschel/vscDebugger,
+    r-lib/pkgdown,
+    rstudio/rmarkdown
 Depends: 
     R (>= 2.10)
 Suggests: 
@@ -35,4 +37,8 @@ Suggests:
     IRkernel (>= 1.2.0.9000),
     testthat (>= 3.0.4.9000),
     usethis (>= 2.0.1.9000),
-    vscDebugger (>= 0.4.7)
+    vscDebugger (>= 0.4.7),
+    knitr,
+    rmarkdown (>= 2.9),
+    pkgdown (>= 1.6.1)
+VignetteBuilder: knitr
