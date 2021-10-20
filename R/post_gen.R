@@ -48,7 +48,14 @@ post_gen <- function(
         path = paste(
             httr::parse_url(ATLAS_API_V2_HOST())$path,
             endpoint, sep = "/"))
-    body <- jsonlite::toJSON(as.data.frame(data))
+    if (is.null(nrow(data))) {
+        # Case of a list
+        body <- jsonlite::toJSON(data)
+    } else {
+        # Case of a data.frame
+        body <- jsonlite::toJSON(as.data.frame(data))
+    }
+    
     header <- list(
         Authorization = paste("Bearer", .token),
         `User-Agent` = USER_AGENT(), # defined in zzz.R
@@ -67,7 +74,7 @@ post_gen <- function(
 }
 
 postgrest_stop_if_err <- function(response) {
-    if (httr::http_error(response)) {
+  if (httr::http_error(response)) {
     stop(httr::message_for_status(response, httr::content(response)$message))
   }
 }
