@@ -1,6 +1,3 @@
-library(doParallel)
-library(foreach)
-
 SCHEMA_VALUES <- c("public", "api")
 
 #' Generic function to post data into Atlas databases

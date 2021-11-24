@@ -11,3 +11,4 @@ dev_scratch/*
 man/get_taxa.Rd
 man/get_timeseries.Rd
 inst/doc
+tests/test_env/*

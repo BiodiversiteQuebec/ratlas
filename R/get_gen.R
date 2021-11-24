@@ -1,6 +1,3 @@
-library(doParallel)
-library(foreach)
-
 SCHEMA_VALUES <- c("public", "api")
 DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 
@@ -51,16 +48,17 @@ DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 #'   limit = 100,
 #'   select = "geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"
 #' )
+#' @importFrom foreach %dopar%
 #' @export
 
 get_gen <- function(endpoint,
                     ...,
-                    .page_limit = 50000,
+                    .page_limit = 500000,
                     .schema = "public",
                     .token = ATLAS_API_TOKEN(),
                     .cores = 4,
                     .page_parameters = DEFAULT_PAGE_PARAMETERS,
-                    .n_pages = NULL) {
+                    .n_pages = 1) {
 
   # Argument validation
   if (!.schema %in% SCHEMA_VALUES) {
@@ -91,14 +89,15 @@ get_gen <- function(endpoint,
   }
 
   # Get data through pagination (or not)
-  if (is.null(.n_pages)) {
+  if (.n_pages == 1 & ! "limit" %in% names(query)) {
     .n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
   }
   .cores <- min(.cores, .n_pages)
-  do_pagination <- !"limit" %in% names(query) & .n_pages > 1
 
   debug <- as.logical(Sys.getenv("DEBUG"))
-  if (do_pagination) {
+  if (is.na(debug)) debug <- FALSE
+
+  if (.n_pages > 1) {
     if (debug) {
       out <- list()
       for (page in 1:.n_pages) {
@@ -106,12 +105,13 @@ get_gen <- function(endpoint,
           url, header, query, page,
           .page_limit, .page_parameters
         )
-        out <- rbind(out, response)
+        postgrest_stop_if_err(response)
+        out <- rbind(out, postgrest_resp_to_data(response))
       }
     } else {
-      registerDoParallel(cores = .cores)
-      on.exit(stopImplicitCluster())
-      out <- foreach(
+      doParallel::registerDoParallel(cores = .cores)
+      on.exit(doParallel::stopImplicitCluster())
+      out <- foreach::foreach(
         page = 1:.n_pages,
         .combine = rbind,
         .export = c(
@@ -125,9 +125,9 @@ get_gen <- function(endpoint,
           url, header, query, page,
           .page_limit, .page_parameters
         )
-      }      
-      postgrest_stop_if_err(response)
-      postgrest_resp_to_data(response)
+        postgrest_stop_if_err(response)
+        postgrest_resp_to_data(response)
+      }
     }
   } else {
     response <- postgrest_get(url, header, query)
@@ -183,6 +183,11 @@ postgrest_stop_if_err <- function(response) {
 }
 
 postgrest_get <- function(url, header, query) {
+  for (name in names(query)) {
+    if (is.numeric(query[[name]])) {
+      query[[name]] <- format(query[[name]], scientific = FALSE)
+    }
+  }
   response <- httr::GET(url,
     config = do.call(httr::add_headers, header),
     query = query
@@ -207,8 +212,8 @@ postgrest_get_page <- function(url,
                                limit,
                                page_parameters = DEFAULT_PAGE_PARAMETERS) {
   offset <- (page - 1) * limit
-  query[page_parameters$limit] <- format(limit, scientific = FALSE)
-  query[page_parameters$offset] <- format(offset, scientific = FALSE)
+  query[page_parameters$limit] <- limit
+  query[page_parameters$offset] <- offset
 
   response <- httr::GET(url,
     config = do.call(httr::add_headers, header),

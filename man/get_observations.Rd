@@ -37,12 +37,10 @@ table columns specified as parameters (ie. \code{id}, \code{year_obs}, \code{id_
 scalar or vector for single or multiple records.
 }
 \examples{
-# Returns all taxa filtered by the column `id_taxa` values
-obs <- get_taxa(id_taxa = c(188, 201, 294, 392))
-
 # Returns all observations from 2010 to 2015 for taxa
 "Cyanocitta cristata" (`id_taxa` = 188) from ebird datasets
 (`id_datasets` = 55:102)
-obs <- get_taxa(id_taxa = 188, year = 2000:2015, id_datasets = 55:102)
+obs <- get_observations(
+ id_taxa = 188, year = 2010:2015, id_datasets = 55:102)
 
 }
