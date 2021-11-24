@@ -7,12 +7,11 @@
 get_gen(
   endpoint,
   ...,
-  .page_limit = 50000,
+  .page_limit = 5e+05,
   .schema = "public",
-  .token = ATLAS_API_TOKEN(),
   .cores = 4,
   .page_parameters = DEFAULT_PAGE_PARAMETERS,
-  .n_pages = NULL
+  .n_pages = 1
 )
 }
 \arguments{
@@ -31,14 +30,14 @@ request parameters and syntax(\code{select = ...})}
 \item{.schema}{\code{character} Schema from the database where is located the data
 object is located. Accept either values \code{api} or \code{public} (default)}
 
-\item{.token}{\code{character} Bearer token providing access to the web api}
-
 \item{.cores}{\code{integer} default \code{4}. Number of cores used to parallelize and
 improve rapidity}
 
 \item{.page_parameters}{\code{list} default
 \code{list(limit = "limit", offset = "offset")}. Parameters names sent to http
 query to be consumed by the endpoint for pagination}
+
+\item{.token}{\code{character} Bearer token providing access to the web api}
 
 \item{..n_pages}{\code{integer} default NULL. Estimated if none provided}
 }

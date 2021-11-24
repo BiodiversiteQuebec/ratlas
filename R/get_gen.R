@@ -55,10 +55,9 @@ get_gen <- function(endpoint,
                     ...,
                     .page_limit = 500000,
                     .schema = "public",
-                    .token = ATLAS_API_TOKEN(),
                     .cores = 4,
                     .page_parameters = DEFAULT_PAGE_PARAMETERS,
-                    .n_pages = 1) {
+                    .n_pages = NULL) {
 
   # Argument validation
   if (!.schema %in% SCHEMA_VALUES) {
@@ -66,10 +65,7 @@ get_gen <- function(endpoint,
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- httr::modify_url(ATLAS_API_V2_HOST(),
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
-  )
-  
+
   # Postgrest query value filter format if not stored procedure
   if (! grepl("rpc", endpoint)) {
     query <- postgrest_query_filter(list(...))
@@ -77,20 +73,12 @@ get_gen <- function(endpoint,
     query <- list(...)
   }
 
-  # Header for postgrest authorization token and schema
-  header <- list(
-    Authorization = paste("Bearer", .token),
-    `User-Agent` = USER_AGENT(), # defined in zzz.R
-    Prefer = "count=planned" # header parameter from postgrest
-  )
-
-  if (.schema != "public") {
-    header$`Accept-Profile` <- .schema
-  }
-
   # Get data through pagination (or not)
-  if (.n_pages == 1 & ! "limit" %in% names(query)) {
-    .n_pages <- ceiling(endpoint_range_count(url, header, query) / .page_limit)
+  if (is.null(.n_pages) & ! "limit" %in% names(query)) {
+    .n_pages <- ceiling(
+      endpoint_range_count(endpoint, query, .schema) / .page_limit)
+  } else {
+    .n_pages <- 1
   }
   .cores <- min(.cores, .n_pages)
 
@@ -102,8 +90,8 @@ get_gen <- function(endpoint,
       out <- list()
       for (page in 1:.n_pages) {
         response <- postgrest_get_page(
-          url, header, query, page,
-          .page_limit, .page_parameters
+          endpoint, query,
+          page, .page_limit, .schema, .page_parameters
         )
         postgrest_stop_if_err(response)
         out <- rbind(out, postgrest_resp_to_data(response))
@@ -122,15 +110,15 @@ get_gen <- function(endpoint,
         )
       ) %dopar% {
         response <- postgrest_get_page(
-          url, header, query, page,
-          .page_limit, .page_parameters
+          endpoint, query,
+          page, .page_limit, .schema, .page_parameters
         )
         postgrest_stop_if_err(response)
         postgrest_resp_to_data(response)
       }
     }
   } else {
-    response <- postgrest_get(url, header, query)
+    response <- postgrest_get(endpoint, query, .schema)
     postgrest_stop_if_err(response)
     out <- postgrest_resp_to_data(response)
   }
@@ -148,11 +136,41 @@ mem_get <- memoise::memoise(httr::GET)
 #' @export
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
-endpoint_range_count <- function(url, header, query) {
+endpoint_request_param <- function(
+    endpoint,
+    .schema = "public") {
+  url <- httr::modify_url(ATLAS_API_V2_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  )
+  header <- list(
+    Authorization = paste("Bearer", ATLAS_API_TOKEN()),
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
+    Prefer = "count=planned" # header parameter from postgrest
+  )
+  if (.schema != "public") {
+    header$`Accept-Profile` <- .schema
+  }
+  return(
+    list(
+      url = url,
+      header = header
+    )
+  )
+}
+
+endpoint_range_count <- function(
+    endpoint,
+    query = NULL,
+    .schema = "public") {
+  if (is.null(query)){
+    query <- list()
+  }
   query$limit <- 1
-  response <- postgrest_get(url, header, query)
+  response <- postgrest_get(endpoint, query, .schema)
   postgrest_stop_if_err(response)
-  tmp <- unlist(strsplit(httr::headers(response)$"content-range", split = "\\D"))
+  tmp <- unlist(
+      strsplit(httr::headers(response)$"content-range", split = "\\D")
+    )
   range_count <- as.numeric(tmp[3])
   return(range_count)
 }
@@ -182,14 +200,18 @@ postgrest_stop_if_err <- function(response) {
   }
 }
 
-postgrest_get <- function(url, header, query) {
+postgrest_get <- function(
+  endpoint,
+  query,
+  .schema = "public") {
+  request_param <- endpoint_request_param(endpoint, .schema)
   for (name in names(query)) {
     if (is.numeric(query[[name]])) {
       query[[name]] <- format(query[[name]], scientific = FALSE)
     }
   }
-  response <- httr::GET(url,
-    config = do.call(httr::add_headers, header),
+  response <- httr::GET(request_param$url,
+    config = do.call(httr::add_headers, request_param$header),
     query = query
   )
   return(response)
@@ -205,15 +227,24 @@ postgrest_resp_to_data <- function(response) {
   return(data)
 }
 
-postgrest_get_page <- function(url,
-                               header,
-                               query,
-                               page,
-                               limit,
-                               page_parameters = DEFAULT_PAGE_PARAMETERS) {
+postgrest_get_page <- function(
+    endpoint,
+    query,
+    page,
+    limit,
+    .schema = "public",
+    .page_parameters = DEFAULT_PAGE_PARAMETERS) {
+  url <- httr::modify_url(ATLAS_API_V2_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  )
+  header <- list(
+    Authorization = paste("Bearer", ATLAS_API_TOKEN()),
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
+    Prefer = "count=planned" # header parameter from postgrest
+  )
   offset <- (page - 1) * limit
-  query[page_parameters$limit] <- limit
-  query[page_parameters$offset] <- offset
+  query[.page_parameters$limit] <- limit
+  query[.page_parameters$offset] <- offset
 
   response <- httr::GET(url,
     config = do.call(httr::add_headers, header),
