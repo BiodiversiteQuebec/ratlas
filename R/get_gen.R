@@ -57,7 +57,7 @@ get_gen <- function(endpoint,
                     .schema = "public",
                     .cores = 4,
                     .page_parameters = DEFAULT_PAGE_PARAMETERS,
-                    .n_pages = NULL) {
+                    .n_pages = NA) {
 
   # Argument validation
   if (!.schema %in% SCHEMA_VALUES) {
@@ -67,14 +67,15 @@ get_gen <- function(endpoint,
   # Prepare HTTP request with url, header abd query parameters
 
   # Postgrest query value filter format if not stored procedure
-  if (! grepl("rpc", endpoint)) {
+  is_function <- grepl("rpc", endpoint)
+  if (! is_function) {
     query <- postgrest_query_filter(list(...))
   } else {
     query <- list(...)
   }
 
   # Get data through pagination (or not)
-  if (is.null(.n_pages) & ! "limit" %in% names(query)) {
+  if (is.na(.n_pages) & ! "limit" %in% names(query) & ! is_function) {
     .n_pages <- ceiling(
       endpoint_range_count(endpoint, query, .schema) / .page_limit)
   } else {

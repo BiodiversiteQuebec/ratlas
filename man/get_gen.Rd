@@ -11,7 +11,7 @@ get_gen(
   .schema = "public",
   .cores = 4,
   .page_parameters = DEFAULT_PAGE_PARAMETERS,
-  .n_pages = 1
+  .n_pages = NA
 )
 }
 \arguments{
