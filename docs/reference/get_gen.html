@@ -98,6 +98,9 @@ of the database object storing the required data
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="../articles/download-bird-presence-absence.html">download_montreal_presence_absence</a>
+    </li>
+    <li>
       <a href="../articles/download-obs.html">download-obs</a>
     </li>
   </ul>
@@ -133,12 +136,11 @@ of the database object storing the required data
     <pre class="usage"><span class='fu'>get_gen</span><span class='op'>(</span>
   <span class='va'>endpoint</span>,
   <span class='va'>...</span>,
-  .page_limit <span class='op'>=</span> <span class='fl'>50000</span>,
+  .page_limit <span class='op'>=</span> <span class='fl'>5e+05</span>,
   .schema <span class='op'>=</span> <span class='st'>"public"</span>,
-  .token <span class='op'>=</span> <span class='fu'>ATLAS_API_TOKEN</span><span class='op'>(</span><span class='op'>)</span>,
   .cores <span class='op'>=</span> <span class='fl'>4</span>,
   .page_parameters <span class='op'>=</span> <span class='va'>DEFAULT_PAGE_PARAMETERS</span>,
-  .n_pages <span class='op'>=</span> <span class='cn'>NULL</span>
+  .n_pages <span class='op'>=</span> <span class='cn'>NA</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -168,10 +170,6 @@ request parameters and syntax(<code>select = ...</code>)</p></td>
 object is located. Accept either values <code>api</code> or <code>public</code> (default)</p></td>
     </tr>
     <tr>
-      <th>.token</th>
-      <td><p><code>character</code> Bearer token providing access to the web api</p></td>
-    </tr>
-    <tr>
       <th>.cores</th>
       <td><p><code>integer</code> default <code>4</code>. Number of cores used to parallelize and
 improve rapidity</p></td>
@@ -181,6 +179,10 @@ improve rapidity</p></td>
       <td><p><code>list</code> default
 <code><a href='https://rdrr.io/r/base/list.html'>list(limit = "limit", offset = "offset")</a></code>. Parameters names sent to http
 query to be consumed by the endpoint for pagination</p></td>
+    </tr>
+    <tr>
+      <th>.token</th>
+      <td><p><code>character</code> Bearer token providing access to the web api</p></td>
     </tr>
     <tr>
       <th>..n_pages</th>

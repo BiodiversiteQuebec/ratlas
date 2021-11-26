@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get taxa ref — get_taxa_global_names • ratlas</title>
+<title>List Montreal bird taxa — list_mtl_bird_taxa • ratlas</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,10 @@
 
 
 
-<meta property="og:title" content="Get taxa ref — get_taxa_global_names" />
-<meta property="og:description" content="The function returns a list of attributes describing the reference
-source for requested scientific name scalar or vector using fuzzy matching." />
+<meta property="og:title" content="List Montreal bird taxa — list_mtl_bird_taxa" />
+<meta property="og:description" content="The function downloads and returns a dataframe containing presence and
+absence (values TRUE or FALSE) with a single record per row for the bird
+species specified by id_taxa." />
 
 
 
@@ -119,45 +120,56 @@ source for requested scientific name scalar or vector using fuzzy matching." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get taxa ref</h1>
+    <h1>List Montreal bird taxa</h1>
     
-    <div class="hidden name"><code>get_taxa_global_names.Rd</code></div>
+    <div class="hidden name"><code>list_mtl_bird_taxa.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function returns a list of attributes describing the reference
-source for requested scientific name scalar or vector using fuzzy matching.</p>
+    <p>The function downloads and returns a dataframe containing presence and
+absence (values TRUE or FALSE) with a single record per row for the bird
+species specified by <code>id_taxa</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_taxa_global_names</span><span class='op'>(</span><span class='va'>names</span>, sources <span class='op'>=</span> <span class='va'>PREF_SOURCE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>list_mtl_bird_taxa</span><span class='op'>(</span>rank <span class='op'>=</span> <span class='cn'>NULL</span>, source_name <span class='op'>=</span> <span class='cn'>NULL</span>, valid <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>names</th>
-      <td><p><code>char</code> scalar or vector. Scientific name to be verified.</p></td>
+      <th>rank</th>
+      <td><p>Optional. <code>character</code> Filter by rank, such as <code>family</code>, <code>species</code>
+, <code>class</code>, etc.</p></td>
     </tr>
     <tr>
-      <th>sources</th>
-      <td><p>Optional. <code>integer</code> scalar or vector. Taxonomic reference
-reference database to be searched for. Default for COL, GBIF, VASCAN.
-See <a href='https://verifier.globalnames.org/data_sources'>reference</a> for list of
-identifiers.</p></td>
+      <th>source_name</th>
+      <td><p>Optional. <code>character</code> Filter by taxonomic source.
+Accepted values are <code>ITIS</code>, <code>Catalogue of Life</code> and <code>GBIF Backbone Taxonomy</code></p></td>
+    </tr>
+    <tr>
+      <th>valid</th>
+      <td><p>Optional. <code>logical</code></p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Optional. scalar or vector. Returns a dataframe filtered by the
+atlas <code>taxa_ref</code> table columns specified as parameter</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>list</code> with elements related to requested taxa</p>
+    <p><code>tibble</code> with rows associated with Atlas <code>taxa_ref</code> records</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Based on Global Names Verifier API.
-<a href='https://verifier.globalnames.org/api'>documentation</a></p>
+    <p>The absence are infered from all sampling points related to birds observed
+on Montreal territory whose observations were obtained from datasets
+defined as <code>exhaustive</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Returns all taxa references for list of scientific names</span>
-<span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_taxa_global_names</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Cyanocitta cristata"</span>, <span class='st'>"Grus Canadensis"</span><span class='op'>)</span><span class='op'>)</span>
+    <pre class="examples"><span class='co'># Returns all bird species of different sources</span>
+<span class='va'>pres_abs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_mtl_bird_presence_absence.html'>get_mtl_bird_presence_absence</a></span><span class='op'>(</span>rank <span class='op'>=</span> <span class='st'>"species"</span><span class='op'>)</span>
+
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
