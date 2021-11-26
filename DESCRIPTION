@@ -40,5 +40,6 @@ Suggests:
     vscDebugger (>= 0.4.7),
     knitr,
     rmarkdown (>= 2.9),
-    pkgdown (>= 1.6.1)
+    pkgdown (>= 1.6.1),
+    kableExtra
 VignetteBuilder: knitr
