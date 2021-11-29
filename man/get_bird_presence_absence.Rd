@@ -4,7 +4,7 @@
 \alias{get_bird_presence_absence}
 \title{Get bird presence absence}
 \usage{
-get_bird_presence_absence(bird_taxa_id, .cores = 4)
+get_bird_presence_absence(taxa_name, .cores = 4, .page_limit = 4e+05)
 }
 \arguments{
 \item{.cores}{Optional. \code{integer} default \code{4}. Number of cores used to
