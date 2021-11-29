@@ -67,7 +67,7 @@ rank and their validity.
 
 *Example : List only valid species*
 ```{r}
-species <- list_mtl_bird_taxa(rank = 'species', valid = TRUE)
+species <- list_bird_taxa(rank = 'species', valid = TRUE)
 head(species) %>% kable()
 ```
 
@@ -108,7 +108,9 @@ exhaustive, from the `eBird` and `Atlas des oiseaux nicheurs du Quebec`
 datasets.
 
 ```{r}
-occurences <- get_mtl_bird_presence_absence(taxa_name = "Picoides pubescens")
+occurences <- get_bird_presence_absence(
+  taxa_name = "Picoides villosus",
+  .cores = 8)
 head(occurences) %>% kable()
 ```
 

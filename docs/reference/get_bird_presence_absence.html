@@ -131,7 +131,7 @@ absence (values TRUE or FALSE) with a single record per row for the bird
 species specified by <code>id_taxa</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_bird_presence_absence</span><span class='op'>(</span><span class='va'>taxa_name</span>, .cores <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_bird_presence_absence</span><span class='op'>(</span><span class='va'>taxa_name</span>, .cores <span class='op'>=</span> <span class='fl'>4</span>, .page_limit <span class='op'>=</span> <span class='fl'>1e+05</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -158,10 +158,10 @@ on Quebec territory whose observations were obtained from datasets
 defined as <code>exhaustive</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Returns all taxa filtered by the column `id_taxa` values</span>
+    <pre class="examples"><div class='input'><span class='co'># Returns all taxa filtered by the column `id_taxa` values</span>
 <span class='va'>pres_abs</span> <span class='op'>&lt;-</span> <span class='fu'>get_bird_presence_absence</span><span class='op'>(</span>id_taxa <span class='op'>=</span> <span class='fl'>188</span><span class='op'>)</span>
-
-</pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in get_bird_presence_absence(id_taxa = 188): unused argument (id_taxa = 188)</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

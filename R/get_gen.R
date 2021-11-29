@@ -75,11 +75,13 @@ get_gen <- function(endpoint,
   }
 
   # Get data through pagination (or not)
-  if (is.na(.n_pages) & ! "limit" %in% names(query) & ! is_function) {
+  if (is.na(.n_pages)) {
+    if (! "limit" %in% names(query) & ! is_function) {
     .n_pages <- ceiling(
       endpoint_range_count(endpoint, query, .schema) / .page_limit)
-  } else {
-    .n_pages <- 1
+    } else {
+      .n_pages <- 1
+    }
   }
   .cores <- min(.cores, .n_pages)
 
@@ -146,11 +148,9 @@ endpoint_request_param <- function(
   header <- list(
     Authorization = paste("Bearer", ATLAS_API_TOKEN()),
     `User-Agent` = USER_AGENT(), # defined in zzz.R
-    Prefer = "count=planned" # header parameter from postgrest
+    Prefer = "count=planned", # header parameter from postgrest
+    `Accept-Profile` = .schema
   )
-  if (.schema != "public") {
-    header$`Accept-Profile` <- .schema
-  }
   return(
     list(
       url = url,
@@ -240,12 +240,12 @@ postgrest_get_page <- function(
   )
   header <- list(
     Authorization = paste("Bearer", ATLAS_API_TOKEN()),
-    `User-Agent` = USER_AGENT(), # defined in zzz.R
-    Prefer = "count=planned" # header parameter from postgrest
+    `User-Agent` = USER_AGENT(),
+    `Accept-Profile` = .schema
   )
   offset <- (page - 1) * limit
-  query[.page_parameters$limit] <- limit
-  query[.page_parameters$offset] <- offset
+  query[.page_parameters$limit] <- format(limit, scientific = FALSE)
+  query[.page_parameters$offset] <- format(offset, scientific = FALSE)
 
   response <- httr::GET(url,
     config = do.call(httr::add_headers, header),

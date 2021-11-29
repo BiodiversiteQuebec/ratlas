@@ -21,18 +21,22 @@
 #' @export
 
 get_bird_presence_absence <- function(
-  bird_taxa_id,
-  .cores = 4
+  taxa_name,
+  .cores = 4,
+  .page_limit = 100000
 ) {
   query <- list()
   query$endpoint <- "rpc/get_bird_presence_absence"
   query$.schema <- "api"
   query$.cores <- .cores
-  query$.page_limit <- 50000
+  query$.page_limit <- .page_limit
   query$.page_parameters <- list(limit = "page_limit", offset = "page_offset")
-  query$.n_pages <- ceiling(8049320 / query$.page_limit)
-
-  query$bird_taxa_id <- bird_taxa_id
+  query$.n_pages <- ceiling(
+    endpoint_range_count(
+      "bird_sampling_points", .schema = "api"
+      ) / query$.page_limit
+    )
+  query$taxa_name <- taxa_name
 
   results <- do.call(get_gen, query)
   return(results)
