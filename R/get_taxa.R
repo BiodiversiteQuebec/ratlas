@@ -39,13 +39,17 @@ get_taxa <- function(
 ) {
   query <- list(...)
   query$endpoint <- "taxa"
-  query$.schema <- "public"
+  query$.schema <- "api"
 
   if (! is.null(id)) {
-    query$id <- id
+    query$id_taxa_obs <- id
   }
   if (! is.null(scientific_name)) {
-    query$scientific_name <- scientific_name
+    match_taxa <- lapply(scientific_name,
+    FUN = function(taxa_name) get_gen(
+      "rpc/match_taxa_obs", taxa_name = taxa_name)
+    ) %>% dplyr::bind_rows()
+    query$id_taxa_obs <- match_taxa$id
   }
 
   taxa <- do.call(get_gen, query)

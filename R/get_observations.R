@@ -14,7 +14,8 @@
 #' @param year Optional. `integer` scalar or vector. Returns a dataframe for
 #' the observations related to the `id_taxa`
 #' @param id_taxa Optional. `integer` scalar or vector. Returns a dataframe
-#' for the observations related to the `id_taxa`
+#' for the taxa_obs record related to the value. `id_taxa` is translated to
+#' `id_taxa_obs`
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
@@ -39,18 +40,20 @@ get_observations <- function(
 ) {
   query <- list(...)
   query$endpoint <- "observations"
-  query$.schema <- "public"
+  query$.schema <- "api"
 
   if (! is.null(id)) {
     query$id <- id
   }
   if (! is.null(id_taxa)) {
-    query$id_taxa <- id_taxa
+    query$id_taxa_obs <- id_taxa
   }
   if (! is.null(year)) {
     query$year_obs <- year
   }
 
-  observations <- do.call(get_gen, query)
+  observations <- do.call(get_gen, query) %>%
+    sf::st_as_sf(wkt = "geom_wkt")
+
   return(observations)
 }

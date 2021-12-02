@@ -5,6 +5,6 @@ test_that("get observations works", {
 })
 
 test_that("combining filters works", {
-  results <- get_observations(year_obs = 2014, id_taxa = 188, id_datasets = 70)
+  results <- get_observations(year_obs = 2014, id_taxa = 6450, id_datasets = 70)
   testthat::expect_true(nrow(results) > 1)
 })
