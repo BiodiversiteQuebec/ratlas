@@ -222,7 +222,7 @@ postgrest_resp_to_data <- function(response) {
   textresp <- httr::content(response, type = "text", encoding = "UTF-8")
   df_from_json <- jsonlite::fromJSON(
     textresp,
-    flatten = TRUE, simplifyDataFrame = TRUE
+    , simplifyDataFrame = TRUE
   )
   data <- tibble::as_tibble(df_from_json)
   return(data)

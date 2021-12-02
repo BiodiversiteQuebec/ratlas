@@ -1,4 +1,4 @@
-#' Get observations
+#' Get mtl bird observations
 #'
 #' The function downloads and returns a list or dataframe containing
 #' observations with a single record per row. The function returns a dataframe
@@ -8,6 +8,10 @@
 #' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa`,
 #' `id_datasets`, `id_variables`, `etc`) with accepted values either being
 #' scalar or vector for single or multiple records.
+#' 
+#' The absence are infered from all sampling points related to birds observed
+#' on Montreal territory whose observations were obtained from datasets
+#' defined as `exhaustive`.
 #'
 #' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
 #' observation with the specified id
@@ -32,14 +36,14 @@
 #' 
 #' @export
 
-get_observations <- function(
+get_mtl_bird_observations <- function(
   id = NULL,
   year = NULL,
   id_taxa = NULL,
   ...
 ) {
   query <- list(...)
-  query$endpoint <- "observations"
+  query$endpoint <- "mtl_bird_exhaustive_observations"
   query$.schema <- "api"
 
   if (! is.null(id)) {
