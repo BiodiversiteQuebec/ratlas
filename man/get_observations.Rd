@@ -43,5 +43,4 @@ scalar or vector for single or multiple records.
 (`id_datasets` = 55:102)
 obs <- get_observations(
  id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
-
 }

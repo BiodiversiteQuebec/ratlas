@@ -29,7 +29,7 @@
 #' (`id_datasets` = 55:102)
 #' obs <- get_observations(
 #'  id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
-#' 
+#' @import magrittr
 #' @export
 
 get_observations <- function(
@@ -52,9 +52,10 @@ get_observations <- function(
     query$year_obs <- year
   }
 
-  observations <- do.call(get_gen, query)
-  observations$geom <- geojsonsf::geojson_sf(jsonlite::toJSON(
-    observations$geom)
-  )$geometry
+  observations <- do.call(get_gen, query) %>%
+    dplyr::mutate(geom = geom %>%
+      jsonlite::toJSON() %>%
+      geojsonsf::geojson_sf()
+    )
   return(observations)
 }

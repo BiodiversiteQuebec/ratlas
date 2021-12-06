@@ -30,6 +30,7 @@
 #'
 #' # Return taxa filtered by the atlas table column `col`
 #' results <- get_taxa(col = 35520954)
+#' @import magrittr
 #' @export
 
 get_taxa <- function(

@@ -48,5 +48,4 @@ defined as \code{exhaustive}.
 (`id_datasets` = 55:102)
 obs <- get_observations(
  id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
-
 }
