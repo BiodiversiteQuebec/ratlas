@@ -57,11 +57,12 @@ get_mtl_bird_observations <- function(
   }
 
   observations <- do.call(get_gen, query)
-  if (nrow(observations)) {
+  if (nrow(observations) > 0) {
     observations <- observations %>%
         dplyr::mutate(geom = geom %>%
           jsonlite::toJSON() %>%
-          geojsonsf::geojson_sf()
+          geojsonsf::geojson_sf() %>%
+          dplyr::select(geometry)
       )
   }
 

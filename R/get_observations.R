@@ -52,10 +52,14 @@ get_observations <- function(
     query$year_obs <- year
   }
 
-  observations <- do.call(get_gen, query) %>%
-    dplyr::mutate(geom = geom %>%
-      jsonlite::toJSON() %>%
-      geojsonsf::geojson_sf()
-    )
+  observations <- do.call(get_gen, query)
+  if (nrow(observations) > 0) {
+    observations <- observations %>%
+        dplyr::mutate(geom = geom %>%
+          jsonlite::toJSON() %>%
+          geojsonsf::geojson_sf()
+      )
+  }
+
   return(observations)
 }
