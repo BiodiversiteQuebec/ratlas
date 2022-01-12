@@ -17,3 +17,8 @@ test_that("filter by scientific_name works", {
     "Falco peregrinus"))
   testthat::expect_true(nrow(results) == 2)
 })
+
+test_that("Bad name returns nothing", {
+  results <- get_taxa(scientific_name = "Binto")
+  testthat::expect_true(nrow(results) == 0)
+})

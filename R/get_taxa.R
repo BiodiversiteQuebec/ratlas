@@ -48,9 +48,15 @@ get_taxa <- function(
   if (! is.null(scientific_name)) {
     match_taxa <- lapply(scientific_name,
     FUN = function(taxa_name) get_gen(
-      "rpc/match_taxa_obs", taxa_name = taxa_name)
+      "rpc/match_taxa",
+      .schema = "api",
+      taxa_name = taxa_name)
     ) %>% dplyr::bind_rows()
-    query$id_taxa_obs <- match_taxa$id
+    if (nrow(match_taxa) > 0) {
+      query$id_taxa_obs <- match_taxa$id_taxa_obs
+    } else {
+      return(data.frame())
+    }
   }
 
   taxa <- do.call(get_gen, query)
