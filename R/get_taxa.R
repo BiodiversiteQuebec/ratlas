@@ -52,13 +52,9 @@ get_taxa <- function(
       .schema = "api",
       taxa_name = taxa_name)
     ) %>% dplyr::bind_rows()
-    if (nrow(match_taxa) > 0) {
-      query$id_taxa_obs <- match_taxa$id_taxa_obs
-    } else {
-      return(data.frame())
-    }
+    return(match_taxa)
+  } else {
+    taxa <- do.call(get_gen, query)
+    return(taxa)
   }
-
-  taxa <- do.call(get_gen, query)
-  return(taxa)
 }

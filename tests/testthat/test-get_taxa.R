@@ -22,3 +22,8 @@ test_that("Bad name returns nothing", {
   results <- get_taxa(scientific_name = "Binto")
   testthat::expect_true(nrow(results) == 0)
 })
+
+test_that("Long list of `id_taxa_obs` works", {
+  results <- get_taxa(scientific_name = "Plantae")
+  testthat::expect_true(nrow(results) > 0)
+})
