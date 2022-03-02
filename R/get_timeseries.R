@@ -18,7 +18,7 @@ get_timeseries <- function(
 ) {
   query <- list(...)
   query$endpoint <- "time_series"
-  query$.schema <- "public"
+  query$.schema <- "api"
 
   if (! is.null(id)) {
     query$id <- id

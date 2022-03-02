@@ -1,6 +1,6 @@
 Package: ratlas
 Title: R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec 
-Version: 1.1.5.0
+Version: 1.1.6.0
 Authors@R: 
     person(given = "Vincent",
            family = "Beauregard",
