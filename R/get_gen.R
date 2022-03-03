@@ -1,4 +1,4 @@
-SCHEMA_VALUES <- c("public", "api")
+SCHEMA_VALUES <- c("public", "api", "public_api")
 DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 
 #' Generic function to access data from Atlas databases
