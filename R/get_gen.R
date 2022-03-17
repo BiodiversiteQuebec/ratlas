@@ -27,7 +27,7 @@ DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 #' @param .page_parameters `list` default
 #'  `list(limit = "limit", offset = "offset")`. Parameters names sent to http
 #'  query to be consumed by the endpoint for pagination
-#' @param ..n_pages `integer` default NULL. Estimated if none provided
+#' @param .n_pages `integer` default NULL. Estimated if none provided
 #' @return `tibble` with rows associated with Atlas data object
 #' @examples
 #' # Returns all available taxa records in atlas
@@ -182,7 +182,8 @@ POSTGREST_QUERY_PARAMETERS <- c(
 
 postgrest_query_filter <- function(parameters) {
   for (name in names(parameters)) {
-    if (name %in% POSTGREST_QUERY_PARAMETERS) {
+    if (name %in% POSTGREST_QUERY_PARAMETERS |
+      is.null(parameters[[name]])) {
       next
     }
     if (length(parameters[[name]]) > 1) {

@@ -40,15 +40,18 @@ test_that("filter by column works", {
   results <- get_gen(
     endpoint = "taxa",
     id = 100)
-  testthat::expect_true(nrow(results) == 1)
+  testthat::expect_equal(nrow(results), 1)
 
   results <- get_gen(
     endpoint = "taxa",
     id = c(100, 101))
-  testthat::expect_true(nrow(results) == 2)
+  testthat::expect_equal(nrow(results), 2)
+})
 
+test_that("NULL parameters are not passed", {
   results <- get_gen(
-    endpoint = "taxa",
-    scientific_name = "Antigone canadensis")
-  testthat::expect_true(nrow(results) == 1)
+    endpoint = "observations",
+    month_obs = NULL,
+    limit=1)
+  testthat::expect_equal(nrow(results), 1)
 })

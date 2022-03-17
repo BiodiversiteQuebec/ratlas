@@ -37,9 +37,9 @@ improve rapidity}
 \code{list(limit = "limit", offset = "offset")}. Parameters names sent to http
 query to be consumed by the endpoint for pagination}
 
-\item{.token}{\code{character} Bearer token providing access to the web api}
+\item{.n_pages}{\code{integer} default NULL. Estimated if none provided}
 
-\item{..n_pages}{\code{integer} default NULL. Estimated if none provided}
+\item{.token}{\code{character} Bearer token providing access to the web api}
 }
 \value{
 \code{tibble} with rows associated with Atlas data object
