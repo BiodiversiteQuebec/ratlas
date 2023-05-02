@@ -1,4 +1,4 @@
-SCHEMA_VALUES <- c("public", "api", "public_api")
+SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api")
 
 #' Generic function to post data into Atlas databases
 #'

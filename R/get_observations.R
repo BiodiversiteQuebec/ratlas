@@ -6,7 +6,7 @@
 #' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 #' The function filters returned records by attributes corresponding to atlas
 #' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa`,
-#' `id_datasets`, `id_variables`, `etc`) with accepted values either being
+#' `id_datasets`, `id_variables`, `id_region`, `etc`) with accepted values either being
 #' scalar or vector for single or multiple records.
 #'
 #' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
@@ -16,6 +16,8 @@
 #' @param id_taxa Optional. `integer` scalar or vector. Returns a dataframe
 #' for the taxa_obs record related to the value. `id_taxa` is translated to
 #' `id_taxa_obs`
+#' @param id_region Optional. `integer` scalar or vector. Returns observations
+#' for the region with the specified id
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
@@ -23,12 +25,6 @@
 #' parallelize and improve rapidity
 #' @return `tibble` with rows associated with Atlas observations
 #'
-#' @examples
-#' # Returns all observations from 2010 to 2015 for taxa
-#' "Leuconotopicus villosus" (`id_taxa` = 6450) from ebird datasets
-#' (`id_datasets` = 55:102)
-#' obs <- get_observations(
-#'  id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
 #' @import magrittr
 #' @export
 
@@ -36,6 +32,7 @@ get_observations <- function(
   id = NULL,
   year = NULL,
   id_taxa = NULL,
+  fid_region = NULL,
   ...
 ) {
   query <- list(...)
@@ -50,6 +47,11 @@ get_observations <- function(
   }
   if (! is.null(year)) {
     query$year_obs <- year
+  }
+
+  if (! is.null(fid_region)) {
+    query$endpoint <- "observations_regions"
+    query$region_fid <- fid_region
   }
 
   observations <- do.call(get_gen, query)

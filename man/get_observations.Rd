@@ -4,7 +4,13 @@
 \alias{get_observations}
 \title{Get observations}
 \usage{
-get_observations(id = NULL, year = NULL, id_taxa = NULL, ...)
+get_observations(
+  id = NULL,
+  year = NULL,
+  id_taxa = NULL,
+  fid_region = NULL,
+  ...
+)
 }
 \arguments{
 \item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
@@ -21,6 +27,9 @@ for the taxa_obs record related to the value. \code{id_taxa} is translated to
 atlas \code{observations} table columns specified as parameter
 (ie. \code{id_datasets}, \code{id_variables}, \code{month_obs}, \code{day_obs})}
 
+\item{id_region}{Optional. \code{integer} scalar or vector. Returns observations
+for the region with the specified id}
+
 \item{.cores}{Optional. \code{integer} default \code{4}. Number of cores used to
 parallelize and improve rapidity}
 }
@@ -34,7 +43,7 @@ containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
 table columns specified as parameters (ie. \code{id}, \code{year_obs}, \code{id_taxa},
-\code{id_datasets}, \code{id_variables}, \code{etc}) with accepted values either being
+\code{id_datasets}, \code{id_variables}, \code{id_region}, \code{etc}) with accepted values either being
 scalar or vector for single or multiple records.
 }
 \examples{

@@ -1,5 +1,5 @@
 ---
-title: "download-obs"
+title: "Download observations from Atlas"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{download-obs}

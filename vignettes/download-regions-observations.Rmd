@@ -1,0 +1,89 @@
+---
+title: "Download observations by region from Atlas"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Download observations by region}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+# Downloading observations by region
+
+Regions shown in the Biodiversité Québec atlas portal can be accessed through the `ratlas` package and be used to filter downloaded observations. Regions are organized by type (ie. Ecological Region, Administrative Region, and Hexagonal Grid) and each region type is organized by scale. It is recommended to explore regions using the Biodiversité Québec Atlas web application to determine the region type and scale of interest.
+
+For this exercices we want to only return the Municipalities of Quebec. Specifically, we will extract observations for the city of Sherbrooke in 2002.
+
+```{r setup}
+library(ratlas)
+library(dplyr)
+```
+
+```{r, include = FALSE}
+kable <- function(data) {
+  knitr::kable(data) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+}
+```
+
+
+## List regions available in the atlas portal
+
+The `get_regions()` function returns a data frame with the regions available in the atlas portal. The function returns a data frame with the following columns:
+- `fid`: the unique identifier of the region
+- `type`: the type of region. Can be one of `cadre_eco`, `admin`, and `hex`
+- `scale`: integer for the scale of the region. Example : 1 for the province of
+  Quebec, 2 for the administrative regions, 3 for MRC, 4 for
+  the Municipalities
+- `name`: name of the region. Example : "Quebec", "Montreal", "Laurentides"
+- `scale_desc`: description of the scale.
+- ``
+Running the function without any parameters will return all regions in the atlas. This can be a very large dataset and may take a long time to download. To explore the regions, it is recommended to use the `id` parameter to return a specific region or the `type` parameter to return a specific type of region. It is also possible to exclude the geometry from the results by setting the `geometry` parameter to `FALSE`.
+
+
+```{r}
+regions_desc <- get_regions(geometry = FALSE)
+head(regions_desc, 20) %>% kable()
+```
+
+Let's filter the results to only return the Municipalities of Quebec. And search the results for the city of Sherbrooke.
+
+```{r}
+municipalities_desc <- get_regions(type = "admin", scale = 4, geometry = FALSE)
+sherbrooke <- municipalities_desc %>% filter(name == "Sherbrooke")
+sherbrooke %>% kable()
+```
+
+## Count observations for a region
+
+The database `obs_regions_taxa_datasets_counts` view contains the number of observations for each region, taxa and datasets. We can query it directly with the `get_gen()` function.
+
+```{r}	
+sherbrooke_count_response <- get_gen(
+  "obs_regions_taxa_datasets_counts",
+  .schema = "atlas_api",
+  fid = sherbrooke$fid
+  # id_taxa_obs = 735,
+  )
+
+# Total number of observations for the city of Sherbrooke can be summed
+sherbrooke_count <- sum(sherbrooke_count_response$count_obs)
+print (paste("Number of observations in Sherbrooke:", sherbrooke_count))
+```
+
+## Download observations for a region
+
+We can now use the `fid` value for the city of Sherbrooke to download observations for the year 2002. The `get_observations()` function returns a data frame with the observations for the specified region. Other filter parameters can be used to further filter the results. For example, we can filter the results to only return observations for a specific year.
+
+```{r}
+sherbrooke_observations <- get_observations(fid_region = sherbrooke$fid, year = 2002)
+
+# Print number of observations
+print (paste("Number of observations in Sherbrooke in 2002:", nrow(sherbrooke_observations)))
+```
+

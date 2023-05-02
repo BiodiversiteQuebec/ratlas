@@ -27,12 +27,6 @@
 #' parallelize and improve rapidity
 #' @return `tibble` with rows associated with Atlas observations
 #'
-#' @examples
-#' # Returns all observations from 2010 to 2015 for taxa
-#' "Leuconotopicus villosus" (`id_taxa` = 6450) from ebird datasets
-#' (`id_datasets` = 55:102)
-#' obs <- get_observations(
-#'  id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
 #' @import magrittr
 #' @export
 

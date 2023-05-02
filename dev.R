@@ -56,6 +56,7 @@ usethis::use_test("taxa")
 
 # Create vignettes
 usethis::use_vignette("download-obs")
+usethis::use_vignette("download-regions-observations", title = "Download observations by region")
 
 # Use pkgdown for package website
 usethis::use_pkgdown()
@@ -70,4 +71,5 @@ devtools::test()
 devtools::document()
 devtools::install()
 # rmarkdown::render("./vignettes/download-obs.Rmd")
-pkgdown::build_site(examples = FALSE)
+# rmarkdown::render("./vignettes/download-regions-observations.Rmd")
+pkgdown::build_site(examples = FALSE, rmarkdown.)

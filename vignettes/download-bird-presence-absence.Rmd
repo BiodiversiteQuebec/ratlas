@@ -1,5 +1,5 @@
 ---
-title: "download_montreal_presence_absence"
+title: "Downloading bird presence absence using R Atlas"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{download_montreal_presence_absence}

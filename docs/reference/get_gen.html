@@ -75,7 +75,7 @@ of the database object storing the required data
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
       </span>
     </div>
 
@@ -98,10 +98,13 @@ of the database object storing the required data
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/download-bird-presence-absence.html">download_montreal_presence_absence</a>
+      <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
     <li>
-      <a href="../articles/download-obs.html">download-obs</a>
+      <a href="../articles/download-obs.html">Download observations from Atlas</a>
+    </li>
+    <li>
+      <a href="../articles/download-regions-observations.html">Download observations by region from Atlas</a>
     </li>
   </ul>
 </li>
@@ -181,12 +184,12 @@ improve rapidity</p></td>
 query to be consumed by the endpoint for pagination</p></td>
     </tr>
     <tr>
-      <th>.token</th>
-      <td><p><code>character</code> Bearer token providing access to the web api</p></td>
+      <th>.n_pages</th>
+      <td><p><code>integer</code> default NULL. Estimated if none provided</p></td>
     </tr>
     <tr>
-      <th>..n_pages</th>
-      <td><p><code>integer</code> default NULL. Estimated if none provided</p></td>
+      <th>.token</th>
+      <td><p><code>character</code> Bearer token providing access to the web api</p></td>
     </tr>
     </table>
 
@@ -198,7 +201,7 @@ query to be consumed by the endpoint for pagination</p></td>
     <p>This function is designed to interface with a web API deployed with PostgREST</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Returns all available taxa records in atlas</span>
+    <pre class="examples"><span class='co'># Returns all available taxa records in atlas</span>
 <span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"taxa"</span><span class='op'>)</span>
 
 <span class='co'># Returns all taxa filtered by the column id values</span>
@@ -216,20 +219,7 @@ query to be consumed by the endpoint for pagination</p></td>
   limit <span class='op'>=</span> <span class='fl'>100</span>,
   select <span class='op'>=</span> <span class='st'>"geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 100 x 7</span>
-#&gt;    year_obs month_obs day_obs obs_value geom.type geom.coordinates
-#&gt;       <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>     <span style='color: #949494; font-style: italic;'>&lt;list&gt;</span>          
-#&gt; <span style='color: #BCBCBC;'> 1</span>     <span style='text-decoration: underline;'>1</span>978         8      23        26 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 2</span>     <span style='text-decoration: underline;'>1</span>997         9      23        22 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 3</span>     <span style='text-decoration: underline;'>1</span>985         9       6         3 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 4</span>     <span style='text-decoration: underline;'>2</span>003         7      14         1 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 5</span>     <span style='text-decoration: underline;'>1</span>972         7      18        11 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 6</span>     <span style='text-decoration: underline;'>2</span>016         8      19         2 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 7</span>     <span style='text-decoration: underline;'>2</span>016         9      16         4 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 8</span>     <span style='text-decoration: underline;'>1</span>975         8       1         6 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'> 9</span>     <span style='text-decoration: underline;'>2</span>003         9       2         8 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #BCBCBC;'>10</span>     <span style='text-decoration: underline;'>1</span>986         7      12         1 Point     <span style='color: #949494;'>&lt;dbl [2]&gt;</span>       
-#&gt; <span style='color: #949494;'># ... with 90 more rows, and 1 more variable: taxa.scientific_name &lt;chr&gt;</span></div></pre>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

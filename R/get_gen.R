@@ -1,4 +1,4 @@
-SCHEMA_VALUES <- c("public", "api", "public_api")
+SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api")
 DEFAULT_PAGE_PARAMETERS <- list(limit = "limit", offset = "offset")
 
 #' Generic function to access data from Atlas databases
@@ -182,6 +182,9 @@ POSTGREST_QUERY_PARAMETERS <- c(
 
 postgrest_query_filter <- function(parameters) {
   for (name in names(parameters)) {
+    if (name == "select" & length(parameters[[name]]) > 1) {
+      parameters[[name]] <- paste0(parameters[[name]], collapse = ",")
+    }
     if (name %in% POSTGREST_QUERY_PARAMETERS |
       is.null(parameters[[name]])) {
       next

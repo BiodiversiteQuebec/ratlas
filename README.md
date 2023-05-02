@@ -43,3 +43,12 @@ ATLAS_API_TOKEN=7f8df438e1be96a18436e9dab5d97d68ed0e0441d9b68f59e0ce631b2919f3aa
 ### Stratégie 2: Environnement au niveau OS / runtime
 
 Vous pouvez également passer votre jeton d'accès en créant une variable d'environnement nommée `ATLAS_API_TOKEN` au niveau de l'OS ou de l'environnement de dévelopement.
+
+
+## Troubleshooting
+
+### Erreur 401 : Unauthorized
+
+Si vous obtenez une erreur 401, c'est que votre jeton d'accès n'est pas valide. Veuillez vous assurer que vous avez bien copié le jeton d'accès et que vous l'avez bien mis en cache dans votre environnement de développement.
+
+Pour valider que votre jeton d'accès est bien en cache, vous pouvez utiliser la fonction `Sys.getenv("ATLAS_API_TOKEN")` qui devrait retourner votre jeton d'accès.

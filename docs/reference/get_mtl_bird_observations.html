@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>List Montreal bird taxa — list_mtl_bird_taxa • ratlas</title>
+<title>Get mtl bird observations — get_mtl_bird_observations • ratlas</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,15 @@
 
 
 
-<meta property="og:title" content="List Montreal bird taxa — list_mtl_bird_taxa" />
-<meta property="og:description" content="The function downloads and returns a dataframe containing presence and
-absence (values TRUE or FALSE) with a single record per row for the bird
-species specified by id_taxa." />
+<meta property="og:title" content="Get mtl bird observations — get_mtl_bird_observations" />
+<meta property="og:description" content="The function downloads and returns a list or dataframe containing
+observations with a single record per row. The function returns a dataframe
+containing all records if no parameters are specified (STRONGLY DISCOURAGED
+DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+The function filters returned records by attributes corresponding to atlas
+table columns specified as parameters (ie. id, year_obs, id_taxa,
+id_datasets, id_variables, etc) with accepted values either being
+scalar or vector for single or multiple records." />
 
 
 
@@ -123,46 +128,59 @@ species specified by id_taxa." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>List Montreal bird taxa</h1>
+    <h1>Get mtl bird observations</h1>
     
-    <div class="hidden name"><code>list_mtl_bird_taxa.Rd</code></div>
+    <div class="hidden name"><code>get_mtl_bird_observations.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function downloads and returns a dataframe containing presence and
-absence (values TRUE or FALSE) with a single record per row for the bird
-species specified by <code>id_taxa</code>.</p>
+    <p>The function downloads and returns a list or dataframe containing
+observations with a single record per row. The function returns a dataframe
+containing all records if no parameters are specified (STRONGLY DISCOURAGED
+DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+The function filters returned records by attributes corresponding to atlas
+table columns specified as parameters (ie. <code>id</code>, <code>year_obs</code>, <code>id_taxa</code>,
+<code>id_datasets</code>, <code>id_variables</code>, <code>etc</code>) with accepted values either being
+scalar or vector for single or multiple records.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>list_mtl_bird_taxa</span><span class='op'>(</span>rank <span class='op'>=</span> <span class='cn'>NULL</span>, source_name <span class='op'>=</span> <span class='cn'>NULL</span>, valid <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_mtl_bird_observations</span><span class='op'>(</span>id <span class='op'>=</span> <span class='cn'>NULL</span>, year <span class='op'>=</span> <span class='cn'>NULL</span>, id_taxa <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>rank</th>
-      <td><p>Optional. <code>character</code> Filter by rank, such as <code>family</code>, <code>species</code>
-, <code>class</code>, etc.</p></td>
+      <th>id</th>
+      <td><p>Optional. <code>integer</code> scalar or vector. Returns a dataframe for the
+observation with the specified id</p></td>
     </tr>
     <tr>
-      <th>source_name</th>
-      <td><p>Optional. <code>character</code> Filter by taxonomic source.
-Accepted values are <code>ITIS</code>, <code>Catalogue of Life</code> and <code>GBIF Backbone Taxonomy</code></p></td>
+      <th>year</th>
+      <td><p>Optional. <code>integer</code> scalar or vector. Returns a dataframe for
+the observations related to the <code>id_taxa</code></p></td>
     </tr>
     <tr>
-      <th>valid</th>
-      <td><p>Optional. <code>logical</code></p></td>
+      <th>id_taxa</th>
+      <td><p>Optional. <code>integer</code> scalar or vector. Returns a dataframe
+for the taxa_obs record related to the value. <code>id_taxa</code> is translated to
+<code>id_taxa_obs</code></p></td>
     </tr>
     <tr>
       <th>...</th>
       <td><p>Optional. scalar or vector. Returns a dataframe filtered by the
-atlas <code>taxa_ref</code> table columns specified as parameter</p></td>
+atlas <code>observations</code> table columns specified as parameter
+(ie. <code>id_datasets</code>, <code>id_variables</code>, <code>month_obs</code>, <code>day_obs</code>)</p></td>
+    </tr>
+    <tr>
+      <th>.cores</th>
+      <td><p>Optional. <code>integer</code> default <code>4</code>. Number of cores used to
+parallelize and improve rapidity</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>tibble</code> with rows associated with Atlas <code>taxa_ref</code> records</p>
+    <p><code>tibble</code> with rows associated with Atlas observations</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The absence are infered from all sampling points related to birds observed
@@ -170,10 +188,7 @@ on Montreal territory whose observations were obtained from datasets
 defined as <code>exhaustive</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Returns all bird species of different sources</span>
-<span class='va'>pres_abs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='get_mtl_bird_presence_absence.html'>get_mtl_bird_presence_absence</a></span><span class='op'>(</span>rank <span class='op'>=</span> <span class='st'>"species"</span><span class='op'>)</span>
-
-</pre>
+    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
