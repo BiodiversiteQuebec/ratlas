@@ -25,7 +25,7 @@ as a filter to get observations and then display the first 10 records.
 ```{r}
 library(ratlas)
 taxa <- get_taxa(scientific_name = "Canis lupus")
-obs <- get_observations(id_taxa = taxa$id)
+obs <- get_observations(id_taxa = taxa$id_taxa_obs)
 head(obs, 10)
 ```
 
