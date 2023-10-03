@@ -140,30 +140,6 @@ mem_get <- memoise::memoise(httr::GET)
 #' @export
 clear_cache_ratlas <- function() memoise::forget(mem_get)
 
-endpoint_request_param <- function(
-    endpoint,
-    .schema = "public",
-    .headers = NULL) {
-  url <- httr::modify_url(ATLAS_API_V2_HOST(),
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
-  )
-  header <- list(
-    Authorization = paste("Bearer", ATLAS_API_TOKEN()),
-    `User-Agent` = USER_AGENT(), # defined in zzz.R
-    Prefer = "count=planned", # header parameter from postgrest
-    `Accept-Profile` = .schema
-  )
-  if (! is.null(.headers)) {
-    header <- c(header, .headers)
-  }
-  return(
-    list(
-      url = url,
-      header = header
-    )
-  )
-}
-
 endpoint_range_count <- function(
     endpoint,
     query = NULL,
@@ -205,46 +181,38 @@ postgrest_query_filter <- function(parameters) {
   return(parameters)
 }
 
-postgrest_stop_if_err <- function(response) {
-  if (httr::http_error(response)) {
-    stop(httr::message_for_status(response, httr::content(response)$message))
-  }
-}
 
-postgrest_get <- function(
+postgrest_get <- function (
   endpoint,
   query,
   .schema = "public",
   .headers = NULL) {
-  request_param <- endpoint_request_param(endpoint, .schema, .headers)
+
+  url <- httr::modify_url(ATLAS_API_V2_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  )
+  header <- list(
+    Authorization = paste("Bearer", ATLAS_API_TOKEN()),
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
+    Prefer = "count=planned", # header parameter from postgrest
+    `Accept-Profile` = .schema
+  )
+  
+  if (! is.null(.headers)) {
+    header <- c(header, .headers)
+  }
+
   for (name in names(query)) {
     if (is.numeric(query[[name]])) {
       query[[name]] <- format(query[[name]], scientific = FALSE)
     }
   }
-  response <- httr::GET(request_param$url,
-    config = do.call(httr::add_headers, request_param$header),
+
+  response <- httr::GET(url,
+    config = do.call(httr::add_headers, header),
     query = query
   )
   return(response)
-}
-
-postgrest_resp_to_data <- function(response) {
-  textresp <- httr::content(response, type = "text", encoding = "UTF-8")
-
-  # If content-type string contains "geo+json", then it is a geojson
-  # Otherwise, it is a json
-  if (grepl("application/geo\\+json", httr::headers(response)$"content-type")) {
-    data <- sf::st_read(textresp, quiet = TRUE)
-    return(data)
-  } else if (
-    grepl("application/json", httr::headers(response)$"content-type")) {
-    data <- jsonlite::fromJSON(textresp, simplifyDataFrame = TRUE)
-    data <- tibble::as_tibble(data)
-    return(data)
-  } else {
-    stop("Unexpected content-type")
-  }
 }
 
 postgrest_get_page <- function(

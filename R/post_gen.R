@@ -52,26 +52,22 @@ post_gen <- function(
         # Case of a data.frame
         body <- jsonlite::toJSON(as.data.frame(data))
     }
-    
+
     header <- list(
         Authorization = paste("Bearer", .token),
         `User-Agent` = USER_AGENT(), # defined in zzz.R
-        Prefer = "count=planned", # header parameter from postgrest
-        `Content-type` = "application/json;charset=UTF-8"
+        `Content-type` = "application/json;charset=UTF-8",
+        `Content-Profile` = .schema
         )
-    query <- list(...)
     response <- httr::POST(
         url = url,
         config = do.call(httr::add_headers, header),
-        body = body,
-        query = query
+        body = body
     )
     postgrest_stop_if_err(response)
-    return(NULL)
-}
 
-postgrest_stop_if_err <- function(response) {
-  if (httr::http_error(response)) {
-    stop(httr::message_for_status(response, httr::content(response)$message))
-  }
+    # Parse response using 
+    out <- postgrest_resp_to_data(response)
+
+    return(out)
 }
