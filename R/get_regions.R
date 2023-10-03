@@ -49,10 +49,12 @@ get_regions <- function(
     query$scale <- scale
   }
 
-  if (! geometry) {
+  if (geometry) {
+    query$.headers <- list("Accept"="application/geo+json")
+  } else {
     query$select <- c("fid", "type", "scale", "scale_desc", "name")
   }
 
-  datasets <- do.call(get_gen, query)
-  return(datasets)
+  regions <- do.call(get_gen, query)
+  return(regions)
 }

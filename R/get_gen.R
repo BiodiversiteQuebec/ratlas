@@ -57,7 +57,8 @@ get_gen <- function(endpoint,
                     .schema = "public",
                     .cores = 4,
                     .page_parameters = DEFAULT_PAGE_PARAMETERS,
-                    .n_pages = NA) {
+                    .n_pages = NA,
+                    .headers = NULL) {
 
   # Argument validation
   if (!.schema %in% SCHEMA_VALUES) {
@@ -114,14 +115,14 @@ get_gen <- function(endpoint,
       ) %dopar% {
         response <- postgrest_get_page(
           endpoint, query,
-          page, .page_limit, .schema, .page_parameters
+          page, .page_limit, .schema, .page_parameters, .headers
         )
         postgrest_stop_if_err(response)
         postgrest_resp_to_data(response)
       }
     }
   } else {
-    response <- postgrest_get(endpoint, query, .schema)
+    response <- postgrest_get(endpoint, query, .schema, .headers)
     postgrest_stop_if_err(response)
     out <- postgrest_resp_to_data(response)
   }
@@ -141,7 +142,8 @@ clear_cache_ratlas <- function() memoise::forget(mem_get)
 
 endpoint_request_param <- function(
     endpoint,
-    .schema = "public") {
+    .schema = "public",
+    .headers = NULL) {
   url <- httr::modify_url(ATLAS_API_V2_HOST(),
     path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
   )
@@ -151,6 +153,9 @@ endpoint_request_param <- function(
     Prefer = "count=planned", # header parameter from postgrest
     `Accept-Profile` = .schema
   )
+  if (! is.null(.headers)) {
+    header <- c(header, .headers)
+  }
   return(
     list(
       url = url,
@@ -162,12 +167,13 @@ endpoint_request_param <- function(
 endpoint_range_count <- function(
     endpoint,
     query = NULL,
-    .schema = "public") {
+    .schema = "public",
+    .headers = NULL) {
   if (is.null(query)){
     query <- list()
   }
   query$limit <- 1
-  response <- postgrest_get(endpoint, query, .schema)
+  response <- postgrest_get(endpoint, query, .schema, .headers)
   postgrest_stop_if_err(response)
   tmp <- unlist(
       strsplit(httr::headers(response)$"content-range", split = "\\D")
@@ -208,8 +214,9 @@ postgrest_stop_if_err <- function(response) {
 postgrest_get <- function(
   endpoint,
   query,
-  .schema = "public") {
-  request_param <- endpoint_request_param(endpoint, .schema)
+  .schema = "public",
+  .headers = NULL) {
+  request_param <- endpoint_request_param(endpoint, .schema, .headers)
   for (name in names(query)) {
     if (is.numeric(query[[name]])) {
       query[[name]] <- format(query[[name]], scientific = FALSE)
@@ -224,12 +231,20 @@ postgrest_get <- function(
 
 postgrest_resp_to_data <- function(response) {
   textresp <- httr::content(response, type = "text", encoding = "UTF-8")
-  df_from_json <- jsonlite::fromJSON(
-    textresp,
-    , simplifyDataFrame = TRUE
-  )
-  data <- tibble::as_tibble(df_from_json)
-  return(data)
+
+  # If content-type string contains "geo+json", then it is a geojson
+  # Otherwise, it is a json
+  if (grepl("application/geo\\+json", httr::headers(response)$"content-type")) {
+    data <- sf::st_read(textresp, quiet = TRUE)
+    return(data)
+  } else if (
+    grepl("application/json", httr::headers(response)$"content-type")) {
+    data <- jsonlite::fromJSON(textresp, simplifyDataFrame = TRUE)
+    data <- tibble::as_tibble(data)
+    return(data)
+  } else {
+    stop("Unexpected content-type")
+  }
 }
 
 postgrest_get_page <- function(
@@ -238,7 +253,8 @@ postgrest_get_page <- function(
     page,
     limit,
     .schema = "public",
-    .page_parameters = DEFAULT_PAGE_PARAMETERS) {
+    .page_parameters = DEFAULT_PAGE_PARAMETERS,
+    .headers = NULL) {
   url <- httr::modify_url(ATLAS_API_V2_HOST(),
     path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
   )
@@ -247,6 +263,9 @@ postgrest_get_page <- function(
     `User-Agent` = USER_AGENT(),
     `Accept-Profile` = .schema
   )
+  if (! is.null(.headers)) {
+    header <- c(header, .headers)
+  }
   offset <- (page - 1) * limit
   query[.page_parameters$limit] <- format(limit, scientific = FALSE)
   query[.page_parameters$offset] <- format(offset, scientific = FALSE)
