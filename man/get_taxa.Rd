@@ -4,7 +4,7 @@
 \alias{get_taxa}
 \title{Get taxa}
 \usage{
-get_taxa(id = NULL, scientific_name = NULL, ...)
+get_taxa(id = NULL, scientific_name = NULL, match_name = NULL, ...)
 }
 \arguments{
 \item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
@@ -12,6 +12,10 @@ taxon with the specified id}
 
 \item{scientific_name}{Optional. \code{char} scalar or vector. Returns a dataframe
 for the taxon with the specified scientific name}
+
+\item{match_name}{Optional. \code{char} scalar or vector. Returns a dataframe
+for the taxon with the specified scientific name or vernacular name.
+Vernacular names in french or english are accepted.}
 
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
 atlas \code{taxa} table columns specified as parameter}

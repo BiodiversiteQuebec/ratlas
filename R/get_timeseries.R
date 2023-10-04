@@ -17,8 +17,8 @@ get_timeseries <- function(
   ...
 ) {
   query <- list(...)
-  query$endpoint <- "time_series"
-  query$.schema <- "api"
+  query$table_name <- "time_series"
+  query$schema <- "api"
 
   if (! is.null(id)) {
     query$id <- id
@@ -27,7 +27,7 @@ get_timeseries <- function(
     query$id_taxa <- id_taxa
   }
 
-  timeseries <- do.call(get_gen, query)
+  timeseries <- do.call(get_table_data, query)
 
   return(timeseries)
 }

@@ -3,8 +3,9 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   clara_region_bird_counts: clara_region_bird_counts.html
+  database-access-functions: database-access-functions.html
   download-bird-presence-absence: download-bird-presence-absence.html
   download-obs: download-obs.html
   download-regions-observations: download-regions-observations.html
-last_built: 2023-10-04T00:14Z
+last_built: 2023-10-04T21:38Z
 

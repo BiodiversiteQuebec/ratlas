@@ -46,8 +46,8 @@ containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
 table columns specified as parameters (ie. id, year_obs, id_taxa,
-id_datasets, id_variables, id_region, etc) with accepted values either being
-scalar or vector for single or multiple records." />
+id_datasets, id_variables, fid_region, etc) with accepted values
+either being scalar or vector for single or multiple records." />
 
 
 
@@ -79,7 +79,7 @@ scalar or vector for single or multiple records." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
       </span>
     </div>
 
@@ -101,6 +101,12 @@ scalar or vector for single or multiple records." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
+    </li>
+    <li>
+      <a href="../articles/database-access-functions.html">Functions to directly access the database ressources</a>
+    </li>
     <li>
       <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
@@ -140,17 +146,19 @@ containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
 table columns specified as parameters (ie. <code>id</code>, <code>year_obs</code>, <code>id_taxa</code>,
-<code>id_datasets</code>, <code>id_variables</code>, <code>id_region</code>, <code>etc</code>) with accepted values either being
-scalar or vector for single or multiple records.</p>
+<code>id_datasets</code>, <code>id_variables</code>, <code>fid_region</code>, <code>etc</code>) with accepted values
+either being scalar or vector for single or multiple records.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_observations</span><span class='op'>(</span>
-  id <span class='op'>=</span> <span class='cn'>NULL</span>,
-  year <span class='op'>=</span> <span class='cn'>NULL</span>,
-  id_taxa <span class='op'>=</span> <span class='cn'>NULL</span>,
-  fid_region <span class='op'>=</span> <span class='cn'>NULL</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span><span class='fu'>get_observations</span><span class='op'>(</span></span>
+<span>  id <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  year <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  id_taxa <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  region_fid <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  geometry <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>  within_quebec <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  <span class='va'>...</span></span>
+<span><span class='op'>)</span></span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -172,13 +180,19 @@ for the taxa_obs record related to the value. <code>id_taxa</code> is translated
 <code>id_taxa_obs</code></p></td>
     </tr>
     <tr>
+      <th>within_quebec</th>
+      <td><p>Optional. <code>logical</code> default NULL. If <code>TRUE</code>, returns
+only observations within Quebec. If <code>FALSE</code>, returns only observations
+outside Quebec. If <code>NULL</code>, returns all observations.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Optional. scalar or vector. Returns a dataframe filtered by the
 atlas <code>observations</code> table columns specified as parameter
 (ie. <code>id_datasets</code>, <code>id_variables</code>, <code>month_obs</code>, <code>day_obs</code>)</p></td>
     </tr>
     <tr>
-      <th>id_region</th>
+      <th>fid_region</th>
       <td><p>Optional. <code>integer</code> scalar or vector. Returns observations
 for the region with the specified id</p></td>
     </tr>
@@ -193,8 +207,6 @@ parallelize and improve rapidity</p></td>
 
     <p><code>tibble</code> with rows associated with Atlas observations</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

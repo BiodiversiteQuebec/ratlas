@@ -8,7 +8,9 @@ get_observations(
   id = NULL,
   year = NULL,
   id_taxa = NULL,
-  fid_region = NULL,
+  region_fid = NULL,
+  geometry = TRUE,
+  within_quebec = NULL,
   ...
 )
 }
@@ -23,11 +25,15 @@ the observations related to the \code{id_taxa}}
 for the taxa_obs record related to the value. \code{id_taxa} is translated to
 \code{id_taxa_obs}}
 
+\item{within_quebec}{Optional. \code{logical} default NULL. If \code{TRUE}, returns
+only observations within Quebec. If \code{FALSE}, returns only observations
+outside Quebec. If \code{NULL}, returns all observations.}
+
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
 atlas \code{observations} table columns specified as parameter
 (ie. \code{id_datasets}, \code{id_variables}, \code{month_obs}, \code{day_obs})}
 
-\item{id_region}{Optional. \code{integer} scalar or vector. Returns observations
+\item{fid_region}{Optional. \code{integer} scalar or vector. Returns observations
 for the region with the specified id}
 
 \item{.cores}{Optional. \code{integer} default \code{4}. Number of cores used to
@@ -43,13 +49,6 @@ containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
 table columns specified as parameters (ie. \code{id}, \code{year_obs}, \code{id_taxa},
-\code{id_datasets}, \code{id_variables}, \code{id_region}, \code{etc}) with accepted values either being
-scalar or vector for single or multiple records.
-}
-\examples{
-# Returns all observations from 2010 to 2015 for taxa
-"Leuconotopicus villosus" (`id_taxa` = 6450) from ebird datasets
-(`id_datasets` = 55:102)
-obs <- get_observations(
- id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
+\code{id_datasets}, \code{id_variables}, \code{fid_region}, \code{etc}) with accepted values
+either being scalar or vector for single or multiple records.
 }

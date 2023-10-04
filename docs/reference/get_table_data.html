@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • ratlas</title>
+<title>Generic function to access data from tables and views in Atlas database — get_table_data • ratlas</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Generic function to access data from tables and views in Atlas database — get_table_data" />
+<meta property="og:description" content="Return data objects stored in tables and views in the Atlas database." />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -126,26 +127,106 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Generic function to access data from tables and views in Atlas database</h1>
+    
+    <div class="hidden name"><code>get_table_data.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a></dt>
-        <dd></dt>
-        <dt><a href="database-access-functions.html">Functions to directly access the database ressources</a></dt>
-        <dd></dt>
-        <dt><a href="download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a></dt>
-        <dd></dt>
-        <dt><a href="download-obs.html">Download observations from Atlas</a></dt>
-        <dd></dt>
-        <dt><a href="download-regions-observations.html">Download observations by region from Atlas</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Return data objects stored in tables and views in the Atlas database.</p>
     </div>
+
+    <pre class="usage"><span><span class='fu'>get_table_data</span><span class='op'>(</span></span>
+<span>  <span class='va'>table_name</span>,</span>
+<span>  schema <span class='op'>=</span> <span class='st'>"public"</span>,</span>
+<span>  output_geometry <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  output_flatten <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>  limit <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  select <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  <span class='va'>...</span>,</span>
+<span>  .token <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  .cores <span class='op'>=</span> <span class='fl'>4</span>,</span>
+<span>  .n_pages <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  .page_limit <span class='op'>=</span> <span class='fl'>10000</span></span>
+<span><span class='op'>)</span></span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>table_name</th>
+      <td><p><code>character</code>. Name of the table to be accessed.</p></td>
+    </tr>
+    <tr>
+      <th>schema</th>
+      <td><p><code>character</code> default 'public'. Schema from the database where
+the table is located.
+Can be either <code>public</code>, <code>api</code>, <code>public_api</code>, or <code>atlas_api</code>.</p></td>
+    </tr>
+    <tr>
+      <th>output_geometry</th>
+      <td><p>Optional. <code>logical</code> default <code>FALSE</code>. If <code>TRUE</code>,
+returns an <code>sf</code> object using the <code>geometry</code> column from the table.</p></td>
+    </tr>
+    <tr>
+      <th>output_flatten</th>
+      <td><p><code>logical</code> default <code>TRUE</code>. If <code>TRUE</code>, returns a
+<code>data.frame</code> object with nested objects flattened.</p></td>
+    </tr>
+    <tr>
+      <th>limit</th>
+      <td><p>Optional. <code>integer</code> default <code>NULL</code>. Maximum number of rows to
+return. If <code>NULL</code>, all rows are returned. From the PostgREST API syntax.</p></td>
+    </tr>
+    <tr>
+      <th>select</th>
+      <td><p>Optional. <code>character</code> default <code>NULL</code>. List of columns to
+return. All columns are returned if <code>NULL</code>. From the PostgREST API syntax.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional parameters to be passed as query to the API table_name.</p></td>
+    </tr>
+    <tr>
+      <th>.token</th>
+      <td><p>Optional. <code>character</code> Bearer token providing access to the web
+API. If <code>NULL</code>, the function will attempt to read the token from the
+<code>ATLAS_API_TOKEN</code> environment variable.</p></td>
+    </tr>
+    <tr>
+      <th>.cores</th>
+      <td><p>Optional. <code>integer</code> default <code>4</code>. Number of cores to use for
+parallel processing. If <code>1</code>, no parallel processing is used. If <code>NULL</code>, the
+function will automatically determine the number of cores to use based on
+the number of available cores on the system.</p></td>
+    </tr>
+    <tr>
+      <th>.n_pages</th>
+      <td><p>Optional. <code>integer</code> default <code>NULL</code>. Number of pages to
+download. ' If <code>NULL</code>, the number of pages is estimated from the number of
+rows in the table.</p></td>
+    </tr>
+    <tr>
+      <th>.page_limit</th>
+      <td><p>Optional. <code>integer</code> default <code>500000</code>. Maximum number of
+rows to download per page. This parameter is used to estimate the number of
+pages to download if <code>.n_pages</code> is <code>NULL</code>.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>tibble</code> or <code>sf</code> with rows associated with Atlas data object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is designed to interface with a web API deployed with
+PostgREST.</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

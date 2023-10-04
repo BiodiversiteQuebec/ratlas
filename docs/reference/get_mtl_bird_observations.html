@@ -79,7 +79,7 @@ scalar or vector for single or multiple records." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
       </span>
     </div>
 
@@ -101,6 +101,12 @@ scalar or vector for single or multiple records." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
+    </li>
+    <li>
+      <a href="../articles/database-access-functions.html">Functions to directly access the database ressources</a>
+    </li>
     <li>
       <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
@@ -144,7 +150,7 @@ table columns specified as parameters (ie. <code>id</code>, <code>year_obs</code
 scalar or vector for single or multiple records.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_mtl_bird_observations</span><span class='op'>(</span>id <span class='op'>=</span> <span class='cn'>NULL</span>, year <span class='op'>=</span> <span class='cn'>NULL</span>, id_taxa <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span><span class='fu'>get_mtl_bird_observations</span><span class='op'>(</span>id <span class='op'>=</span> <span class='cn'>NULL</span>, year <span class='op'>=</span> <span class='cn'>NULL</span>, id_taxa <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,8 +193,6 @@ parallelize and improve rapidity</p></td>
 on Montreal territory whose observations were obtained from datasets
 defined as <code>exhaustive</code>.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

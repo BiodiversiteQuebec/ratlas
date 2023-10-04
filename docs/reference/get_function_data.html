@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Articles • ratlas</title>
+<title>Generic function to access data from functions in Atlas database — get_function_data • ratlas</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,9 @@
 
 
 
-<meta property="og:title" content="Articles" />
+<meta property="og:title" content="Generic function to access data from functions in Atlas database — get_function_data" />
+<meta property="og:description" content="Return data objects stored obtained through endpoints corresponding to the
+name of the database function." />
 
 
 
@@ -58,7 +60,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-article-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -126,26 +128,72 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Articles</h1>
+    <h1>Generic function to access data from functions in Atlas database</h1>
+    
+    <div class="hidden name"><code>get_function_data.Rd</code></div>
     </div>
 
-    <div class="section ">
-      <h3>All vignettes</h3>
-      <p class="section-desc"></p>
-
-      <dl>
-        <dt><a href="clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a></dt>
-        <dd></dt>
-        <dt><a href="database-access-functions.html">Functions to directly access the database ressources</a></dt>
-        <dd></dt>
-        <dt><a href="download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a></dt>
-        <dd></dt>
-        <dt><a href="download-obs.html">Download observations from Atlas</a></dt>
-        <dd></dt>
-        <dt><a href="download-regions-observations.html">Download observations by region from Atlas</a></dt>
-        <dd></dt>
-      </dl>
+    <div class="ref-description">
+    <p>Return data objects stored obtained through endpoints corresponding to the
+name of the database function.</p>
     </div>
+
+    <pre class="usage"><span><span class='fu'>get_function_data</span><span class='op'>(</span></span>
+<span>  <span class='va'>name</span>,</span>
+<span>  schema <span class='op'>=</span> <span class='st'>"public"</span>,</span>
+<span>  output_geometry <span class='op'>=</span> <span class='cn'>FALSE</span>,</span>
+<span>  output_flatten <span class='op'>=</span> <span class='cn'>TRUE</span>,</span>
+<span>  .token <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>  <span class='va'>...</span></span>
+<span><span class='op'>)</span></span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>name</th>
+      <td><p><code>character</code>. Name of the atlas function to be accessed.
+data. Can be either <code>api</code>, <code>public</code> or <code>atlas_api</code>.</p></td>
+    </tr>
+    <tr>
+      <th>schema</th>
+      <td><p>Optional. <code>character</code> Schema from the database where is located
+the data. Can be either <code>api</code>, <code>public</code> or <code>atlas_api</code>.</p></td>
+    </tr>
+    <tr>
+      <th>output_geometry</th>
+      <td><p>Optional. <code>logical</code> default <code>FALSE</code>. If <code>TRUE</code>,
+returns an <code>sf</code> object using the <code>geometry</code> column from the function output.</p></td>
+    </tr>
+    <tr>
+      <th>output_flatten</th>
+      <td><p>Optional. <code>logical</code> default <code>FALSE</code>. If <code>TRUE</code>,
+returns a <code>data.frame</code> object with nested objects flattened.</p></td>
+    </tr>
+    <tr>
+      <th>.token</th>
+      <td><p>Optional. <code>character</code> Bearer token providing access to the web
+api.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p><code>character</code> or <code>numeric</code> scalar or vector. Arguments to be passed
+to the function.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p><code>tibble</code> with rows associated with Atlas data object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is designed to interface with a web API deployed with PostgREST</p>
+
+  </div>
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
+    <nav id="toc" data-toggle="toc" class="sticky-top">
+      <h2 data-toc-skip>Contents</h2>
+    </nav>
   </div>
 </div>
 

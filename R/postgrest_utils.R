@@ -1,4 +1,4 @@
-postgrest_resp_to_data <- function(response) {
+postgrest_resp_to_data <- function(response, output_flatten = TRUE) {
   textresp <- httr::content(response, type = "text", encoding = "UTF-8")
 
   # If content-type string contains "geo+json", then it is a geojson
@@ -8,7 +8,7 @@ postgrest_resp_to_data <- function(response) {
     return(data)
   } else if (
     grepl("application/json", httr::headers(response)$"content-type")) {
-    data <- jsonlite::fromJSON(textresp, simplifyDataFrame = TRUE)
+    data <- jsonlite::fromJSON(textresp, flatten = output_flatten)
     data <- tibble::as_tibble(data)
     return(data)
   } else {

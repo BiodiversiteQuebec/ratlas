@@ -42,10 +42,3 @@ The absence are infered from all sampling points related to birds observed
 on Montreal territory whose observations were obtained from datasets
 defined as \code{exhaustive}.
 }
-\examples{
-# Returns all observations from 2010 to 2015 for taxa
-"Leuconotopicus villosus" (`id_taxa` = 6450) from ebird datasets
-(`id_datasets` = 55:102)
-obs <- get_observations(
- id_taxa = 6450, year = 2010:2015, id_datasets = 55:102)
-}

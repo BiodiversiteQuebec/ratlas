@@ -54,9 +54,16 @@ usethis::use_test("get_taxa_global_names")
 usethis::use_r("taxa")
 usethis::use_test("taxa")
 
+usethis::use_r("read_function_data")
+usethis::use_test("read_function_data")
+
+usethis::use_r("read_table_data")
+usethis::use_test("read_table_data")
+
 # Create vignettes
 usethis::use_vignette("download-obs")
 usethis::use_vignette("download-regions-observations", title = "Download observations by region")
+usethis::use_vignette("database-access-functions", title = "Functions to directly access the database ressources")
 
 # Use pkgdown for package website
 usethis::use_pkgdown()
@@ -67,14 +74,15 @@ source("data-raw//taxa_data.R")
 
 # Load, test and build package and documentation
 devtools::load_all()
-devtools::test()
+# devtools::test()
 devtools::document()
 devtools::install()
 # rmarkdown::render("./vignettes/download-obs.Rmd")
 # rmarkdown::render("./vignettes/download-regions-observations.Rmd")
 # Render vignette "./vignettes/clara_region_bird_counts.Rmd" into pkgdown website
-pkgdown::build_article("clara_region_bird_counts", lazy = TRUE)
-pkgdown::build_articles_index(lazy = TRUE)
+pkgdown::build_article("clara_region_bird_counts")
+pkgdown::build_article("database-access-functions")
+pkgdown::build_articles_index()
 
 
 pkgdown::build_site(examples = FALSE, lazy = TRUE)

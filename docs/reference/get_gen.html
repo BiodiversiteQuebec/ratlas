@@ -75,7 +75,7 @@ of the database object storing the required data
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
       </span>
     </div>
 
@@ -97,6 +97,12 @@ of the database object storing the required data
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
+    </li>
+    <li>
+      <a href="../articles/database-access-functions.html">Functions to directly access the database ressources</a>
+    </li>
     <li>
       <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
@@ -136,15 +142,16 @@ of the database object storing the required data
 (ie. taxa, observations, datasets, etc).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_gen</span><span class='op'>(</span>
-  <span class='va'>endpoint</span>,
-  <span class='va'>...</span>,
-  .page_limit <span class='op'>=</span> <span class='fl'>5e+05</span>,
-  .schema <span class='op'>=</span> <span class='st'>"public"</span>,
-  .cores <span class='op'>=</span> <span class='fl'>4</span>,
-  .page_parameters <span class='op'>=</span> <span class='va'>DEFAULT_PAGE_PARAMETERS</span>,
-  .n_pages <span class='op'>=</span> <span class='cn'>NA</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span><span class='fu'>get_gen</span><span class='op'>(</span></span>
+<span>  <span class='va'>endpoint</span>,</span>
+<span>  <span class='va'>...</span>,</span>
+<span>  .page_limit <span class='op'>=</span> <span class='fl'>5e+05</span>,</span>
+<span>  .schema <span class='op'>=</span> <span class='st'>"public"</span>,</span>
+<span>  .cores <span class='op'>=</span> <span class='fl'>4</span>,</span>
+<span>  .page_parameters <span class='op'>=</span> <span class='va'>DEFAULT_PAGE_PARAMETERS</span>,</span>
+<span>  .n_pages <span class='op'>=</span> <span class='cn'>NA</span>,</span>
+<span>  .headers <span class='op'>=</span> <span class='cn'>NULL</span></span>
+<span><span class='op'>)</span></span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,7 +187,7 @@ improve rapidity</p></td>
     <tr>
       <th>.page_parameters</th>
       <td><p><code>list</code> default
-<code><a href='https://rdrr.io/r/base/list.html'>list(limit = "limit", offset = "offset")</a></code>. Parameters names sent to http
+<code>list(limit = "limit", offset = "offset")</code>. Parameters names sent to http
 query to be consumed by the endpoint for pagination</p></td>
     </tr>
     <tr>
@@ -201,25 +208,24 @@ query to be consumed by the endpoint for pagination</p></td>
     <p>This function is designed to interface with a web API deployed with PostgREST</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='co'># Returns all available taxa records in atlas</span>
-<span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"taxa"</span><span class='op'>)</span>
-
-<span class='co'># Returns all taxa filtered by the column id values</span>
-<span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"taxa"</span>, id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>188</span>, <span class='fl'>201</span>, <span class='fl'>294</span>, <span class='fl'>392</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Returns first 100 sampling_points from schema `api`</span>
-<span class='va'>sampling_points</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span>
-  <span class='st'>"bird_sampling_points"</span>,
-  .schema <span class='op'>=</span> <span class='st'>"api"</span>,
-  limit <span class='op'>=</span> <span class='fl'>100</span>
-<span class='op'>)</span>
-
-<span class='co'># Returns first 100 observations with selected columns and joined columns</span>
-<span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"observations"</span>,
-  limit <span class='op'>=</span> <span class='fl'>100</span>,
-  select <span class='op'>=</span> <span class='st'>"geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"</span>
-<span class='op'>)</span>
-</pre>
+    <pre class="examples"><span><span class='co'># Returns all available taxa records in atlas</span></span>
+<span><span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"taxa"</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Returns all taxa filtered by the column id values</span></span>
+<span><span class='va'>taxa</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"taxa"</span>, id <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>188</span>, <span class='fl'>201</span>, <span class='fl'>294</span>, <span class='fl'>392</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Returns first 100 sampling_points from schema `api`</span></span>
+<span><span class='va'>sampling_points</span> <span class='op'>&lt;-</span> <span class='fu'>get_gen</span><span class='op'>(</span></span>
+<span>  <span class='st'>"bird_sampling_points"</span>,</span>
+<span>  .schema <span class='op'>=</span> <span class='st'>"api"</span>,</span>
+<span>  limit <span class='op'>=</span> <span class='fl'>100</span></span>
+<span><span class='op'>)</span></span>
+<span></span>
+<span><span class='co'># Returns first 100 observations with selected columns and joined columns</span></span>
+<span><span class='fu'>get_gen</span><span class='op'>(</span><span class='st'>"observations"</span>,</span>
+<span>  limit <span class='op'>=</span> <span class='fl'>100</span>,</span>
+<span>  select <span class='op'>=</span> <span class='st'>"geom,year_obs,month_obs,day_obs,obs_value,taxa(scientific_name)"</span></span>
+<span><span class='op'>)</span></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

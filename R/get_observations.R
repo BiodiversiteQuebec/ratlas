@@ -6,8 +6,8 @@
 #' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 #' The function filters returned records by attributes corresponding to atlas
 #' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa`,
-#' `id_datasets`, `id_variables`, `id_region`, `etc`) with accepted values either being
-#' scalar or vector for single or multiple records.
+#' `id_datasets`, `id_variables`, `fid_region`, `etc`) with accepted values 
+#' either being scalar or vector for single or multiple records.
 #'
 #' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
 #' observation with the specified id
@@ -16,8 +16,11 @@
 #' @param id_taxa Optional. `integer` scalar or vector. Returns a dataframe
 #' for the taxa_obs record related to the value. `id_taxa` is translated to
 #' `id_taxa_obs`
-#' @param id_region Optional. `integer` scalar or vector. Returns observations
+#' @param fid_region Optional. `integer` scalar or vector. Returns observations
 #' for the region with the specified id
+#' @param within_quebec Optional. `logical` default NULL. If `TRUE`, returns
+#' only observations within Quebec. If `FALSE`, returns only observations
+#' outside Quebec. If `NULL`, returns all observations.
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
@@ -32,12 +35,14 @@ get_observations <- function(
   id = NULL,
   year = NULL,
   id_taxa = NULL,
-  fid_region = NULL,
+  region_fid = NULL,
+  geometry = TRUE,
+  within_quebec = NULL,
   ...
 ) {
   query <- list(...)
-  query$endpoint <- "observations"
-  query$.schema <- "api"
+  query$table_name <- "observations"
+  query$schema <- "api"
 
   if (! is.null(id)) {
     query$id <- id
@@ -48,20 +53,36 @@ get_observations <- function(
   if (! is.null(year)) {
     query$year_obs <- year
   }
-
-  if (! is.null(fid_region)) {
-    query$endpoint <- "observations_regions"
-    query$region_fid <- fid_region
+  if (! is.null(within_quebec)) {
+    if (within_quebec) {
+      query$within_quebec <- "true"
+    } else {
+      query$within_quebec <- "false"
+    }
   }
 
-  observations <- do.call(get_gen, query)
-  if (nrow(observations) > 0) {
-    observations <- observations %>%
-        dplyr::mutate(geom = geom %>%
-          jsonlite::toJSON() %>%
-          geojsonsf::geojson_sf()
-      )
+  if (! is.null(region_fid)) {
+    query$table_name <- "observations_regions"
+    query$region_fid <- region_fid
   }
+
+  if (geometry) {
+    query$output_geometry <- "true"
+  } else {
+    query$output_geometry <- "false"
+
+    # List of columns from single call
+    sample_query <- query
+    sample_query$limit <- 1
+    sample <- do.call(get_table_data, sample_query)
+    sample_cols <- colnames(sample)
+    # Remove cols that starts with 'geom'
+    sample_cols <- sample_cols[!grepl("^geom", sample_cols)]
+    query$select <- sample_cols
+  }
+
+  # Get observations
+  observations <- do.call(get_table_data, query)
 
   return(observations)
 }

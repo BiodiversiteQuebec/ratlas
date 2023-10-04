@@ -43,7 +43,7 @@
 <meta property="og:description" content="The function downloads and returns a list or dataframe containing geometries
 and attributes for each requested region where a row corresponds to a region.
 Regions are organized by type (ie. Ecological Region, Administrative Region,
-and Hexagonal Grid) and each region type is organized by scale. It is
+and Hexagonal Grfid) and each region type is organized by scale. It is
 recommended to explore regions using the Biodiversité Québec Atlas web
 application to determine the region type and scale of interest." />
 
@@ -77,7 +77,7 @@ application to determine the region type and scale of interest." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
       </span>
     </div>
 
@@ -99,6 +99,12 @@ application to determine the region type and scale of interest." />
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
+    </li>
+    <li>
+      <a href="../articles/database-access-functions.html">Functions to directly access the database ressources</a>
+    </li>
     <li>
       <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
@@ -135,12 +141,12 @@ application to determine the region type and scale of interest." />
     <p>The function downloads and returns a list or dataframe containing geometries
 and attributes for each requested region where a row corresponds to a region.
 Regions are organized by type (ie. Ecological Region, Administrative Region,
-and Hexagonal Grid) and each region type is organized by scale. It is
+and Hexagonal Grfid) and each region type is organized by scale. It is
 recommended to explore regions using the Biodiversité Québec Atlas web
 application to determine the region type and scale of interest.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_regions</span><span class='op'>(</span>id <span class='op'>=</span> <span class='cn'>NULL</span>, type <span class='op'>=</span> <span class='cn'>NULL</span>, scale <span class='op'>=</span> <span class='cn'>NULL</span>, geometry <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span><span class='fu'>get_regions</span><span class='op'>(</span>fid <span class='op'>=</span> <span class='cn'>NULL</span>, type <span class='op'>=</span> <span class='cn'>NULL</span>, scale <span class='op'>=</span> <span class='cn'>NULL</span>, geometry <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,9 +163,9 @@ Accepted values are <code>cadre_eco</code>, <code>admin</code>, and <code>hex</c
 atlas <code>regions</code> table columns specified as parameter.</p></td>
     </tr>
     <tr>
-      <th>id_region</th>
+      <th>fid_region</th>
       <td><p>Optional. <code>integer</code> scalar or vector. Returns a dataframe
-for the region with the specified id</p></td>
+for the region with the specified fid</p></td>
     </tr>
     <tr>
       <th>zoom</th>
@@ -171,7 +177,7 @@ for the region with the specified id</p></td>
 
     <p>IMPORTANT : Running the function without any parameters will return all
 regions in the atlas. This can be a very large dataset and may take a long
-time to download. It is recommended to use the <code>id</code> parameter to return a
+time to download. It is recommended to use the <code>fid</code> parameter to return a
 specific region or the <code>type</code> parameter to return a specific type of region.
 It is also possible to exclude the geometry from the results by setting the
 <code>geometry</code> parameter to <code>FALSE</code>.</p>

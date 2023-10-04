@@ -33,13 +33,13 @@ get_datasets <- function(
   ...
 ) {
   query <- list(...)
-  query$endpoint <- "datasets"
-  query$.schema <- "public"
+  query$table_name <- "datasets"
+  query$schema <- "public"
 
   if (! is.null(id)) {
     query$id <- id
   }
 
-  datasets <- do.call(get_gen, query)
+  datasets <- do.call(get_table_data, query)
   return(datasets)
 }

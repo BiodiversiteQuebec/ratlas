@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
       </span>
     </div>
 
@@ -55,6 +55,9 @@
   <ul class="dropdown-menu" role="menu">
 <li>
       <a href="../articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
+    </li>
+    <li>
+      <a href="../articles/database-access-functions.html">Functions to directly access the database ressources</a>
     </li>
     <li>
       <a href="../articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
@@ -93,32 +96,32 @@
     
 <div id="comptes-despèces-pour-les-régions-du-cadre-de-référence-écologique-du-québec" class="section level2">
 <h2 class="hasAnchor">
-<a href="#comptes-desp%C3%A8ces-pour-les-r%C3%A9gions-du-cadre-de-r%C3%A9f%C3%A9rence-%C3%A9cologique-du-qu%C3%A9bec" class="anchor"></a>Comptes d’espèces pour les régions du cadre de référence écologique du Québec</h2>
-<p>Dans l’exemple suivant, nous allons utiliser la tables de comptes d’observations d’oiseaux <code>bird_cadre_eco_counts</code> pour obtenir les comptes d’espèces pour les régions du cadre de référence écologique du Québec.</p>
-<p>Cette table doit être filtrée par l’identifiant de l’espèce d’intérêt et par l’identifiant de la région d’intérêt. L’identifiant de l’espèce peut être obtenu à partir de la table <code>taxa</code> et l’identifiant de la région peut être obtenu à partir de la table <code>regions</code>.</p>
+<a href="#comptes-desp%C3%A8ces-pour-les-r%C3%A9gions-du-cadre-de-r%C3%A9f%C3%A9rence-%C3%A9cologique-du-qu%C3%A9bec" class="anchor"></a>Comptes d”espèces pour les régions du cadre de référence écologique du Québec</h2>
+<p>Dans l”exemple suivant, nous allons utiliser la tables de comptes d”observations d”oiseaux <code>bird_cadre_eco_counts</code> pour obtenir les comptes d”espèces pour les régions du cadre de référence écologique du Québec.</p>
+<p>Cette table doit être filtrée par l”identifiant de l”espèce d”intérêt et par l”identifiant de la région d”intérêt. L”identifiant de l”espèce peut être obtenu à partir de la table <code>taxa</code> et l”identifiant de la région peut être obtenu à partir de la table <code>regions</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the species of interest for the study</span></span>
 <span><span class="va">s</span> <span class="op">=</span> <span class="st">"Grus canadensis"</span></span>
 <span><span class="va">taxa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_taxa.html">get_taxa</a></span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="va">s</span> <span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get the regions of interest for the study</span></span>
-<span><span class="va">scale_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'cadre_eco'</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">scale_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"cadre_eco"</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the regions geometry with sf</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">scale_regions</span><span class="op">$</span><span class="va">geometry</span><span class="op">)</span></span></code></pre></div>
 <p><img src="clara_region_bird_counts_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
-<p>NOTE: Il est important de noter que l’appel à la fonction <code>get_regions</code> retourne un objet <code>sf</code>, permettant de filtrer et visualiser les géométries à l’aide de la librairie du même nom. Il est possible aussi d’accélérer le téléchargement en ignorant les géométries en ajoutant l’argument <code>geometry = FALSE</code> à la fonction <code>get_regions</code>.</p>
-<p>Une fois les identifiants de régions et taxons obtenus, il est possible d’itérer sur les régions pour obtenir les comptes d’espèces pour chaque région en obtenant les valeurs filtrées de la table <code>bird_cadre_eco_counts</code> à l’aide de la fonction <code>get_gen</code>.</p>
+<p>NOTE: Il est important de noter que l”appel à la fonction <code>get_regions</code> retourne un objet <code>sf</code>, permettant de filtrer et visualiser les géométries à l”aide de la librairie du même nom. Il est possible aussi d”accélérer le téléchargement en ignorant les géométries en ajoutant l”argument <code>geometry = FALSE</code> à la fonction <code>get_regions</code>.</p>
+<p>Une fois les identifiants de régions et taxons obtenus, il est possible d”itérer sur les régions pour obtenir les comptes d”espèces pour chaque région en obtenant les valeurs filtrées de la table <code>bird_cadre_eco_counts</code> à l”aide de la fonction <code>get_gen</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loop over the regions</span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">fid</span> <span class="kw">in</span> <span class="va">scale_regions</span><span class="op">$</span><span class="va">fid</span><span class="op">)</span> <span class="op">{</span> <span class="co"># Can also iterate over regions$fid</span></span>
 <span>  <span class="co"># Get the data for the year of interest</span></span>
-<span>  <span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_gen.html">get_gen</a></span><span class="op">(</span><span class="st">'bird_cadre_eco_counts'</span>,</span>
+<span>  <span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_table_data.html">get_table_data</a></span><span class="op">(</span><span class="st">"bird_cadre_eco_counts"</span>,</span>
 <span>    id_taxa_obs<span class="op">=</span><span class="va">taxa</span><span class="op">$</span><span class="va">id_taxa_obs</span>,</span>
 <span>    region_fid <span class="op">=</span> <span class="va">fid</span>,</span>
-<span>    .schema <span class="op">=</span> <span class="st">'api'</span></span>
+<span>    schema <span class="op">=</span> <span class="st">"api"</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">new_data</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -132,7 +135,7 @@
 <span><span class="co">#&gt; 4     859190        6650     4  2004         1</span></span>
 <span><span class="co">#&gt; 5     859190        6650     4  2006         2</span></span>
 <span><span class="co">#&gt; 6     859190        6650     4  2007         1</span></span></code></pre></div>
-<p>Une synthèse de tous les comptes peuvent être obtenus en utilisant la fonction <code>aggregate</code> de la librairie <code>dplyr</code>. On peut ensuite visualiser les comptes d’espèces pour chaque région à l’aide de la fonction <code>plot</code> de la librairie <code>ggplot2</code> et les géométries des régions à l’aide de la fonction <code>plot</code> de la librairie <code>sf</code>.</p>
+<p>Une synthèse de tous les comptes peuvent être obtenus en utilisant la fonction <code>aggregate</code> de la librairie <code>dplyr</code>. On peut ensuite visualiser les comptes d”espèces pour chaque région à l”aide de la fonction <code>plot</code> de la librairie <code>ggplot2</code> et les géométries des régions à l”aide de la fonction <code>plot</code> de la librairie <code>sf</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
@@ -145,7 +148,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">count_obs</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Join the scale_regions sf object with the aggregated data</span></span>
-<span><span class="va">cadre_eco_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">scale_regions</span>, <span class="va">cadre_eco_sum</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'fid'</span> <span class="op">=</span> <span class="st">'region_fid'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cadre_eco_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">scale_regions</span>, <span class="va">cadre_eco_sum</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"fid"</span> <span class="op">=</span> <span class="st">"region_fid"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the data</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
@@ -156,42 +159,42 @@
 </div>
 <div id="compte-total-doiseaux-observés-pour-chaque-région" class="section level2">
 <h2 class="hasAnchor">
-<a href="#compte-total-doiseaux-observ%C3%A9s-pour-chaque-r%C3%A9gion" class="anchor"></a>Compte total d’oiseaux observés pour chaque région</h2>
-<p>De la même manière, il faut d’abord récupérer les taxons liés aux oiseaux, puis les régions du cadre de référence écologique du Québec. Ensuite, il faut itérer sur les régions pour obtenir les comptes d’oiseaux pour chaque région. Finalement, il faut agréger les données pour obtenir le compte total d’oiseaux observés pour chaque région.</p>
+<a href="#compte-total-doiseaux-observ%C3%A9s-pour-chaque-r%C3%A9gion" class="anchor"></a>Compte total d”oiseaux observés pour chaque région</h2>
+<p>De la même manière, il faut d”abord récupérer les taxons liés aux oiseaux, puis les régions du cadre de référence écologique du Québec. Ensuite, il faut itérer sur les régions pour obtenir les comptes d”oiseaux pour chaque région. Finalement, il faut agréger les données pour obtenir le compte total d”oiseaux observés pour chaque région.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the species of interest for the study</span></span>
-<span><span class="va">birds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_taxa.html">get_taxa</a></span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="st">'Aves'</span><span class="op">)</span></span>
+<span><span class="va">birds</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_taxa.html">get_taxa</a></span><span class="op">(</span>scientific_name <span class="op">=</span> <span class="st">"Aves"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print number of observed taxa related to birds</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'Number of observed taxa related to birds: '</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">birds</span><span class="op">$</span><span class="va">id_taxa_obs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Number of observed taxa related to birds: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">birds</span><span class="op">$</span><span class="va">id_taxa_obs</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Number of observed taxa related to birds: 724"</span></span></code></pre></div>
 <p>Il faut noter que ce nombre de taxons peut contenir des synonymes. On peut connaître la richesse observée pour ces taxons en utilisant la méthode <code>obs_summary</code> disponible avec la fonction <code>get_gen</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the observed richness for the taxa</span></span>
-<span><span class="va">obs_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/post_gen.html">post_gen</a></span><span class="op">(</span><span class="st">'rpc/obs_summary'</span>,</span>
-<span>  data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"taxa_keys"</span> <span class="op">=</span> <span class="va">birds</span><span class="op">$</span><span class="va">id_taxa_obs</span><span class="op">)</span>,</span>
-<span>  .schema <span class="op">=</span> <span class="st">'atlas_api'</span></span>
+<span><span class="va">obs_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_function_data.html">get_function_data</a></span><span class="op">(</span><span class="st">"obs_summary"</span>,</span>
+<span>  taxa_keys <span class="op">=</span> <span class="va">birds</span><span class="op">$</span><span class="va">id_taxa_obs</span>,</span>
+<span>  schema <span class="op">=</span> <span class="st">"atlas_api"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'Observed richness for the taxa: '</span>, <span class="va">obs_summary</span><span class="op">$</span><span class="va">taxa_count</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Observed richness for the taxa: "</span>, <span class="va">obs_summary</span><span class="op">$</span><span class="va">taxa_count</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Observed richness for the taxa: 464"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'Number of observations: '</span>, <span class="va">obs_summary</span><span class="op">$</span><span class="va">obs_count</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"Number of observations: "</span>, <span class="va">obs_summary</span><span class="op">$</span><span class="va">obs_count</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Number of observations: 16614814"</span></span></code></pre></div>
-<p>On peut finalement obtenir les régions du cadre de référence écologique du Québec et itérer sur les régions pour obtenir les comptes d’oiseaux pour chaque région.</p>
+<p>On peut finalement obtenir les régions du cadre de référence écologique du Québec et itérer sur les régions pour obtenir les comptes d”oiseaux pour chaque région.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the regions of interest for the study</span></span>
-<span><span class="va">scale_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'cadre_eco'</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">scale_regions</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"cadre_eco"</span>, scale <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">id_taxa_obs</span> <span class="kw">in</span> <span class="va">birds</span><span class="op">$</span><span class="va">id_taxa_obs</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_gen.html">get_gen</a></span><span class="op">(</span><span class="st">'obs_region_counts'</span>,</span>
+<span>  <span class="va">new_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_table_data.html">get_table_data</a></span><span class="op">(</span><span class="st">"obs_region_counts"</span>,</span>
 <span>    id_taxa_obs <span class="op">=</span> <span class="va">id_taxa_obs</span>,</span>
 <span>    fid <span class="op">=</span> <span class="va">scale_regions</span><span class="op">$</span><span class="va">fid</span>,</span>
-<span>    .schema <span class="op">=</span> <span class="st">'atlas_api'</span></span>
+<span>    schema <span class="op">=</span> <span class="st">"atlas_api"</span></span>
 <span>  <span class="op">)</span></span>
 <span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">data</span>, <span class="va">new_data</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>Finalement, il faut agréger les données pour obtenir le compte total d’oiseaux observés pour chaque région.</p>
+<p>Finalement, il faut agréger les données pour obtenir le compte total d”oiseaux observés pour chaque région.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Aggregate the data</span></span>
 <span><span class="va">cadre_eco_sum</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span></span>
@@ -199,7 +202,7 @@
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">count_obs</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Join the scale_regions sf object with the aggregated data</span></span>
-<span><span class="va">cadre_eco_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">scale_regions</span>, <span class="va">cadre_eco_sum</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'fid'</span> <span class="op">=</span> <span class="st">'fid'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">cadre_eco_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">scale_regions</span>, <span class="va">cadre_eco_sum</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"fid"</span> <span class="op">=</span> <span class="st">"fid"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Plot the data</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>

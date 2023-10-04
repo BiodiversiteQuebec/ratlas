@@ -13,6 +13,9 @@
 #' taxon with the specified id
 #' @param scientific_name Optional. `char` scalar or vector. Returns a dataframe
 #' for the taxon with the specified scientific name
+#' @param match_name Optional. `char` scalar or vector. Returns a dataframe
+#' for the taxon with the specified scientific name or vernacular name.
+#' Vernacular names in french or english are accepted.
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `taxa` table columns specified as parameter
 #' 
@@ -36,6 +39,7 @@
 get_taxa <- function(
   id = NULL,
   scientific_name = NULL,
+  match_name = NULL,
   ...
 ) {
   query <- list(...)
@@ -46,15 +50,21 @@ get_taxa <- function(
     query$id_taxa_obs <- id
   }
   if (! is.null(scientific_name)) {
-    match_taxa <- lapply(scientific_name,
-    FUN = function(taxa_name) get_gen(
-      "rpc/match_taxa",
-      .schema = "api",
-      taxa_name = taxa_name)
+    match_taxa <- lapply(
+      scientific_name,
+      function(x) {
+        get_function_data("match_taxa", schema = "api", taxa_name = x)
+      }
     ) %>% dplyr::bind_rows()
     return(match_taxa)
-  } else {
-    taxa <- do.call(get_gen, query)
-    return(taxa)
+  }
+  if (! is.null(match_name)) {
+    match_taxa <- lapply(
+      match_name,
+      function(x) {
+        get_function_data("match_taxa", schema = "api", taxa_name = x)
+      }
+    ) %>% dplyr::bind_rows()
+    return(match_taxa)
   }
 }
