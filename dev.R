@@ -72,4 +72,9 @@ devtools::document()
 devtools::install()
 # rmarkdown::render("./vignettes/download-obs.Rmd")
 # rmarkdown::render("./vignettes/download-regions-observations.Rmd")
-pkgdown::build_site(examples = FALSE, rmarkdown.)
+# Render vignette "./vignettes/clara_region_bird_counts.Rmd" into pkgdown website
+pkgdown::build_article("clara_region_bird_counts", lazy = TRUE)
+pkgdown::build_articles_index(lazy = TRUE)
+
+
+pkgdown::build_site(examples = FALSE, lazy = TRUE)

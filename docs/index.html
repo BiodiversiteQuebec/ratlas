@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4</span>
       </span>
     </div>
 
@@ -54,6 +54,9 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
+      <a href="articles/clara_region_bird_counts.html">clara_region_bird_counts</a>
+    </li>
+    <li>
       <a href="articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
     <li>
@@ -90,7 +93,7 @@
 <a href="#installer-le-paquet-ratlas" class="anchor"></a>Installer le paquet <code>ratlas</code>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"ReseauBiodiversiteQuebec/ratlas"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ReseauBiodiversiteQuebec/ratlas"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="sauthentifier-auprès-de-lapi" class="section level2">
 <h2 class="hasAnchor">
@@ -102,7 +105,7 @@
 <h3 class="hasAnchor">
 <a href="#strat%C3%A9gie-1-mise-en-cache-dans-les-variables-denvironnement-de-r" class="anchor"></a>Stratégie 1: Mise en cache dans les variables d’environnement de R</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html">file.edit</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html">file.edit</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></span></code></pre></div>
 <p>Cette ligne va ouvrir un ficher text dans votre Rstudio. Rajoutez dans ce ficher un linge comme la suivante:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># utilizez votre propre token ici</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -122,7 +125,7 @@
 <h3 class="hasAnchor">
 <a href="#erreur-401--unauthorized" class="anchor"></a>Erreur 401 : Unauthorized</h3>
 <p>Si vous obtenez une erreur 401, c’est que votre jeton d’accès n’est pas valide. Veuillez vous assurer que vous avez bien copié le jeton d’accès et que vous l’avez bien mis en cache dans votre environnement de développement.</p>
-<p>Pour valider que votre jeton d’accès est bien en cache, vous pouvez utiliser la fonction <code><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv("ATLAS_API_TOKEN")</a></code> qui devrait retourner votre jeton d’accès.</p>
+<p>Pour valider que votre jeton d’accès est bien en cache, vous pouvez utiliser la fonction <code>Sys.getenv("ATLAS_API_TOKEN")</code> qui devrait retourner votre jeton d’accès.</p>
 </div>
 </div>
 </div>
