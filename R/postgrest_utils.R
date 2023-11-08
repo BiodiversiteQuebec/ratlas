@@ -3,16 +3,17 @@ postgrest_resp_to_data <- function(response, output_flatten = TRUE) {
 
   # If content-type string contains "geo+json", then it is a geojson
   # Otherwise, it is a json
-  if (grepl("application/geo\\+json", httr::headers(response)$"content-type")) {
+  content_type <- httr::headers(response)$"content-type"
+  if (!is.null(content_type) && (grepl("application/geo\\+json", content_type))) {
     data <- sf::st_read(textresp, quiet = TRUE)
     return(data)
   } else if (
-    grepl("application/json", httr::headers(response)$"content-type")) {
+    grepl("application/json", content_type)) {
     data <- jsonlite::fromJSON(textresp, flatten = output_flatten)
     data <- tibble::as_tibble(data)
     return(data)
   } else {
-    stop("Unexpected content-type")
+    return(textresp)
   }
 }
 
