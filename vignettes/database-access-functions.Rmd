@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 The `ratlas` package provides functions to interact with Biodiversité Québec's database `Atlas`. For most use cases, `ratlas` get functions such as `get_taxa`, `get_observations`, `get_datasets`, etc should be used, as they are designed to be more user-friendly. However, in some cases, it is useful to directly access the database ressources.
 
-This vignette describes how to do so using low-level functions `read_table_data` and `read_function_data`, on which `ratlas` get functions are based and is intended for advanced users.
+This vignette describes how to do so using low-level functions `get_table_data` and `get_function_data`, on which `ratlas` get functions are based and is intended for advanced users.
 
 # Atlas database
 
