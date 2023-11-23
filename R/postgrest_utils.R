@@ -8,7 +8,7 @@ postgrest_resp_to_data <- function(response, output_flatten = TRUE) {
     data <- sf::st_read(textresp, quiet = TRUE)
     return(data)
   } else if (
-    grepl("application/json", content_type)) {
+    !is.null(content_type) && grepl("application/json", content_type)) {
     data <- jsonlite::fromJSON(textresp, flatten = output_flatten)
     data <- tibble::as_tibble(data)
     return(data)
