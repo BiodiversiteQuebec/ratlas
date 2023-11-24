@@ -53,7 +53,7 @@ get_function_data <- function(name,
             sep = "/"
         )
     )
-    data <- list(...)
+    body <- list(...)
     header <- list(
         Authorization = paste("Bearer", .token),
         `User-Agent` = USER_AGENT(), # defined in zzz.R
@@ -61,21 +61,11 @@ get_function_data <- function(name,
         `Content-Profile` = schema
     )
 
-    # Prepare body
-    # If data
-
-    if (length(data) > 0) {
-        body <- jsonlite::toJSON(data, auto_unbox = TRUE)
-    } else {
-        body <- NULL
-    }
-
-    # Send request
-    response <- httr::POST(
-        url = url,
-        body = body,
-        config = do.call(httr::add_headers, header)
-    )
+    # Create and send the request
+    response <- httr2::request(url) %>%
+           httr2::req_headers(!!!header) %>%
+           httr2::req_body_json(body) %>%
+           httr2::req_perform()
 
     # Stop if error
     postgrest_stop_if_err(response)
