@@ -74,7 +74,7 @@ get_observations <- function(
     # List of columns from single call
     sample_query <- query
     sample_query$limit <- 1
-    sample <- do.call(get_table_data, sample_query)
+    sample <- do.call(db_read_table, sample_query)
     sample_cols <- colnames(sample)
     # Remove cols that starts with 'geom'
     sample_cols <- sample_cols[!grepl("^geom", sample_cols)]
@@ -82,7 +82,7 @@ get_observations <- function(
   }
 
   # Get observations
-  observations <- do.call(get_table_data, query)
+  observations <- do.call(db_read_table, query)
 
   return(observations)
 }

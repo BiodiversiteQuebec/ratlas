@@ -27,7 +27,7 @@ SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api", "indicators")
 
 #' @export
 
-post_gen <- function(
+db_write_table <- function(
     endpoint,
     data,
     ...,

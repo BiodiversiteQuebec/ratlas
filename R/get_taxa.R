@@ -53,7 +53,7 @@ get_taxa <- function(
     match_taxa <- lapply(
       scientific_name,
       function(x) {
-        get_function_data("match_taxa", schema = "api", taxa_name = x)
+        db_call_function("match_taxa", schema = "api", taxa_name = x)
       }
     ) %>% dplyr::bind_rows()
     return(match_taxa)
@@ -62,7 +62,7 @@ get_taxa <- function(
     match_taxa <- lapply(
       match_name,
       function(x) {
-        get_function_data("match_taxa", schema = "api", taxa_name = x)
+        db_call_function("match_taxa", schema = "api", taxa_name = x)
       }
     ) %>% dplyr::bind_rows()
     return(match_taxa)

@@ -39,7 +39,7 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #' @return `tibble` or `sf` with rows associated with Atlas data object
 #' @export
 
-get_table_data <- function(table_name,
+db_read_table <- function(table_name,
                            schema = "public",
                            output_geometry = FALSE,
                            output_flatten = TRUE,

@@ -22,7 +22,7 @@ SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api")
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
 
-get_function_data <- function(name,
+db_call_function <- function(name,
                               schema = "public",
                               output_geometry = FALSE,
                               output_flatten = TRUE,
