@@ -33,38 +33,27 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #' @param .page_limit Optional. `integer` default `500000`. Maximum number of
 #' rows to download per page. This parameter is used to estimate the number of
 #' pages to download if `.n_pages` is `NULL`.
-#' @param .token Optional. `character` Bearer token providing access to the web
-#' API. If `NULL`, the function will attempt to read the token from the
-#' `ATLAS_API_TOKEN` environment variable.
+#' @importFrom foreach %dopar%
 #' @return `tibble` or `sf` with rows associated with Atlas data object
 #' @export
 
 db_read_table <- function(table_name,
-                           schema = "public",
-                           output_geometry = FALSE,
-                           output_flatten = TRUE,
-                           limit = NULL,
-                           select = NULL,
-                           ...,
-                           .token = NULL,
-                           .cores = 4,
-                           .n_pages = NULL,
-                           .page_limit = 10000) {
+                          schema = "public",
+                          output_geometry = FALSE,
+                          output_flatten = TRUE,
+                          limit = NULL,
+                          select = NULL,
+                          ...,
+                          .cores = 4,
+                          .n_pages = NULL,
+                          .page_limit = 10000) {
     # Argument validation
     if (!schema %in% SCHEMA_VALUES) {
         stop("Bad input: Unexpected value for argument `schema`")
     }
 
-    if (is.null(.token)) {
-        .token <- ATLAS_API_TOKEN()
-    }
-
-    # Prepare HTTP request with url, header and query parameters
-    # Remove trailing slash from base_url if present
-    base_url <- gsub("/$", "", ATLAS_API_V2_HOST())
-
-    # Construct the URL by appending the table_name to the base URL
-    url <- paste0(base_url, "/", table_name)
+    # Set the url
+    url <- set_url(table_name)
 
     # Prepare query parameters
     query <- postgrest_query_filter(list(...))
@@ -79,12 +68,7 @@ db_read_table <- function(table_name,
     }
 
     # Prepare header parameters
-    header <- list(
-        Authorization = paste("Bearer", .token),
-        `User-Agent` = USER_AGENT(), # defined in zzz.R
-        `Content-type` = "application/json;charset=UTF-8",
-        `Accept-Profile` = schema
-    )
+    header <- set_header(schema)
 
     if (output_geometry) {
         header$`Accept` <- "application/geo+json"
@@ -127,7 +111,9 @@ db_read_table <- function(table_name,
                 postgrest_resp_to_data(response)
             }
     } else {
-        out <- list()
+        if(output_geometry == "true") {
+              out <- sf::st_sf(sf::st_sfc(), crs = sf::st_crs("+proj=longlat +datum=WGS84"))
+            } else{ out <- list()}
         for (page in 1:.n_pages) {
             response <- postgrest_get_page(
                 url = url,
@@ -182,7 +168,14 @@ postgrest_get_page <- function(url, query, header, page, limit) {
     return(response)
 }
 
-postgrest_get_table_count <- function(url, query, header) {
+postgrest_get_table_count <- function(url, query = NULL, header = NULL) {
+    if (is.null(query)) {
+      query <- list()
+    }
+    if (is.null(header)) {
+      header <- list()
+    }
+
     header$`Prefer` <- "count=exact"
     query$limit <- 1
 
