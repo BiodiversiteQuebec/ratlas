@@ -12,7 +12,6 @@ db_read_table(
   limit = NULL,
   select = NULL,
   ...,
-  .token = NULL,
   .cores = 4,
   .n_pages = NULL,
   .page_limit = 10000
@@ -38,10 +37,6 @@ return. If \code{NULL}, all rows are returned. From the PostgREST API syntax.}
 return. All columns are returned if \code{NULL}. From the PostgREST API syntax.}
 
 \item{...}{Additional parameters to be passed as query to the API table_name.}
-
-\item{.token}{Optional. \code{character} Bearer token providing access to the web
-API. If \code{NULL}, the function will attempt to read the token from the
-\code{ATLAS_API_TOKEN} environment variable.}
 
 \item{.cores}{Optional. \code{integer} default \code{4}. Number of cores to use for
 parallel processing. If \code{1}, no parallel processing is used. If \code{NULL}, the
