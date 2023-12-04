@@ -55,3 +55,12 @@ test_that("NULL parameters are not passed", {
     limit=1)
   testthat::expect_equal(nrow(results), 1)
 })
+
+test_that("select works", {
+  results <- db_read_table(
+    table_name = "taxa",
+    select = c("id", "scientific_name"),
+    limit = 1)
+  testthat::expect_equal(nrow(results), 1)
+  testthat::expect_equal(ncol(results), 2)
+})
