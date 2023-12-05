@@ -53,7 +53,7 @@ db_read_table <- function(table_name,
     }
 
     # Set the url
-    url <- set_url(table_name)
+    url <- format_url(table_name)
 
     # Prepare query parameters
     query <- postgrest_query_filter(list(...))
@@ -68,7 +68,7 @@ db_read_table <- function(table_name,
     }
 
     # Prepare header parameters
-    header <- set_header(schema)
+    header <- format_header(schema)
 
     if (output_geometry) {
         header$`Accept` <- "application/geo+json"
