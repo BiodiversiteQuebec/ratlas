@@ -1,4 +1,4 @@
-set_url <- function(endpoint) {
+format_url <- function(endpoint) {
 
   # Prepare HTTP request with url, header and query parameters
   # Remove trailing slash from base_uarl if present
@@ -10,7 +10,7 @@ set_url <- function(endpoint) {
   return(url)
 }
 
-set_header <- function(schema, .token = ATLAS_API_TOKEN()) {
+format_header <- function(schema, .token = ATLAS_API_TOKEN()) {
 
   header <- list(
     Authorization = paste("Bearer", .token),
