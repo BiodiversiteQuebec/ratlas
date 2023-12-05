@@ -43,8 +43,8 @@ get_taxa <- function(
   ...
 ) {
   query <- list(...)
-  query$endpoint <- "taxa"
-  query$.schema <- "api"
+  query$table_name <- "taxa"
+  query$schema <- "api"
 
   if (! is.null(id)) {
     query$id_taxa_obs <- id
@@ -65,6 +65,9 @@ get_taxa <- function(
         db_call_function("match_taxa", schema = "api", taxa_name = x)
       }
     ) %>% dplyr::bind_rows()
+    return(match_taxa)
+  } else {
+    match_taxa <- do.call(db_read_table, query)
     return(match_taxa)
   }
 }
