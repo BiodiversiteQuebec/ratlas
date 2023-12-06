@@ -1,4 +1,9 @@
 postgrest_resp_to_data <- function(response, output_flatten = TRUE) {
+
+  # Check if response is from a POST
+  if (response$method == "POST" && length(response$body) == 0) {
+    return(response)
+  }
   # Get the response body as text
   textresp <- httr2::resp_body_string(response, encoding = "UTF-8")
 
