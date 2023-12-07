@@ -138,7 +138,7 @@ postgrest_query_filter <- function(parameters) {
         if (name == "select" && length(parameters[[name]]) > 1) {
             parameters[[name]] <- paste0(parameters[[name]], collapse = ",")
         }
-        if (name %in% POSTGREST_QUERY_PARAMETERS |
+        if (name %in% POSTGREST_QUERY_PARAMETERS ||
             is.null(parameters[[name]])) {
             next
         }
