@@ -52,3 +52,7 @@ Vous pouvez également passer votre jeton d'accès en créant une variable d'env
 Si vous obtenez une erreur 401, c'est que votre jeton d'accès n'est pas valide. Veuillez vous assurer que vous avez bien copié le jeton d'accès et que vous l'avez bien mis en cache dans votre environnement de développement.
 
 Pour valider que votre jeton d'accès est bien en cache, vous pouvez utiliser la fonction `Sys.getenv("ATLAS_API_TOKEN")` qui devrait retourner votre jeton d'accès.
+
+### Erreur curl_fetch_memory 0A00010B:SSL
+
+Erreur possible lors de la récupération (GET) de données via une machine Linux (ici Ubuntu). L'erreur provient du package curl. Un correctif est disponible depuis la version 7.87.0 du package qui elle est disponible depuis la version 23.02 de Ubuntu.
