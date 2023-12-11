@@ -8,7 +8,7 @@ SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api", "indicators")
 #'
 #' This function is designed to interface with a web API deployed with PostgREST
 #'
-#' @param endpoint `character`. Name of the atlas data object destination.
+#' @param table_name `character`. Name of the atlas data object destination.
 #' Corresponds to the name of a within Atlas Postgresql database, stored within
 #' schema `public` ou `api`
 #' @param data `list` or `data.frame`. Either a single record as a `list` with
@@ -17,57 +17,58 @@ SCHEMA_VALUES <- c("public", "api", "public_api", "atlas_api", "indicators")
 #' @param ... `character` or `numeric` scalar or vector.
 #' Additional parameters to provide to the request. May correspond to postgrest
 #' http request parameters and syntax.
-#' @param .schema `character` Schema from the database where is located the data
+#' @param schema `character` Schema from the database where is located the data
 #' object is located. Accept either values `api` or `public` (default)
 #' @param .page_limit `integer` Count of objects returned through pagination
 #' @param .token  `character` Bearer token providing access to the web api
 #' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' improve rapidity
-#' @return 
-
 #' @export
 
 db_write_table <- function(
-    endpoint,
+    table_name,
     data,
     ...,
-    .schema = "public",
+    schema = "public",
+    host = ATLAS_API_V2_HOST(),
     .page_limit = 50000,
     .token = ATLAS_API_TOKEN(),
     .cores = 4) {
 
-    # Argument validation
-    if (! .schema %in% SCHEMA_VALUES) {
-        stop("Bad input: Unexpected value for argument `.schema`")
-        }
-    # Prepare HTTP request with url, header abd query parameters
-    url <- httr::modify_url(ATLAS_API_V2_HOST(),
-        path = paste(
-            httr::parse_url(ATLAS_API_V2_HOST())$path,
-            endpoint, sep = "/"))
-    if (is.null(nrow(data))) {
-        # Case of a list
-        body <- jsonlite::toJSON(data)
-    } else {
-        # Case of a data.frame
-        body <- jsonlite::toJSON(as.data.frame(data))
-    }
+  # Argument validation
+  if (! schema %in% SCHEMA_VALUES) {
+    stop("Bad input: Unexpected value for argument `schema`")
+  }
 
-    header <- list(
-        Authorization = paste("Bearer", .token),
-        `User-Agent` = USER_AGENT(), # defined in zzz.R
-        `Content-type` = "application/json;charset=UTF-8",
-        `Content-Profile` = .schema
-        )
-    response <- httr::POST(
-        url = url,
-        config = do.call(httr::add_headers, header),
-        body = body
-    )
-    postgrest_stop_if_err(response)
+  # Set the url
+  url <- format_url(table_name, host)
 
-    # Parse response using 
-    out <- postgrest_resp_to_data(response)
+  # Prepare header parameters
+  header <- format_header(schema)
 
-    return(out)
+  # Post to the database
+  response <-  postgrest_post(url = url, header = header, data = data)
+
+  # Check response for error
+  postgrest_stop_if_err(response)
+
+  # Parse response using
+  out <- postgrest_resp_to_data(response)
+
+  return(out)
+}
+
+
+postgrest_post <- function(url, header, data) {
+  # Prepare the request
+  req <- httr2::request(url) |>
+    httr2::req_headers(!!!header) |>
+    httr2::req_body_json(data)
+
+  # Make the request
+  response <- req |>
+    httr2::req_error(is_error = \(resp) FALSE) |> # Disable error throwing and catch it after
+    httr2::req_perform()
+
+  return(response)
 }
