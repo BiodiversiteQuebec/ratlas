@@ -27,7 +27,7 @@ get_timeseries <- function(
     query$id_taxa <- id_taxa
   }
 
-  timeseries <- do.call(get_table_data, query)
+  timeseries <- do.call(db_read_table, query)
 
   return(timeseries)
 }

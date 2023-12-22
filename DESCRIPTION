@@ -1,6 +1,6 @@
 Package: ratlas
 Title: R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec 
-Version: 1.6
+Version: 2.0
 Authors@R: 
     person(given = "Vincent",
            family = "Beauregard",
@@ -11,7 +11,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Config/testthat/edition: 3
 Imports: 
     devtools (>= 2.4.2),

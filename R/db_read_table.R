@@ -33,37 +33,29 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #' @param .page_limit Optional. `integer` default `500000`. Maximum number of
 #' rows to download per page. This parameter is used to estimate the number of
 #' pages to download if `.n_pages` is `NULL`.
-#' @param .token Optional. `character` Bearer token providing access to the web
-#' API. If `NULL`, the function will attempt to read the token from the
-#' `ATLAS_API_TOKEN` environment variable.
+#' @importFrom foreach %dopar%
 #' @return `tibble` or `sf` with rows associated with Atlas data object
 #' @export
 
-get_table_data <- function(table_name,
-                           schema = "public",
-                           output_geometry = FALSE,
-                           output_flatten = TRUE,
-                           limit = NULL,
-                           select = NULL,
-                           ...,
-                           .token = NULL,
-                           .cores = 4,
-                           .n_pages = NULL,
-                           .page_limit = 10000) {
+db_read_table <- function(table_name,
+                          schema = "public",
+                          output_geometry = FALSE,
+                          output_flatten = TRUE,
+                          limit = NULL,
+                          select = NULL,
+                          ...,
+                          .cores = 4,
+                          .n_pages = NULL,
+                          .page_limit = 10000) {
     # Argument validation
     if (!schema %in% SCHEMA_VALUES) {
         stop("Bad input: Unexpected value for argument `schema`")
     }
 
-    if (is.null(.token)) {
-        .token <- ATLAS_API_TOKEN()
-    }
+    # Set the url
+    url <- format_url(table_name)
 
-    # Prepare HTTP request with url, header and query parameters
-    url <- httr::modify_url(ATLAS_API_V2_HOST(),
-        path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, table_name, 
-        sep = "/")
-    )
+    # Prepare query parameters
     query <- postgrest_query_filter(list(...))
     if (!is.null(select)) {
         if (length(select) > 1) {
@@ -75,12 +67,8 @@ get_table_data <- function(table_name,
         query$limit <- limit
     }
 
-    header <- list(
-        Authorization = paste("Bearer", .token),
-        `User-Agent` = USER_AGENT(), # defined in zzz.R
-        `Content-type` = "application/json;charset=UTF-8",
-        `Accept-Profile` = schema
-    )
+    # Prepare header parameters
+    header <- format_header(schema)
 
     if (output_geometry) {
         header$`Accept` <- "application/geo+json"
@@ -98,15 +86,7 @@ get_table_data <- function(table_name,
     parallel <- (!debug & .cores > 1)
 
     # Send request in parallel if more than one page
-    if (.n_pages <= 1) {
-        response <- httr::GET(
-            url,
-            config = do.call(httr::add_headers, header),
-            query = query
-        )
-        postgrest_stop_if_err(response)
-        out <- postgrest_resp_to_data(response, output_flatten = output_flatten)
-    } else if (parallel) {
+    if (parallel) {
         doParallel::registerDoParallel(cores = .cores)
         on.exit(doParallel::stopImplicitCluster())
         out <- foreach::foreach(
@@ -131,15 +111,16 @@ get_table_data <- function(table_name,
                 postgrest_resp_to_data(response)
             }
     } else {
-        query$limit <- format(.page_limit, scientific = FALSE)
-        out <- list()
+        if(output_geometry == "true") {
+              out <- sf::st_sf(sf::st_sfc(), crs = sf::st_crs("+proj=longlat +datum=WGS84"))
+            } else{ out <- list()}
         for (page in 1:.n_pages) {
             response <- postgrest_get_page(
                 url = url,
                 query = query,
                 header = header,
                 page = page,
-                limit = .page_limit
+                limit = min(.page_limit, limit)
             )
             postgrest_stop_if_err(response)
             page_out <- postgrest_resp_to_data(
@@ -154,10 +135,10 @@ get_table_data <- function(table_name,
 
 postgrest_query_filter <- function(parameters) {
     for (name in names(parameters)) {
-        if (name == "select" & length(parameters[[name]]) > 1) {
+        if (name == "select" && length(parameters[[name]]) > 1) {
             parameters[[name]] <- paste0(parameters[[name]], collapse = ",")
         }
-        if (name %in% POSTGREST_QUERY_PARAMETERS |
+        if (name %in% POSTGREST_QUERY_PARAMETERS ||
             is.null(parameters[[name]])) {
             next
         }
@@ -171,38 +152,41 @@ postgrest_query_filter <- function(parameters) {
     return(parameters)
 }
 
-postgrest_get_page <- function(url,
-                               query,
-                               header,
-                               page,
-                               limit) {
+postgrest_get_page <- function(url, query, header, page, limit) {
     offset <- (page - 1) * limit
     query$limit <- format(limit, scientific = FALSE)
     query$offset <- format(offset, scientific = FALSE)
 
-    response <- httr::GET(
-        url,
-        config = do.call(httr::add_headers, header),
-        query = query
-    )
+    # Create a request object
+    req <- httr2::request(url) |>
+           httr2::req_headers(!!!header) |>
+           httr2::req_url_query(!!!query)
+
+    # Perform the request and get the response
+    response <- httr2::req_perform(req)
+
     return(response)
 }
 
-postgrest_get_table_count <- function(url,
-                                      query,
-                                      header) {
+postgrest_get_table_count <- function(url, query = NULL, header = NULL) {
+    if (is.null(query)) {
+      query <- list()
+    }
+    if (is.null(header)) {
+      header <- list()
+    }
+
     header$`Prefer` <- "count=exact"
     query$limit <- 1
-    response <- httr::GET(
-        url,
-        config = do.call(httr::add_headers, header),
-        query = query
-    )
-    postgrest_stop_if_err(response)
-    # Parse table count from response header
-    tmp <- unlist(
-        strsplit(httr::headers(response)$"content-range", split = "\\D")
-    )
-    range_count <- as.numeric(tmp[3])
+
+    response <- httr2::request(url) |>
+           httr2::req_headers(!!!header) |>
+           httr2::req_url_query(!!!query) |>
+           httr2::req_perform()
+
+    # Get the content range from the response header
+    content_range <- httr2::resp_headers(response)$`Content-Range`
+    range_count <- as.numeric(strsplit(content_range, "/")[[1]][2])
+
     return(range_count)
 }

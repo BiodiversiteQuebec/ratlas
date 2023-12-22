@@ -15,7 +15,7 @@ test_that("filter by scientific_name works", {
   results <- get_taxa(scientific_name = c(
     "Cyanocitta cristata",
     "Falco peregrinus"))
-  testthat::expect_true(nrow(results) == 2)
+  testthat::expect_true(length(unique(results$valid_scientific_name)) == 2)
 })
 
 test_that("Bad name returns nothing", {

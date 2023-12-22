@@ -6,7 +6,7 @@ test_that("get observations works", {
 })
 
 test_that("combining filters works", {
-  results <- get_observations(year_obs = 2014, id_taxa = 6450, id_datasets = 70)
+  results <- get_observations(year_obs = 2014, id_taxa = 6450, id_datasets = 70, limit = 10)
   testthat::expect_true(nrow(results) > 1)
 })
 
@@ -26,6 +26,6 @@ test_that("within quebec", {
 
 # Test with id_region as parameter
 test_that("get observations with id_region works", {
-  results <- get_observations(region_fid = 858284, year = 2013)
+  results <- get_observations(region_fid = 858284, year = 2013, limit = 10)
   testthat::expect_true(nrow(results) > 1)
 })

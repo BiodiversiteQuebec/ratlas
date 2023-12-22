@@ -40,6 +40,6 @@ get_datasets <- function(
     query$id <- id
   }
 
-  datasets <- do.call(get_table_data, query)
+  datasets <- do.call(db_read_table, query)
   return(datasets)
 }

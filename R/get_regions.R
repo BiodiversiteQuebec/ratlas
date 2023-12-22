@@ -56,6 +56,6 @@ get_regions <- function(
     query$select <- c("fid", "type", "scale", "scale_desc", "name")
   }
 
-  regions <- do.call(get_table_data, query)
+  regions <- do.call(db_read_table, query)
   return(regions)
 }
