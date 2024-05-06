@@ -30,7 +30,7 @@ db_write_table <- function(
     data,
     ...,
     schema = "public",
-    host = ATLAS_API_V2_HOST(),
+    host = ATLAS_API_V4_HOST(),
     .page_limit = 50000,
     .token = ATLAS_API_TOKEN(),
     .cores = 4) {

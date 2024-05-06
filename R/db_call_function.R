@@ -46,9 +46,9 @@ db_call_function <- function(name,
     }
 
     # Prepare HTTP request with url, header abd query parameters
-    url <- httr::modify_url(ATLAS_API_V2_HOST(),
+    url <- httr::modify_url(ATLAS_API_V4_HOST(),
         path = paste(
-            httr::parse_url(ATLAS_API_V2_HOST())$path,
+            httr::parse_url(ATLAS_API_V4_HOST())$path,
             name,
             sep = "/"
         )

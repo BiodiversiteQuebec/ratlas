@@ -1,4 +1,4 @@
-format_url <- function(endpoint, host = ATLAS_API_V2_HOST()) {
+format_url <- function(endpoint, host = ATLAS_API_V4_HOST()) {
 
   # Prepare HTTP request with url, header and query parameters
   # Remove trailing slash from base_uarl if present

@@ -1,17 +1,17 @@
 Package: ratlas
 Title: R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec 
-Version: 2.0
+Version: 2.1
 Authors@R: 
     person(given = "Vincent",
            family = "Beauregard",
            role = c("aut", "cre"),
            email = "vincent.beauregard@usherbrooke.ca")
-Description: ratlas est un paquet R permettant l'accès et l'analyse des données de biodiversité aggrégée par le réseau d'observation de la biodiversité du Québec.
+Description: ratlas est une librarie R permettant l'accès et l'analyse des données de biodiversité aggrégées par le réseau d'observation de la biodiversité du Québec.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Config/testthat/edition: 3
 Imports: 
     devtools (>= 2.4.2),
