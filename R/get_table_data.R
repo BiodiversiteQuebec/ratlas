@@ -61,7 +61,7 @@ get_table_data <- function(table_name,
 
     # Prepare HTTP request with url, header and query parameters
     url <- httr::modify_url(ATLAS_API_V2_HOST(),
-        path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, table_name, 
+        path = paste(httr::parse_url(ATLAS_API_V4_HOST())$path, table_name, 
         sep = "/")
     )
     query <- postgrest_query_filter(list(...))

@@ -188,8 +188,8 @@ postgrest_get <- function (
   .schema = "public",
   .headers = NULL) {
 
-  url <- httr::modify_url(ATLAS_API_V2_HOST(),
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  url <- httr::modify_url(ATLAS_API_V4_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V4_HOST())$path, endpoint, sep = "/")
   )
   header <- list(
     Authorization = paste("Bearer", ATLAS_API_TOKEN()),
@@ -223,8 +223,8 @@ postgrest_get_page <- function(
     .schema = "public",
     .page_parameters = DEFAULT_PAGE_PARAMETERS,
     .headers = NULL) {
-  url <- httr::modify_url(ATLAS_API_V2_HOST(),
-    path = paste(httr::parse_url(ATLAS_API_V2_HOST())$path, endpoint, sep = "/")
+  url <- httr::modify_url(ATLAS_API_V4_HOST(),
+    path = paste(httr::parse_url(ATLAS_API_V4_HOST())$path, endpoint, sep = "/")
   )
   header <- list(
     Authorization = paste("Bearer", ATLAS_API_TOKEN()),
