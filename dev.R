@@ -20,18 +20,21 @@ usethis::use_dev_package("IRkernel", type = "Suggests", remote = NULL)
 
 # Package dependencies
 usethis::use_package("dplyr", type = "Imports")
-usethis::use_package("httr", type = "Imports")
+usethis::use_package("httr2", type = "Imports")
 usethis::use_package("sf",  type = "Imports")
 usethis::use_package("tidyr",  type = "Imports")
 usethis::use_package("foreach",  type = "Imports")
 usethis::use_package("doParallel", type = "Imports")
 
 # Package modules and tests
-usethis::use_r("get_gen")
-usethis::use_test("get_gen")
+usethis::use_r("db_read_table")
+usethis::use_test("db_read_table")
 
-usethis::use_r("post_gen")
-usethis::use_test("post_gen")
+usethis::use_r("db_write_table")
+usethis::use_test("db_write_table")
+
+usethis::use_r("db_call_function")
+usethis::use_test("db_write_table")
 
 usethis::use_r("get_datasets")
 usethis::use_test("get_datasets")
@@ -39,26 +42,14 @@ usethis::use_test("get_datasets")
 usethis::use_r("get_taxa")
 usethis::use_test("get_taxa")
 
-usethis::use_r("get_taxa_group")
-usethis::use_test("get_taxa_group")
-
 usethis::use_r("get_observations")
 usethis::use_test("get_observations")
 
 usethis::use_r("get_timeseries")
 usethis::use_test("get_timeseries")
 
-usethis::use_r("get_taxa_global_names")
-usethis::use_test("get_taxa_global_names")
-
-usethis::use_r("taxa")
-usethis::use_test("taxa")
-
-usethis::use_r("read_function_data")
-usethis::use_test("read_function_data")
-
-usethis::use_r("read_table_data")
-usethis::use_test("read_table_data")
+usethis::use_r("get_regions")
+usethis::use_test("get_regions")
 
 # Create vignettes
 usethis::use_vignette("download-obs")

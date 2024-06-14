@@ -19,49 +19,49 @@ knitr::opts_chunk$set(
 
 The `ratlas` package provides functions to interact with Biodiversité Québec's database `Atlas`. For most use cases, `ratlas` get functions such as `get_taxa`, `get_observations`, `get_datasets`, etc should be used, as they are designed to be more user-friendly. However, in some cases, it is useful to directly access the database ressources.
 
-This vignette describes how to do so using low-level functions `get_table_data` and `get_function_data`, on which `ratlas` get functions are based and is intended for advanced users.
+This vignette describes how to do so using low-level functions `db_read_table` and `db_call_function`, on which `ratlas` get functions are based and is intended for advanced users.
 
 # Atlas database
 
 Atlas database is a PostgreSQL database. It contains several tables, views, materialized views, functions, etc. Data is stored and made available through those resources. While table store data, views and materialized views behaves as tables and are used to store queries, and functions are used to perform operations on the data. They are organized by different schema, each of them representing a different application layer of the database. The following schema are available:
-* `public`: Raw biodiversity data is stored here in tables such as `observations`, `taxa_obs`, `datasets`, `variables`, `efforts`, etc. This schema is relational, as joins between tables are required to retrieve data. Data may be protected by access rights and require authentication to be accessed through a token (see readme).
-* `api`: This schema contains views and functions that are used to access data from the `public` schema. It performs joins between tables, and returns data in a more user-friendly format. This schema is used by the `ratlas` get functions. Data may be protected by access rights and require authentication to be accessed through a token (see readme).
+* `public`: Raw biodiversity data is stored here in tables such as `observations`, `taxa_obs`, `datasets`, `variables`, `efforts`, etc. This schema is relational, as joins between tables are required to retrieve data. Data may be protected by access rights and require authentication to be accessed through a token (see README).
+* `api`: This schema contains views and functions that are used to access data from the `public` schema. It performs joins between tables, and returns data in a more user-friendly format. This schema is used by the `ratlas` read/call functions. Data may be protected by access rights and require authentication to be accessed through a token (see README).
 * `atlas-api`: This schema contains tables, views and functions required for the operation of the ['atlas web portal'](https://biodiversite-quebec.ca/en/atlas). All displayed information and summary statistics are computed from resources in this schema. Data at this layer is not protected by access rights and can be accessed without authentication.
 
 Documentation for tables and functions are made availabe in atlas-db repository documentation.
 
 # Reading tables and views data
 
-The read_table_data() function is used to read data from a PostgreSQL table. It takes several arguments, including the name of the table, the schema that the table belongs to, and the authentication token that is required to access the database.
+The db_read_table() function is used to read data from a PostgreSQL table. It takes several arguments, including the name of the table, the schema that the table belongs to, and the authentication token that is required to access the database.
 
-Here's an example of how to use the read_table_data() function to read data from a table named "employees" in the "public" schema:
+Here's an example of how to use the db_read_table() function to read data from a table named "taxa_obs" in the "public" schema:
 
 ```{r setup}
 library(ratlas)
 
-data <- get_table_data("taxa_obs", schema = "public")
+data <- db_read_table("taxa_obs", schema = "public")
 ```
 
-The read_table_data() function returns a data.frame object containing the data from the table. The data.frame columns are named after the table columns. The data.frame row names are the row numbers of the table.
+The db_read_table() function returns a data.frame object containing the data from the table. The data.frame columns are named after the table columns. The data.frame row names are the row numbers of the table.
 
 ## Filtering data using column values
 
-The read_table_data() function also allows you to filter the data that is returned by specifying additional arguments. For example, you can use the `...` argument to specify a filter condition:
+The db_read_table() function also allows you to filter the data that is returned by specifying additional arguments. For example, you can use the `...` argument to specify a filter condition:
 
 ```{r}
-data <- get_table_data("taxa_obs", schema = "public", id = 1)
+data <- db_read_table("taxa_obs", schema = "public", id = 1)
 
 # Or
 
-data <- get_table_data("taxa_obs", schema = "public", scientific_name = 'Acer saccharum')
+data <- db_read_table("taxa_obs", schema = "public", scientific_name = 'Acer saccharum')
 head(data)
 
 # Using a list of values
 
-data <- get_table_data("taxa_obs", schema = "public", id = c(1, 2, 3))
+data <- db_read_table("taxa_obs", schema = "public", id = c(1, 2, 3))
 head(data)
 
-data <- get_table_data("taxa_obs", schema = "public", scientific_name = c('Acer saccharum', 'Acer rubrum'))
+data <- db_read_table("taxa_obs", schema = "public", scientific_name = c('Acer saccharum', 'Acer rubrum'))
 head(data)
 ```
 
@@ -72,19 +72,19 @@ The limit and select arguments can be used to limit the number of rows returned 
 Those arguments are useful when working with large tables, as they allow you to limit the amount of data that is returned by the function.
 
 ```{r}
-data <- get_table_data("taxa_obs", schema = "public", limit = 10)
+data <- db_read_table("taxa_obs", schema = "public", limit = 10)
 
-data <- get_table_data("taxa_obs", schema = "public", select = c("id", "scientific_name"))
+data <- db_read_table("taxa_obs", schema = "public", select = c("id", "scientific_name"), limit = 10)
 ```
 
 ## Returning geometries
 
-Many tables in the database contain geometries. For example, the `observations` table contains a `geom` column that contains the location of the observation. By default, the read_table_data() function returns a data.frame object with the geometry column as a list of points. However, you can use the `output_geometry` argument to return the data as a `sf` object, made available by the `sf` package. The `sf` object is our preferred format for working with geometries in R.
+Many tables in the database contain geometries. For example, the `observations` table contains a `geom` column that contains the location of the observation. By default, the db_read_table() function returns a data.frame object with the geometry column as a list of points. However, you can use the `output_geometry` argument to return the data as a `sf` object, made available by the `sf` package. The `sf` object is our preferred format for working with geometries in R.
 
 ```{r}
-regions <- get_table_data("regions", schema = "public", output_geometry = TRUE, type = 'admin', scale = '2') # Administrative regions of Quebec
+regions <- db_read_table("regions", schema = "public", output_geometry = TRUE, type = 'admin', scale = '2') # Administrative regions of Quebec
 
-data <- get_table_data("observations", schema = "public", output_geometry = TRUE, within_quebec = TRUE, limit = 50)
+data <- db_read_table("observations", schema = "public", output_geometry = TRUE, within_quebec = TRUE, limit = 50)
 
 # Plot the regions and the observations
 plot(regions$geom)
