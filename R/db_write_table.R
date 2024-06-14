@@ -63,7 +63,7 @@ postgrest_post <- function(url, header, data) {
   # Prepare the request
   req <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
-    httr2::req_body_json(data)
+    httr2::req_body_json(data, na = "null")
 
   # Make the request
   response <- req |>
