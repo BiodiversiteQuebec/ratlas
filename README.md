@@ -4,10 +4,9 @@
 
 Ce paquet R expose les services `RESTFull` de l'API de Atlas. Atlas est un système d'information sur la biodiversité du Québec développé par le laboratoire d'Écologie Intégrative de l'Université de Sherbrooke.
 
-La documentation complète du package est disponible [ici](https://ReseauBiodiversiteQuebec.github.io/ratlas).
-
-Pour débuter avec le package `ratlas` nous vous recommendons l'article pour
-débuter par le [tutoriel pour le téléchargement d'observations](https://ReseauBiodiversiteQuebec.github.io/ratlas/articles/download-obs.html).
+L'Atlas est depuis tout récemment disponible via un geoparquet ([documentation geoparquet](https://biodiversite-quebec.ca/documentation/acces-atlas)).
+Pour une expérience plus optimale et rapide, nous recommandons d'interagir avec Atlas via ce geoparquet.
+Toutefois, si vous désirez strictement utiliser le package `ratlas`, nous vous recommandons de débuter par la lecture de l'article [tutoriel pour le téléchargement d'observations](https://BiodiversiteQuebec.github.io/ratlas/articles/download-obs.html).
 
 ## Installer le paquet `ratlas`
 
@@ -21,7 +20,7 @@ Un jeton d'accès vous sera mis à disposition par l'équipe de développeur de 
 
 Il est **fortement recommandé** de mettre en cache votre jeton d'accès (jeton d'accès stocké dans un fichier `rds`) afin de s'assurer qu'il ne soit pas visible ou transmis avec votre code à un autre utilisateur. Ce jeton d'accès est unique et révocable. 
 
-Pour cela, il vous suffit simplement d'enregistrer le jeton d'accès directement en tant que _Environment variable_
+Pour cela, il vous suffit simplement d'enregistrer le jeton d'accès directement en tant que _Environment variable_.
 
 ### Stratégie 1: Mise en cache dans les variables d'environnement de R
 
@@ -43,7 +42,6 @@ ATLAS_API_TOKEN=7f8df438e1be96a18436e9dab5d97d68ed0e0441d9b68f59e0ce631b2919f3aa
 ### Stratégie 2: Environnement au niveau OS / runtime
 
 Vous pouvez également passer votre jeton d'accès en créant une variable d'environnement nommée `ATLAS_API_TOKEN` au niveau de l'OS ou de l'environnement de dévelopement.
-
 
 ## Troubleshooting
 
