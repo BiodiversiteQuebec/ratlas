@@ -26,7 +26,7 @@ library(dplyr)
 
 ```{r, include = FALSE}
 kable <- function(data) {
-  knitr::kable(data) %>%
+  knitr::kable(data) |>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 }
 ```
@@ -35,6 +35,7 @@ kable <- function(data) {
 ## List regions available in the atlas portal
 
 The `get_regions()` function returns a data frame with the regions available in the atlas portal. The function returns a data frame with the following columns:
+
 - `fid`: the unique identifier of the region
 - `type`: the type of region. Can be one of `cadre_eco`, `admin`, and `hex`
 - `scale`: integer for the scale of the region. Example : 1 for the province of
@@ -42,31 +43,31 @@ The `get_regions()` function returns a data frame with the regions available in 
   the Municipalities
 - `name`: name of the region. Example : "Quebec", "Montreal", "Laurentides"
 - `scale_desc`: description of the scale.
-- ``
+
 Running the function without any parameters will return all regions in the atlas. This can be a very large dataset and may take a long time to download. To explore the regions, it is recommended to use the `id` parameter to return a specific region or the `type` parameter to return a specific type of region. It is also possible to exclude the geometry from the results by setting the `geometry` parameter to `FALSE`.
 
 
 ```{r}
 regions_desc <- get_regions(geometry = FALSE)
-head(regions_desc, 20) %>% kable()
+head(regions_desc, 20) |> kable()
 ```
 
 Let's filter the results to only return the Municipalities of Quebec. And search the results for the city of Sherbrooke.
 
 ```{r}
 municipalities_desc <- get_regions(type = "admin", scale = 4, geometry = FALSE)
-sherbrooke <- municipalities_desc %>% filter(name == "Sherbrooke")
-sherbrooke %>% kable()
+sherbrooke <- municipalities_desc |> filter(name == "Sherbrooke")
+sherbrooke |> kable()
 ```
 
 ## Count observations for a region
 
-The database `obs_regions_taxa_datasets_counts` view contains the number of observations for each region, taxa and datasets. We can query it directly with the `get_gen()` function.
+The database `obs_regions_taxa_datasets_counts` view contains the number of observations for each region, taxa and datasets. We can query it directly with the `db_read_table()` function.
 
 ```{r}	
-sherbrooke_count_response <- get_gen(
-  "obs_regions_taxa_datasets_counts",
-  .schema = "atlas_api",
+sherbrooke_count_response <- db_read_table(
+  table_name = "obs_regions_taxa_datasets_counts",
+  schema = "atlas_api",
   fid = sherbrooke$fid
   # id_taxa_obs = 735,
   )
@@ -81,7 +82,7 @@ print (paste("Number of observations in Sherbrooke:", sherbrooke_count))
 We can now use the `fid` value for the city of Sherbrooke to download observations for the year 2002. The `get_observations()` function returns a data frame with the observations for the specified region. Other filter parameters can be used to further filter the results. For example, we can filter the results to only return observations for a specific year.
 
 ```{r}
-sherbrooke_observations <- get_observations(fid_region = sherbrooke$fid, year = 2002)
+sherbrooke_observations <- get_observations(region_fid = sherbrooke$fid, year = 2002)
 
 # Print number of observations
 print (paste("Number of observations in Sherbrooke in 2002:", nrow(sherbrooke_observations)))
