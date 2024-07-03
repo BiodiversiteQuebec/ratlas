@@ -5,20 +5,22 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec  • ratlas</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<title>R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec • ratlas</title>
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec ">
-<meta property="og:description" content="ratlas est un paquet R permettant laccès et lanalyse des données de biodiversité aggrégée par le réseau d'observation de la biodiversité du Québec.">
+<script src="pkgdown.js"></script><meta property="og:title" content="R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec">
+<meta property="og:description" content="ratlas est une librarie R permettant laccès et lanalyse des données de biodiversité aggrégées par le réseau d'observation de la biodiversité du Québec.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,36 +33,24 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">ratlas</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/clara_region_bird_counts.html">Number of bird observations for Quebec ecological reference framework regions</a>
-    </li>
-    <li>
       <a href="articles/database-access-functions.html">Functions to directly access the database ressources</a>
-    </li>
-    <li>
-      <a href="articles/download-bird-presence-absence.html">Downloading bird presence absence using R Atlas</a>
     </li>
     <li>
       <a href="articles/download-obs.html">Download observations from Atlas</a>
@@ -79,56 +69,60 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="documentation-du-paquet-ratlas" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#documentation-du-paquet-ratlas" class="anchor"></a>Documentation du paquet <code>ratlas</code>
+<div class="section level1">
+<div class="page-header"><h1 id="documentation-du-paquet-ratlas">Documentation du paquet <code>ratlas</code>
+<a class="anchor" aria-label="anchor" href="#documentation-du-paquet-ratlas"></a>
 </h1></div>
 <p><code>ratlas</code> est un paquet R permettant l’accès et l’analyse des données de biodiversité aggrégée par le réseau d’observation de la biodiversité du Québec.</p>
-<p>Ce paquet R expose les services <code>RESTFull</code> de l’API de Atlas. Atlas est un système d’information sur la biodiversité du Québec développé par le laboratoire d’Écologie Intégrative de l’Université de Sherbrooke.</p>
-<p>La documentation complète du package est disponible <a href="https://ReseauBiodiversiteQuebec.github.io/ratlas">ici</a>.</p>
-<p>Pour débuter avec le package <code>ratlas</code> nous vous recommendons l’article pour débuter par le <a href="https://ReseauBiodiversiteQuebec.github.io/ratlas/articles/download-obs.html">tutoriel pour le téléchargement d’observations</a>.</p>
-<div id="installer-le-paquet-ratlas" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installer-le-paquet-ratlas" class="anchor"></a>Installer le paquet <code>ratlas</code>
+<p>Ce paquet R expose les services <code>RESTFull</code> de l’API de Atlas. Atlas est un système d’information sur la biodiversité du Québec développé par Biodiversité Québec et le laboratoire d’Écologie Intégrative de l’Université de Sherbrooke.</p>
+<p>L’Atlas est depuis tout récemment disponible via un geoparquet (<a href="https://biodiversite-quebec.ca/documentation/acces-atlas" class="external-link">documentation geoparquet</a>). Pour une expérience optimale et plus rapide, nous recommandons d’interagir avec Atlas via ce geoparquet. Toutefois, si vous désirez tout de même utiliser le package <code>ratlas</code>, nous vous recommandons de débuter par la lecture de l’article <a href="https://BiodiversiteQuebec.github.io/ratlas/articles/download-obs.html" class="external-link">tutoriel pour le téléchargement d’observations</a>.</p>
+<div class="section level2">
+<h2 id="installer-le-paquet-ratlas">Installer le paquet <code>ratlas</code>
+<a class="anchor" aria-label="anchor" href="#installer-le-paquet-ratlas"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"ReseauBiodiversiteQuebec/ratlas"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ReseauBiodiversiteQuebec/ratlas"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div id="sauthentifier-auprès-de-lapi" class="section level2">
-<h2 class="hasAnchor">
-<a href="#sauthentifier-aupr%C3%A8s-de-lapi" class="anchor"></a>S’authentifier auprès de l’API</h2>
+<div class="section level2">
+<h2 id="sauthentifier-auprès-de-lapi">S’authentifier auprès de l’API<a class="anchor" aria-label="anchor" href="#sauthentifier-aupr%C3%A8s-de-lapi"></a>
+</h2>
 <p>Un jeton d’accès vous sera mis à disposition par l’équipe de développeur de Atlas. Veuillez les contacter pour en obtenir un de manière sécurisée.</p>
 <p>Il est <strong>fortement recommandé</strong> de mettre en cache votre jeton d’accès (jeton d’accès stocké dans un fichier <code>rds</code>) afin de s’assurer qu’il ne soit pas visible ou transmis avec votre code à un autre utilisateur. Ce jeton d’accès est unique et révocable.</p>
-<p>Pour cela, il vous suffit simplement d’enregistrer le jeton d’accès directement en tant que <em>Environment variable</em></p>
-<div id="stratégie-1-mise-en-cache-dans-les-variables-denvironnement-de-r" class="section level3">
-<h3 class="hasAnchor">
-<a href="#strat%C3%A9gie-1-mise-en-cache-dans-les-variables-denvironnement-de-r" class="anchor"></a>Stratégie 1: Mise en cache dans les variables d’environnement de R</h3>
+<p>Pour cela, il vous suffit simplement d’enregistrer le jeton d’accès directement en tant que <em>Environment variable</em>.</p>
+<div class="section level3">
+<h3 id="stratégie-1-mise-en-cache-dans-les-variables-denvironnement-de-r">Stratégie 1: Mise en cache dans les variables d’environnement de R<a class="anchor" aria-label="anchor" href="#strat%C3%A9gie-1-mise-en-cache-dans-les-variables-denvironnement-de-r"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html">file.edit</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/file.edit.html" class="external-link">file.edit</a></span><span class="op">(</span><span class="st">"~/.Renviron"</span><span class="op">)</span></span></code></pre></div>
 <p>Cette ligne va ouvrir un ficher text dans votre Rstudio. Rajoutez dans ce ficher un linge comme la suivante:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># utilizez votre propre token ici</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>ATLAS_API_TOKEN<span class="ot">=</span>7f8df438e1be96a18436e9dab5d97d68ed0e0441d9b68f59e0ce631b2919f3aa</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># utilizez votre propre token ici</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>ATLAS_API_TOKEN<span class="ot">=</span>7f8df438e1be96a18436e9dab5d97d68ed0e0441d9b68f59e0ce631b2919f3aa</span></code></pre></div>
 <p><em>Le jeton d’accès est un exemple ici et n’est aucunement valide.</em></p>
 </div>
-<div id="stratégie-2-environnement-au-niveau-os--runtime" class="section level3">
-<h3 class="hasAnchor">
-<a href="#strat%C3%A9gie-2-environnement-au-niveau-os--runtime" class="anchor"></a>Stratégie 2: Environnement au niveau OS / runtime</h3>
+<div class="section level3">
+<h3 id="stratégie-2-environnement-au-niveau-os--runtime">Stratégie 2: Environnement au niveau OS / runtime<a class="anchor" aria-label="anchor" href="#strat%C3%A9gie-2-environnement-au-niveau-os--runtime"></a>
+</h3>
 <p>Vous pouvez également passer votre jeton d’accès en créant une variable d’environnement nommée <code>ATLAS_API_TOKEN</code> au niveau de l’OS ou de l’environnement de dévelopement.</p>
 </div>
 </div>
-<div id="troubleshooting" class="section level2">
-<h2 class="hasAnchor">
-<a href="#troubleshooting" class="anchor"></a>Troubleshooting</h2>
-<div id="erreur-401--unauthorized" class="section level3">
-<h3 class="hasAnchor">
-<a href="#erreur-401--unauthorized" class="anchor"></a>Erreur 401 : Unauthorized</h3>
+<div class="section level2">
+<h2 id="troubleshooting">Troubleshooting<a class="anchor" aria-label="anchor" href="#troubleshooting"></a>
+</h2>
+<div class="section level3">
+<h3 id="erreur-401--unauthorized">Erreur 401 : Unauthorized<a class="anchor" aria-label="anchor" href="#erreur-401--unauthorized"></a>
+</h3>
 <p>Si vous obtenez une erreur 401, c’est que votre jeton d’accès n’est pas valide. Veuillez vous assurer que vous avez bien copié le jeton d’accès et que vous l’avez bien mis en cache dans votre environnement de développement.</p>
 <p>Pour valider que votre jeton d’accès est bien en cache, vous pouvez utiliser la fonction <code>Sys.getenv("ATLAS_API_TOKEN")</code> qui devrait retourner votre jeton d’accès.</p>
+</div>
+<div class="section level3">
+<h3 id="erreur-curl_fetch_memory-0a00010bssl">Erreur curl_fetch_memory 0A00010B:SSL<a class="anchor" aria-label="anchor" href="#erreur-curl_fetch_memory-0a00010bssl"></a>
+</h3>
+<p>Erreur possible lors de la récupération (GET) de données via une machine Linux (ici Ubuntu). L’erreur provient du package curl. Un correctif est disponible depuis la version 7.87.0 du package qui elle est disponible depuis la version 23.02 de Ubuntu.</p>
 </div>
 </div>
 </div>
@@ -136,35 +130,50 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing ratlas</a></li>
+</ul>
+</div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Vincent Beauregard <br><small class="roles"> Author, maintainer </small>  </li>
 </ul>
 </div>
+
+
 
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Vincent Beauregard.</p>
+  <p></p>
+<p>Developed by Vincent Beauregard.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.9000.</p>
 </div>
 
       </footer>
 </div>
 
-  
+
+
+
 
 
   </body>

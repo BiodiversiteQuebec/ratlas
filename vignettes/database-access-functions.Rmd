@@ -39,8 +39,9 @@ Here's an example of how to use the db_read_table() function to read data from a
 
 ```{r setup}
 library(ratlas)
-
-data <- db_read_table("taxa_obs", schema = "public")
+# Added a limit of 100 to simplify the process
+# Remove the limit argument if you want the whole table
+data <- db_read_table("taxa_obs", schema = "public", limit = 100)
 ```
 
 The db_read_table() function returns a data.frame object containing the data from the table. The data.frame columns are named after the table columns. The data.frame row names are the row numbers of the table.
@@ -104,10 +105,10 @@ Here's an example of how to use the get_table_data() function to download the 10
 data <- db_read_table("taxa_obs", schema = "public", limit = 100, offset = 200)
 ```
 
-In this example, the results are paginated into multiple pages of 1000 rows each.
+In this example, the results are paginated into multiple pages of 100 rows each.
 
 ```{r}
-data <- db_read_table("taxa_obs", schema = "public", .page_limit = 1000)
+data <- db_read_table("taxa_obs", schema = "public", .page_limit = 100)
 ```
 
 
@@ -120,7 +121,7 @@ By default, the function downloads the results using parallelization using 4 cor
 Here's an example of how to use the db_read_table() function to download four pages of data in parallel using 4 cores:
 
 ```{r}
-data <- db_read_table("observations", schema = "public", .n_pages = 4, .cores = 4, .page_limit = 1000)
+data <- db_read_table("observations", schema = "public", .n_pages = 4, .cores = 4)
 ```
 
 # Reading functions data

@@ -50,9 +50,9 @@ get_regions <- function(
   }
 
   if (geometry) {
-    query$output_geometry <- "true"
+    query$output_geometry <- TRUE
   } else {
-    query$output_geometry <- "false"
+    query$output_geometry <- FALSE
     query$select <- c("fid", "type", "scale", "scale_desc", "name")
   }
 
