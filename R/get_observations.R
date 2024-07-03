@@ -67,9 +67,9 @@ get_observations <- function(
   }
 
   if (geometry) {
-    query$output_geometry <- "true"
+    query$output_geometry <- TRUE
   } else {
-    query$output_geometry <- "false"
+    query$output_geometry <- FALSE
 
     # List of columns from single call
     sample_query <- query
