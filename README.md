@@ -6,7 +6,7 @@ Ce paquet R expose les services `RESTFull` de l'API de Atlas. Atlas est un syst�
 
 L'Atlas est depuis tout récemment disponible via un geoparquet ([documentation geoparquet](https://biodiversite-quebec.ca/documentation/acces-atlas)).
 Pour une expérience optimale et plus rapide, nous recommandons d'interagir avec Atlas via ce geoparquet.
-Toutefois, si vous désirez strictement utiliser le package `ratlas`, nous vous recommandons de débuter par la lecture de l'article [tutoriel pour le téléchargement d'observations](https://BiodiversiteQuebec.github.io/ratlas/articles/download-obs.html).
+Toutefois, si vous désirez tout de même utiliser le package `ratlas`, nous vous recommandons de débuter par la lecture de l'article [tutoriel pour le téléchargement d'observations](https://BiodiversiteQuebec.github.io/ratlas/articles/download-obs.html).
 
 ## Installer le paquet `ratlas`
 
