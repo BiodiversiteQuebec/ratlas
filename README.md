@@ -2,7 +2,7 @@
 
 `ratlas` est un paquet R permettant l'accès et l'analyse des données de biodiversité aggrégée par le réseau d'observation de la biodiversité du Québec.
 
-Ce paquet R expose les services `RESTFull` de l'API de Atlas. Atlas est un système d'information sur la biodiversité du Québec développé par le laboratoire d'Écologie Intégrative de l'Université de Sherbrooke.
+Ce paquet R expose les services `RESTFull` de l'API de Atlas. Atlas est un système d'information sur la biodiversité du Québec développé par Biodiversité Québec et le laboratoire d'Écologie Intégrative de l'Université de Sherbrooke.
 
 L'Atlas est depuis tout récemment disponible via un geoparquet ([documentation geoparquet](https://biodiversite-quebec.ca/documentation/acces-atlas)).
 Pour une expérience plus optimale et rapide, nous recommandons d'interagir avec Atlas via ce geoparquet.
