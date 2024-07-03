@@ -111,7 +111,7 @@ db_read_table <- function(table_name,
                 postgrest_resp_to_data(response)
             }
     } else {
-        if(output_geometry == "true") {
+        if(output_geometry == TRUE) {
               out <- sf::st_sf(sf::st_sfc(), crs = sf::st_crs("+proj=longlat +datum=WGS84"))
             } else{ out <- list()}
         for (page in 1:.n_pages) {
