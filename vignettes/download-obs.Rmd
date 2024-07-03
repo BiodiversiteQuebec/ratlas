@@ -2,7 +2,7 @@
 title: "Download observations from Atlas"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{download-obs}
+  %\VignetteIndexEntry{Download observations from Atlas}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
