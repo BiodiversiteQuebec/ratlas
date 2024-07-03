@@ -23,7 +23,8 @@ This vignette describes how to do so using low-level functions `db_read_table` a
 
 # Atlas database
 
-Atlas database is a PostgreSQL database. It contains several tables, views, materialized views, functions, etc. Data is stored and made available through those resources. While table store data, views and materialized views behaves as tables and are used to store queries, and functions are used to perform operations on the data. They are organized by different schema, each of them representing a different application layer of the database. The following schema are available:
+Atlas database is a PostgreSQL database. It contains several tables, views, materialized views, functions, etc. Data is stored and made available through those resources. While table store data, views and materialized views behaves as tables and are used to store queries, and functions are used to perform operations on the data. They are organized by different schema, each of them representing a different application layer of the database. The following schemas are available:
+
 * `public`: Raw biodiversity data is stored here in tables such as `observations`, `taxa_obs`, `datasets`, `variables`, `efforts`, etc. This schema is relational, as joins between tables are required to retrieve data. Data may be protected by access rights and require authentication to be accessed through a token (see README).
 * `api`: This schema contains views and functions that are used to access data from the `public` schema. It performs joins between tables, and returns data in a more user-friendly format. This schema is used by the `ratlas` read/call functions. Data may be protected by access rights and require authentication to be accessed through a token (see README).
 * `atlas-api`: This schema contains tables, views and functions required for the operation of the ['atlas web portal'](https://biodiversite-quebec.ca/en/atlas). All displayed information and summary statistics are computed from resources in this schema. Data at this layer is not protected by access rights and can be accessed without authentication.
@@ -95,43 +96,43 @@ plot(data$geom, add = TRUE, col = 'red')
 
 By default, the function paginates the results using a number of 500,000 rows per page, as prescribed by `.page_limit` default value. If the table contains more, the function will automatically download the results in multiple pages and concatenate them into a single data frame.
 
-You can customize the pagination behavior by specifying the limit and offset parameters in the query. The get_table_data() function also provides additional parameters to control the pagination process, such as .n_pages and .page_limit.
+You can customize the pagination behavior by specifying the limit and offset parameters in the query. The db_read_table() function also provides additional parameters to control the pagination process, such as .n_pages and .page_limit.
 
 Here's an example of how to use the get_table_data() function to download the 100 rows of a table, starting at row 200:
 
 ```{r}
-data <- get_table_data("taxa_obs", schema = "public", limit = 100, offset = 200)
+data <- db_read_table("taxa_obs", schema = "public", limit = 100, offset = 200)
 ```
 
 In this example, the results are paginated into multiple pages of 1000 rows each.
 
 ```{r}
-data <- get_table_data("taxa_obs", schema = "public", .page_limit = 1000)
+data <- db_read_table("taxa_obs", schema = "public", .page_limit = 1000)
 ```
 
 
 ## Parallelization of Requests
 
-To handle downloading data with very large number of rows, the function makes requests in parallel using multiple cores. The get_table_data() function provides an optional parameter, `.cores`, to specify the number of cores to use for parallel processing.
+To handle downloading data with very large number of rows, the function makes requests in parallel using multiple cores. The db_read_table() function provides an optional parameter, `.cores`, to specify the number of cores to use for parallel processing.
 
 By default, the function downloads the results using parallelization using 4 cores, as defined by default value of `.cores`. The function will automatically determine the number of pages to download and split the work across the specified number of cores. The results are then combined into a single data frame.
 
-Here's an example of how to use the get_table_data() function to download four pages of data in parallel using 4 cores:
+Here's an example of how to use the db_read_table() function to download four pages of data in parallel using 4 cores:
 
 ```{r}
-data <- get_table_data("observations", schema = "public", .n_pages = 4, .cores = 4, .page_limit = 1000)
+data <- db_read_table("observations", schema = "public", .n_pages = 4, .cores = 4, .page_limit = 1000)
 ```
 
 # Reading functions data
 
-The read_function_data() function is used to read data from a PostgreSQL function. It takes several arguments, including the name of the function, the schema that the function belongs to, and the authentication token that is required to access the database. Functions arguments can be passed to the function using the `...` argument.
+The db_call_function() function is used to read data from a PostgreSQL function. It takes several arguments, including the name of the function, the schema that the function belongs to, and the authentication token that is required to access the database. Functions arguments can be passed to the function using the `...` argument.
 
 Accepted arguments are described in the function documentation. For example, the `atlas_api.obs_summary` function takes the following optionnal arguments (`taxa_keys`, `min_year`, `max_year`, `region_fid`, `region_type`).
 
 ```{r}
-data <- get_function_data("obs_summary", schema = "atlas_api")
+data <- db_call_function("obs_summary", schema = "atlas_api")
 head(data)
 
-data <- get_function_data("obs_summary", schema = "atlas_api", taxa_keys = c(1, 2, 3), min_year = 2010, max_year = 2015, region_fid = 1, region_type = 'admin')
+data <- db_call_function("obs_summary", schema = "atlas_api", taxa_keys = c(1, 2, 3), min_year = 2010, max_year = 2015, region_fid = 1, region_type = 'admin')
 head(data)
 ```

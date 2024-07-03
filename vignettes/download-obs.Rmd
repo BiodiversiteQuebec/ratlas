@@ -2,7 +2,7 @@
 title: "Download observations from Atlas"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{download-obs}
+  %\VignetteIndexEntry{Download observations from Atlas}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 Observations within Atlas may be downloaded using the `get_observations`
 functions. To filter our request to the dataset, we will use the function
-`get_taxa()` to obtain first the `Canis Lupus` taxa data. We then use it to
+`get_taxa()` to obtain first the `Canis Lupus` taxa data. We then use it 
 as a filter to get observations and then display the first 10 records.
 
 ```{r}
@@ -29,32 +29,12 @@ obs <- get_observations(id_taxa = taxa$id_taxa_obs)
 head(obs, 10)
 ```
 
-RAtlas functions expose Atlas data tables and related attributes. We can access
-related records storing information about the `datasets` and measured
-`variables` and filter them using the `id_datasets` and `id_variables` values
-for our observations.
-
-We can finally join the taxa, dataset and variables attributes to the table
-using the `dplyr` functions and `%>%` pipe operation.
+RAtlas functions expose Atlas data tables and related attributes.
+The observations table returned by the `get_observations` function 
+already returns informations on the related dataset and taxonomy of 
+an observations.
 
 ```{r}
-library(magrittr) # To use pipe operator %>%
-
-# Get data from Atlas tables
-var <- get_gen('variables', id=obs$id_variables)
-datasets <- get_datasets(obs$id_datasets)
-
-# Rename columns with prefix before join
-taxa <- dplyr::rename_with(taxa, ~ paste0("taxa.", .x))
-var <- dplyr::rename_with(var, ~ paste0("var.", .x))
-datasets <- dplyr::rename_with(datasets, ~ paste0("ds.", .x))
-
-# Join using `left_join` function from `dplyr`
-obs <- obs %>%
-  dplyr::left_join(taxa, by = c("id_taxa" = "taxa.id")) %>%
-  dplyr::left_join(var, by = c("id_variables" = "var.id")) %>%
-  dplyr::left_join(datasets, by = c("id_datasets" = "ds.id"))
-
 # Display first record as a vertical list
 print(t(obs[1, ]))
 ```
@@ -63,31 +43,25 @@ print(t(obs[1, ]))
 
 Any request may be filtered using any data attributes used as a data column in
 Atlas. For example, we will filter the `original_source` column to get only
-datasets related to the `eBird` datasets. We will the use the id values of those
+datasets related to the `Placettes-échantillons permanentes` datasets.
+We will then use the id values of those
 datasets to return only `observations` with the specified `id_datasets` and
-for the taxa associated to the Snowy owl *Bubo scandiacus*.
+for the taxa associated to the sugar maple *Acer saccharum*.
+
+Different tables can be joined using the base pipe `|>` and `dplyr` functions.
 
 ```{r}
 # Get dataset and taxa records for which we will filter observations
-ebird <- get_datasets(original_source = "eBird") %>%
+pep <- get_datasets(original_source = "Placettes-échantillons permanentes") |>
   dplyr::rename_with(~ paste0("ds.", .x))
-taxa <- get_taxa(scientific_name = "Bubo scandiacus") %>%
+taxa <- get_taxa(scientific_name = "Acer saccharum") |>
   dplyr::rename_with(~ paste0("taxa.", .x))
 
 # Filter observation request through `id_taxa` and `id_datasets` and year values
 obs <- get_observations(
-  id_datasets = ebird$ds.id,
-  id_taxa = taxa$taxa.id,
+  id_datasets = pep$ds.id,
+  id_taxa = taxa$taxa.id_taxa_obs,
   year = 2018:2021)
-
-# Join using taxa, datasets, and variables values
-var <- get_gen('variables', id=unique(obs$id_variables)) %>%
-  dplyr::rename_with( ~ paste0("var.", .x))
-
-obs <- obs %>%
-  dplyr::left_join(taxa, by = c("id_taxa" = "taxa.id")) %>%
-  dplyr::left_join(var, by = c("id_variables" = "var.id")) %>%
-  dplyr::left_join(ebird, by = c("id_datasets" = "ds.id"))
 
 print(glue::glue(
   "Found {nrow(obs)} observations between {min(obs$year_obs)} ",
@@ -98,7 +72,7 @@ print(glue::glue(
 
 # install.packages("leaflet")
 library(leaflet)
-coord <- head(t(sapply(obs$geom.coordinates, as.list)), 100) # Only 100 records shown
+coord <- head(t(sapply(obs$geometry, as.list)), 100) # Only 100 records shown
 colnames(coord) <- c("lng", "lat")
 
 map <- leaflet() %>%
