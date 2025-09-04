@@ -23,54 +23,54 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api")
 #' @export
 
 db_call_function <- function(name,
-                              schema = "public",
-                              output_geometry = FALSE,
-                              output_flatten = TRUE,
-                              .token = NULL,
-                              ...) {
-    # Argument validation
-    if (!schema %in% SCHEMA_VALUES) {
-        stop("Bad input: Unexpected value for argument `schema`")
-    }
+                             schema = "public",
+                             output_geometry = FALSE,
+                             output_flatten = TRUE,
+                             .token = NULL,
+                             ...) {
+  # Argument validation
+  if (!schema %in% SCHEMA_VALUES) {
+    stop("Bad input: Unexpected value for argument `schema`")
+  }
 
-    if (is.null(.token)) {
-        .token <- ATLAS_API_TOKEN()
-    }
+  if (is.null(.token)) {
+    .token <- ATLAS_API_TOKEN()
+  }
 
-    # Prefix the function name with 'rpc' if it is not already the case
-    # as required by PostgREST syntax for functions
-    if (!grepl("^rpc", name)) {
-        # Strip name for "/" or "\" characters
-        name <- gsub("[/\\\\]", "", name)
-        name <- paste("rpc", name, sep = "/")
-    }
+  # Prefix the function name with 'rpc' if it is not already the case
+  # as required by PostgREST syntax for functions
+  if (!grepl("^rpc", name)) {
+    # Strip name for "/" or "\" characters
+    name <- gsub("[/\\\\]", "", name)
+    name <- paste("rpc", name, sep = "/")
+  }
 
-    # Prepare HTTP request with url, header abd query parameters
-    url <- httr::modify_url(ATLAS_API_V4_HOST(),
-        path = paste(
-            httr::parse_url(ATLAS_API_V4_HOST())$path,
-            name,
-            sep = "/"
-        )
+  # Prepare HTTP request with url, header abd query parameters
+  url <- httr::modify_url(ATLAS_API_V4_HOST(),
+    path = paste(
+      httr::parse_url(ATLAS_API_V4_HOST())$path,
+      name,
+      sep = "/"
     )
-    body <- list(...)
-    header <- list(
-        Authorization = paste("Bearer", .token),
-        `User-Agent` = USER_AGENT(), # defined in zzz.R
-        `Content-type` = "application/json;charset=UTF-8",
-        `Content-Profile` = schema
-    )
+  )
+  body <- list(...)
+  header <- list(
+    Authorization = paste("Bearer", .token),
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
+    `Content-type` = "application/json;charset=UTF-8",
+    `Content-Profile` = schema
+  )
 
-    # Create and send the request
-    response <- httr2::request(url) |>
-           httr2::req_headers(!!!header) |>
-           httr2::req_body_json(body) |>
-           httr2::req_perform()
+  # Create and send the request
+  response <- httr2::request(url) |>
+    httr2::req_headers(!!!header) |>
+    httr2::req_body_json(body) |>
+    httr2::req_perform()
 
-    # Stop if error
-    postgrest_stop_if_err(response)
+  # Stop if error
+  postgrest_stop_if_err(response)
 
-    # Parse response
-    out <- postgrest_resp_to_data(response, output_flatten = output_flatten)
-    return(out)
+  # Parse response
+  out <- postgrest_resp_to_data(response, output_flatten = output_flatten)
+  return(out)
 }

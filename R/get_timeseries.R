@@ -1,11 +1,11 @@
 #' Get timeseries
 #'
-#' The function downloads and returns a spatial feature (sf) dataframe 
-#' containing time-series, for Quebec, where each row corresponds to an 
-#' individual population. 
+#' The function downloads and returns a spatial feature (sf) dataframe
+#' containing time-series, for Quebec, where each row corresponds to an
+#' individual population.
 #'
 #' @param id Returns a dataframe for the population with the specified id
-#' @param id_taxa Returns a dataframe containing time series with species 
+#' @param id_taxa Returns a dataframe containing time series with species
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #'
