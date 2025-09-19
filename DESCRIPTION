@@ -5,7 +5,11 @@ Authors@R:
     person(given = "Vincent",
            family = "Beauregard",
            role = c("aut", "cre"),
-           email = "vincent.beauregard@usherbrooke.ca")
+           email = "vincent.beauregard@usherbrooke.ca"),
+    person(given = "Benjamin",
+           family = "Mercier",
+           role = c("ctb"),
+           email = "benjamin.b.mercier@usherbrooke.ca")
 Description: ratlas est une librarie R permettant l'accès et l'analyse des données de biodiversité aggrégées par le réseau d'observation de la biodiversité du Québec.
 License: MIT + file LICENSE
 Encoding: UTF-8
