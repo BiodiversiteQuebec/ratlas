@@ -22,7 +22,7 @@ functions. To filter our request to the dataset, we will use the function
 `get_taxa()` to obtain first the `Canis Lupus` taxa data. We then use it 
 as a filter to get observations and then display the first 10 records.
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
 library(ratlas)
 taxa <- get_taxa(scientific_name = "Canis lupus")
 obs <- get_observations(id_taxa = taxa$id_taxa_obs)
@@ -34,7 +34,7 @@ The observations table returned by the `get_observations` function
 already returns informations on the related dataset and taxonomy of 
 an observations.
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
 # Display first record as a vertical list
 print(t(obs[1, ]))
 ```
@@ -50,7 +50,7 @@ for the taxa associated to the sugar maple *Acer saccharum*.
 
 Different tables can be joined using the base pipe `|>` and `dplyr` functions.
 
-```{r}
+```{r, eval = FALSE, echo = TRUE}
 # Get dataset and taxa records for which we will filter observations
 pep <- get_datasets(original_source = "Placettes-échantillons permanentes") |>
   dplyr::rename_with(~ paste0("ds.", .x))

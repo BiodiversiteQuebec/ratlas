@@ -55,6 +55,7 @@ usethis::use_test("get_regions")
 usethis::use_vignette("download-obs")
 usethis::use_vignette("download-regions-observations", title = "Download observations by region")
 usethis::use_vignette("database-access-functions", title = "Functions to directly access the database ressources")
+usethis::use_vignette("write_dataset", title = "Write and insert dataset metadata to Atlas")
 
 # Use pkgdown for package website
 usethis::use_pkgdown()
@@ -70,9 +71,11 @@ devtools::document()
 devtools::install()
 
 # Render Documentation and website
+pkgdown::init_site()
 pkgdown::build_article("download-obs")
 pkgdown::build_article("download-regions-observations")
 pkgdown::build_article("database-access-functions")
+pkgdown::build_article("post-dataset")
 pkgdown::build_articles_index()
 
 pkgdown::build_site(examples = FALSE, lazy = TRUE)
