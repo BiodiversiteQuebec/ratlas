@@ -10,6 +10,7 @@ renv*
 dev_scratch/*
 man/get_taxa.Rd
 man/get_timeseries.Rd
+man/post_dataset.Rd
 inst/doc
 tests/test_env/*
 vignette/*.html
