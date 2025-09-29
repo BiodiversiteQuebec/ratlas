@@ -14,3 +14,4 @@ man/post_dataset.Rd
 inst/doc
 tests/test_env/*
 vignette/*.html
+docs
