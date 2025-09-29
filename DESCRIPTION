@@ -22,7 +22,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Imports: 
-    devtools (>= 2.4.5.9000),
+    devtools,
     doParallel,
     dplyr,
     foreach,

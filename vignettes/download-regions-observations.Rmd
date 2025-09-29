@@ -24,7 +24,7 @@ library(ratlas)
 library(dplyr)
 ```
 
-```{r, include = FALSE, eval = FALSE, echo = TRUE}
+```{r, include = FALSE, eval = TRUE, echo = TRUE}
 kable <- function(data) {
   knitr::kable(data) |>
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed"))

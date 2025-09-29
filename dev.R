@@ -72,7 +72,6 @@ devtools::install()
 
 # Render Documentation and website
 pkgdown::init_site()
-pkgdown::build_article("download-obs")
 pkgdown::build_article("download-regions-observations")
 pkgdown::build_article("database-access-functions")
 pkgdown::build_article("post-dataset")
