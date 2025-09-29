@@ -34,7 +34,6 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/database-access-functions.html">Functions to directly access the database ressources</a></li>
-    <li><a class="dropdown-item" href="../articles/download-obs.html">Download observations from Atlas</a></li>
     <li><a class="dropdown-item" href="../articles/download-regions-observations.html">Download observations by region from Atlas</a></li>
     <li><a class="dropdown-item" href="../articles/post-dataset.html">Write and insert dataset metadata to Atlas</a></li>
   </ul>
@@ -53,7 +52,7 @@
 
 
 
-
+<script src="download-regions-observations_files/kePrint-0.0.1/kePrint.js"></script><link href="download-regions-observations_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
@@ -126,12 +125,409 @@ also possible to exclude the geometry from the results by setting the
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">regions_desc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">regions_desc</span>, <span class="fl">20</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;">
+fid
+</th>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:right;">
+scale
+</th>
+<th style="text-align:left;">
+scale_desc
+</th>
+<th style="text-align:left;">
+name
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:left;">
+admin
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Région administrative
+</td>
+<td style="text-align:left;">
+Montérégie
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+633273
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698412
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+858059
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Niveau 4
+</td>
+<td style="text-align:left;">
+Buttons du réservoir Gouin
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+858060
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Niveau 2
+</td>
+<td style="text-align:left;">
+Basses-terres du lac Témiscamingue
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+858086
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Niveau 4
+</td>
+<td style="text-align:left;">
+Buttons du réservoir Robert-Bourassa
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+134
+</td>
+<td style="text-align:left;">
+admin
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Territoire autochtone
+</td>
+<td style="text-align:left;">
+Whapmagoostui
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698426
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+858113
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Niveau 3
+</td>
+<td style="text-align:left;">
+Plateau septentrional de la Péninsule gaspésienne
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+859302
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Niveau 2
+</td>
+<td style="text-align:left;">
+Collines La Vérendrye
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+859305
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Niveau 2
+</td>
+<td style="text-align:left;">
+Péninsule de la Gaspésie
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698427
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698428
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698429
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+859733
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Niveau 4
+</td>
+<td style="text-align:left;">
+Buttes du lac Mantouchiche
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+859734
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Niveau 4
+</td>
+<td style="text-align:left;">
+Buttons du lac Hore
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+860092
+</td>
+<td style="text-align:left;">
+cadre_eco
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Niveau 4
+</td>
+<td style="text-align:left;">
+Plaine bosselée du lac Atachikami
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+693183
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698430
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+698431
+</td>
+<td style="text-align:left;">
+hex
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+5 km
+</td>
+<td style="text-align:left;">
+Nord-du-Québec
+</td>
+</tr>
+</tbody>
+</table>
 <p>Let’s filter the results to only return the Municipalities of Quebec.
 And search the results for the city of Sherbrooke.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">municipalities_desc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_regions.html">get_regions</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"admin"</span>, scale <span class="op">=</span> <span class="fl">4</span>, geometry <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">sherbrooke</span> <span class="op">&lt;-</span> <span class="va">municipalities_desc</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">name</span> <span class="op">==</span> <span class="st">"Sherbrooke"</span><span class="op">)</span></span>
 <span><span class="va">sherbrooke</span> <span class="op">|&gt;</span> <span class="fu">kable</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<table class="table table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead><tr>
+<th style="text-align:right;">
+fid
+</th>
+<th style="text-align:left;">
+type
+</th>
+<th style="text-align:right;">
+scale
+</th>
+<th style="text-align:left;">
+scale_desc
+</th>
+<th style="text-align:left;">
+name
+</th>
+</tr></thead>
+<tbody><tr>
+<td style="text-align:right;">
+749
+</td>
+<td style="text-align:left;">
+admin
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Municipalité
+</td>
+<td style="text-align:left;">
+Sherbrooke
+</td>
+</tr></tbody>
+</table>
 </div>
 <div class="section level3">
 <h3 id="count-observations-for-a-region">Count observations for a region<a class="anchor" aria-label="anchor" href="#count-observations-for-a-region"></a>
@@ -150,7 +546,8 @@ function.</p>
 <span></span>
 <span><span class="co"># Total number of observations for the city of Sherbrooke can be summed</span></span>
 <span><span class="va">sherbrooke_count</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">sherbrooke_count_response</span><span class="op">$</span><span class="va">count_obs</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Number of observations in Sherbrooke:"</span>, <span class="va">sherbrooke_count</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Number of observations in Sherbrooke:"</span>, <span class="va">sherbrooke_count</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Number of observations in Sherbrooke: 426867"</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="download-observations-for-a-region">Download observations for a region<a class="anchor" aria-label="anchor" href="#download-observations-for-a-region"></a>
@@ -165,7 +562,8 @@ results to only return observations for a specific year.</p>
 <code class="sourceCode R"><span><span class="va">sherbrooke_observations</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_observations.html">get_observations</a></span><span class="op">(</span>region_fid <span class="op">=</span> <span class="va">sherbrooke</span><span class="op">$</span><span class="va">fid</span>, year <span class="op">=</span> <span class="fl">2002</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Print number of observations</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Number of observations in Sherbrooke in 2002:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sherbrooke_observations</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Number of observations in Sherbrooke in 2002:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sherbrooke_observations</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Number of observations in Sherbrooke in 2002: 4557"</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -179,7 +577,7 @@ results to only return observations for a specific year.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

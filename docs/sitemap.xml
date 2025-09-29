@@ -1,7 +1,5 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>/404.html</loc></url>
-<url><loc>/LICENSE-text.html</loc></url>
-<url><loc>/LICENSE.html</loc></url>
 <url><loc>/articles/database-access-functions.html</loc></url>
 <url><loc>/articles/download-obs.html</loc></url>
 <url><loc>/articles/download-regions-observations.html</loc></url>
@@ -9,6 +7,8 @@
 <url><loc>/articles/post-dataset.html</loc></url>
 <url><loc>/authors.html</loc></url>
 <url><loc>/index.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
 <url><loc>/reference/dataset_insert.html</loc></url>
 <url><loc>/reference/db_call_function.html</loc></url>
 <url><loc>/reference/db_read_table.html</loc></url>
