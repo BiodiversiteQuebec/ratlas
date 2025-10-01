@@ -22,7 +22,7 @@
 #' @param zoom Optional. `integer` scalar or vector. Returns a dataframe
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `regions` table columns specified as parameter.
-#' 
+#'
 #'
 #' @export
 

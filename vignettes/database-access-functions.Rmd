@@ -37,7 +37,7 @@ The db_read_table() function is used to read data from a PostgreSQL table. It ta
 
 Here's an example of how to use the db_read_table() function to read data from a table named "taxa_obs" in the "public" schema:
 
-```{r setup}
+```{r setup, eval = TRUE, echo = TRUE}
 library(ratlas)
 # Added a limit of 100 to simplify the process
 # Remove the limit argument if you want the whole table
@@ -50,7 +50,7 @@ The db_read_table() function returns a data.frame object containing the data fro
 
 The db_read_table() function also allows you to filter the data that is returned by specifying additional arguments. For example, you can use the `...` argument to specify a filter condition:
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_read_table("taxa_obs", schema = "public", id = 1)
 
 # Or
@@ -73,7 +73,7 @@ The limit and select arguments can be used to limit the number of rows returned 
 
 Those arguments are useful when working with large tables, as they allow you to limit the amount of data that is returned by the function.
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_read_table("taxa_obs", schema = "public", limit = 10)
 
 data <- db_read_table("taxa_obs", schema = "public", select = c("id", "scientific_name"), limit = 10)
@@ -83,7 +83,7 @@ data <- db_read_table("taxa_obs", schema = "public", select = c("id", "scientifi
 
 Many tables in the database contain geometries. For example, the `observations` table contains a `geom` column that contains the location of the observation. By default, the db_read_table() function returns a data.frame object with the geometry column as a list of points. However, you can use the `output_geometry` argument to return the data as a `sf` object, made available by the `sf` package. The `sf` object is our preferred format for working with geometries in R.
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 regions <- db_read_table("regions", schema = "public", output_geometry = TRUE, type = 'admin', scale = '2') # Administrative regions of Quebec
 
 data <- db_read_table("observations", schema = "public", output_geometry = TRUE, within_quebec = TRUE, limit = 50)
@@ -101,13 +101,13 @@ You can customize the pagination behavior by specifying the limit and offset par
 
 Here's an example of how to use the get_table_data() function to download the 100 rows of a table, starting at row 200:
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_read_table("taxa_obs", schema = "public", limit = 100, offset = 200)
 ```
 
 In this example, the results are paginated into multiple pages of 100 rows each.
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_read_table("taxa_obs", schema = "public", .page_limit = 100)
 ```
 
@@ -120,7 +120,7 @@ By default, the function downloads the results using parallelization using 4 cor
 
 Here's an example of how to use the db_read_table() function to download four pages of data in parallel using 4 cores:
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_read_table("observations", schema = "public", .n_pages = 4, .cores = 4)
 ```
 
@@ -130,7 +130,7 @@ The db_call_function() function is used to read data from a PostgreSQL function.
 
 Accepted arguments are described in the function documentation. For example, the `atlas_api.obs_summary` function takes the following optionnal arguments (`taxa_keys`, `min_year`, `max_year`, `region_fid`, `region_type`).
 
-```{r}
+```{r, eval = TRUE, echo = TRUE}
 data <- db_call_function("obs_summary", schema = "atlas_api")
 head(data)
 

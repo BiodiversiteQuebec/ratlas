@@ -18,9 +18,9 @@
 #' Vernacular names in french or english are accepted.
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `taxa` table columns specified as parameter
-#' 
+#'
 #' @return `tibble` with rows associated with Atlas data object
-#' 
+#'
 #' @examples
 #' # Returns all available taxa records in atlas
 #' taxa <- get_taxa()

@@ -1,0 +1,191 @@
+---
+title: "Write and insert dataset metadata to Atlas"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Write and insert dataset metadata to Atlas}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Writing EML metadata and inserting a new dataset to Atlas
+
+## Writing the EML
+While the `EML` package provides certain functions to help writing certain fields, others need to be defined manually. The first step is to declare all the required and available fields at hand. This vignette only uses a subset of all the possible EML elements and tags; for a complete list, refer to the [EML schema documentation](https://eml.ecoinformatics.org/schema/).
+
+### Required fields
+```{r, eval = FALSE, echo = TRUE}
+# Title of the dataset
+title <- "Test dataset"
+
+# Creator(s) of the dataset - at least one is required
+creator <- list(
+  EML::set_responsibleParty(
+    givenName = "John",
+    surName = "Doe",
+    organizationName = "Biodiversité Québec",
+    electronicMailAddress = "test@test.com"
+  ),
+  EML::set_responsibleParty(
+    givenName = "Jane",
+    surName = "Doe",
+    organizationName = "Biodiversité Québec",
+    electronicMailAddress = "test@test.com"
+  )
+)
+
+# Contact(s) of the dataset - at least one is required
+contact <- EML::set_responsibleParty(
+  givenName = "John",
+  surName = "Doe",
+  organizationName = "Biodiversité Québec",
+  electronicMailAddress = "test@test.com"
+)
+```
+
+### Optional fields
+```{r, eval = FALSE, echo = TRUE}
+# Publication date of the dataset
+pub_date <- "2025-09-16"
+
+# Abstract of the dataset
+abstract <- "This is a test dataset for demonstration purposes."
+
+# Keywords associated to the dataset
+keyword_set <- list(keyword = c("biodiversity", "ecology"))
+
+# Urls related to information and download of the dataset
+distribution <- list(
+  list(
+    online = list(
+      url = list(
+        `function` = "information",
+        "https://test.com/info"
+      )
+    )
+  ),
+  list(
+    online = list(
+      url = list(
+        `function` = "download",
+        "https://test.com/download"
+      )
+    )
+  )
+)
+
+# Alternate identifiers for the dataset
+# DOI is provided here  (without the prefix of https://doi.org/)
+alternate_identifier <- list("10.12309/asdqsd", "413")
+
+# License information
+licensed <- list(
+  licenseName = "Creative Commons Attribution 4.0 International",
+  identifier = "CC-BY-4.0",
+  url = "http//:creativecommons.org/licenses/by/4.0/legalcode"
+)
+
+# Associated parties of the dataset
+associated_party <- list(
+  individualName = list(
+    givenName = "Cookie",
+    surName = "Doe"
+  ),
+  organizationName = "Culinary school",
+  role = "Cookie provider"
+)
+
+# Provider of the metadata for the dataset
+metadata_provider <- EML::set_responsibleParty(
+  givenName = "Johnny",
+  surName = "Bravo",
+  organizationName = "Mirror Inc.",
+  electronicMailAddress = "test@test.com"
+)
+
+# Any additional information about the dataset
+additional_info <- list(markdown = EML::set_TextType(text = "Some more important information."))
+
+# Language used in the dataset
+language <- "English"
+
+# Publisher of the dataset
+publisher <- list(
+  organizationName = "Biodiversité Québec"
+)
+
+# Coverage (taxonomic, temporal and geographic) of the dataset
+geographic_description <- "Sherbrooke, Qc, Canada"
+coverage <- EML::set_coverage(
+  begin = "2025-09-01", end = "2025-09-24",
+  sci_names = "Homo sapiens sapiens",
+  geographicDescription = geographic_description,
+  west = -122.44, east = -117.15,
+  north = 37.38, south = 30.00,
+  altitudeMin = 160, altitudeMaximum = 330,
+  altitudeUnits = "meter"
+)
+
+# Citation, provided in additionalMetadata
+additional_metadata <- list(
+  metadata = list(
+    citation = "Bravo, J. (2021). How to mirror. Journal of Bg, 48(7), 1552-1563."
+  )
+)
+
+# The fields methods is EML compliant, but currently not implemented
+# Methods used. Either provided as raw jsonb or as a markdown file with EML::set_methods()
+#EML::set_methods(methods_file = "/dev_scratch/test.md")
+```
+
+### Non-EML fields
+Others fields that are non EML compliant are still required for tracking and managment of the information in Atlas.
+
+```{r, eval = FALSE, echo = TRUE}
+# Data type (occurrence, time series, etc.)
+data_type <- "occurrence"
+
+# The url of the source EML
+source_eml_url <- "https://url-of-the-source-eml.test"
+
+# Source alias (custom alias to recognize the dataset in the database)
+source_alias <- "TEST"
+
+# Shareable data (TRUE/FALSE)
+shareable_data <- FALSE
+```
+
+## Validate and insert the dataset to Atlas
+Once all the required and optional fields are defined, we can send it to the `post_dataset` function which will create, validate and insert the dataset to Atlas. Since this function is not exported, it needs to be used with the triple colon operator: `ratlas:::post_dataset()`. The function will return the UUID of the newly created dataset.
+
+```{r, eval = FALSE, echo = TRUE}
+dataset_uuid <- ratlas:::post_dataset(
+  title = title,
+  creator = creator,
+  contact = contact,
+  pub_date = pub_date,
+  abstract = abstract,
+  keyword_set = keyword_set,
+  distribution = distribution,
+  alternate_identifier = alternate_identifier,
+  licensed = licensed,
+  associated_party = associated_party,
+  metadata_provider = metadata_provider,
+  additional_info = additional_info,
+  language = language,
+  publisher = publisher,
+  coverage = coverage,
+  methods = methods,
+  additional_metadata = additional_metadata,
+  data_type = data_type,
+  source_eml_url = source_eml_url,
+  source_alias = source_alias,
+  shareable_data = shareable_data
+)
+```
