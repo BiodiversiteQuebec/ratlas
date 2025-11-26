@@ -160,7 +160,8 @@ postgrest_get_page <- function(url, query, header, page, limit) {
   # Create a request object
   req <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
-    httr2::req_url_query(!!!query)
+    httr2::req_url_query(!!!query) |>
+    httr2::req_error(is_error = ~ FALSE)
 
   # Perform the request and get the response
   response <- httr2::req_perform(req)

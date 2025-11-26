@@ -65,6 +65,7 @@ db_call_function <- function(name,
   response <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
     httr2::req_body_json(body) |>
+    httr2::req_error(is_error = ~ FALSE) |>
     httr2::req_perform()
 
   # Stop if error
