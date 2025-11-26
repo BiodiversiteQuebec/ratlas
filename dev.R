@@ -25,6 +25,7 @@ usethis::use_package("sf",  type = "Imports")
 usethis::use_package("tidyr",  type = "Imports")
 usethis::use_package("foreach",  type = "Imports")
 usethis::use_package("doParallel", type = "Imports")
+usethis::use_package("EML", type = "Imports")
 
 # Package modules and tests
 usethis::use_r("db_read_table")
@@ -78,3 +79,4 @@ pkgdown::build_article("post-dataset")
 pkgdown::build_articles_index()
 
 pkgdown::build_site(examples = FALSE, lazy = TRUE)
+

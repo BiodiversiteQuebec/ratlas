@@ -15,3 +15,4 @@ inst/doc
 tests/test_env/*
 vignette/*.html
 docs
+.env*

@@ -31,7 +31,8 @@ Imports:
     tidyr,
     jsonlite,
     geojsonsf,
-    httr2
+    httr2,
+    EML
 Remotes: 
     r-lib/usethis,
     r-lib/testthat,
