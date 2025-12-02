@@ -34,7 +34,6 @@
 
 #' @return newly generated dataset UUID.
 #' @keywords internal
-#' @export
 
 post_dataset <- function(
   title,
