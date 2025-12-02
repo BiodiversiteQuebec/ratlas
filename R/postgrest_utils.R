@@ -26,9 +26,15 @@ postgrest_stop_if_err <- function(response) {
   if (httr2::resp_is_error(response)) {
     # Extract the error message from the response
     error_content <- httr2::resp_body_json(response)
-    error_message <- error_content$message
 
     # Stop and display the error message
-    stop("HTTP error: ", response$status_code, " - ", error_message)
+    msg_parts <- c(
+      if (!is.null(error_content$code)) paste0("[", error_content$code, "]") else NULL,
+      if (!is.null(error_content$message)) error_content$message else NULL,
+      if (!is.null(error_content$details)) paste0("Details: ", error_content$details) else NULL,
+      if (!is.null(error_content$hint)) paste0("Hint: ", error_content$hint) else NULL
+    )
+    formatted_message <- paste(Filter(Negate(is.null), msg_parts), collapse = " | ")
+    stop("HTTP error: ", response$status_code, " - ", formatted_message)
   }
 }

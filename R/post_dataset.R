@@ -8,6 +8,7 @@
 #' EML parameters:
 #' @param title `character`. Name of the dataset.
 #' @param creator `list`. List of responsibleParty objects created with EML::set_responsibleParty().
+#' @param id Optional. `character`. UUID of the dataset. If not provided, a new UUID will be generated.
 #' @param pub_date Optional. `character`. Publication date of the dataset in "YYYY-MM-DD" format.
 #' @param abstract Optional. `character`. Abstract of the dataset.
 #' @param keyword_set Optional. `list`. List of keywordSet objects created manually.
@@ -37,6 +38,7 @@
 post_dataset <- function(
   title,
   creator,
+  id = NULL,
   pub_date = NULL,
   abstract = NULL,
   keyword_set = NULL,
@@ -58,10 +60,18 @@ post_dataset <- function(
   shareable_data = FALSE,
   schema = "api"
 ) {
+  # Validate id is id if provided
+  if (!is.null(id)) {
+    if (!grepl("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", id)) {
+      stop("The provided id is not a valid UUID.")
+    }
+  } else {
+    id <- uuid::UUIDgenerate()
+  }
 
   # Build EML
   eml <- list(
-    packageId = uuid::UUIDgenerate(),
+    packageId = id,
     system = "uuid",
     dataset = list(
       title = title,
