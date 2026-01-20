@@ -19,6 +19,7 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api")
 #' returns a `data.frame` object with nested objects flattened.
 #' @param .token Optional. `character` Bearer token providing access to the web
 #' api.
+#' @param .header `list` Additional headers to provide to the request.
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
 
@@ -27,6 +28,7 @@ db_call_function <- function(name,
                              output_geometry = FALSE,
                              output_flatten = TRUE,
                              .token = NULL,
+                             .header = list(),
                              ...) {
   # Argument validation
   if (!schema %in% SCHEMA_VALUES) {
@@ -54,12 +56,14 @@ db_call_function <- function(name,
     )
   )
   body <- list(...)
-  header <- list(
-    Authorization = paste("Bearer", .token),
-    `User-Agent` = USER_AGENT(), # defined in zzz.R
-    `Content-type` = "application/json;charset=UTF-8",
-    `Content-Profile` = schema
-  )
+  header <- format_header(schema, .token = .token, method = "POST")
+
+  # Overrride default header with user provided ones
+  header <- modifyList(header, .header)
+
+  if (output_geometry) {
+    header$`Accept` <- "application/geo+json"
+  }
 
   # Create and send the request
   response <- httr2::request(url) |>

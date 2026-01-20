@@ -38,6 +38,7 @@
 
 get_taxa <- function(
   id = NULL,
+  id_group = NULL,
   scientific_name = NULL,
   match_name = NULL,
   ...
@@ -58,6 +59,7 @@ get_taxa <- function(
     ) %>% dplyr::bind_rows()
     return(match_taxa)
   }
+
   if (! is.null(match_name)) {
     match_taxa <- lapply(
       match_name,
@@ -66,8 +68,12 @@ get_taxa <- function(
       }
     ) %>% dplyr::bind_rows()
     return(match_taxa)
-  } else {
-    match_taxa <- do.call(db_read_table, query)
-    return(match_taxa)
+  }
+  if (! is.null(id_group)) {
+    query$id_taxa_obs <- db_call_function(
+      "get_taxa_from_group",
+      schema = "api",
+      id_group = id_group
+    )$id_taxa_obs
   }
 }

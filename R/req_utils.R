@@ -10,14 +10,28 @@ format_url <- function(endpoint, host = ATLAS_API_V4_HOST()) {
   return(url)
 }
 
-format_header <- function(schema, .token = ATLAS_API_TOKEN()) {
+VALID_METHODS <- c("GET", "POST")
+format_header <- function(schema, .token = ATLAS_API_TOKEN(), method = "GET") {
+
+  # If method is not valid, stop
+  if (!method %in% VALID_METHODS) {
+    stop("Bad input: Unexpected value for argument `method`")
+  }
+
+  # Prepare header parameters
+  if (method == "GET") {
+    profile_key <- "Accept-Profile"
+  } else if (method == "POST") {
+    profile_key <- "Content-Profile"
+  }
 
   header <- list(
     Authorization = paste("Bearer", .token),
     `User-Agent` = USER_AGENT(), # defined in zzz.R
-    `Content-type` = "application/json;charset=UTF-8",
-    `Accept-Profile` = schema
+    `Content-type` = "application/json;charset=UTF-8"
   )
+
+  header[[profile_key]] <- schema
 
   return(header)
 }

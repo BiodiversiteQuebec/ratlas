@@ -22,6 +22,7 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' @param .page_limit `integer` Count of objects returned through pagination
 #' @param .token  `character` Bearer token providing access to the web api
 #' @param .cores `integer` default `4`. Number of cores used to parallelize and
+#' @param .header `list` Additional headers to provide to the request.
 #' improve rapidity
 #' @export
 
@@ -33,7 +34,8 @@ db_write_table <- function(
     host = ATLAS_API_V4_HOST(),
     .page_limit = 50000,
     .token = ATLAS_API_TOKEN(),
-    .cores = 4) {
+    .cores = 4,
+    .header = list()) {
 
   # Argument validation
   if (! schema %in% SCHEMA_VALUES) {
@@ -44,15 +46,13 @@ db_write_table <- function(
   url <- format_url(table_name, host)
 
   # Prepare header parameters
-  header <- list(
-    Authorization = paste("Bearer", .token),
-    `User-Agent` = USER_AGENT(), # defined in zzz.R
-    `Content-type` = "application/json;charset=UTF-8",
-    `Content-Profile` = schema
-  )
+  header <- format_header(schema, .token = .token, method = "POST")
+
+  # Overrride default header with user provided ones
+  header <- modifyList(header, .header)
 
   # Post to the database
-  response <-  postgrest_post(url = url, header = header, data = data)
+  response <-  postgrest_post(url = url, header = header, data = data, params = list(...), page_limit = .page_limit)
 
   # Check response for error
   postgrest_stop_if_err(response)
@@ -64,10 +64,16 @@ db_write_table <- function(
 }
 
 
-postgrest_post <- function(url, header, data) {
+postgrest_post <- function(url, header, data, params = list(), page_limit = NULL) {
+  # Update params with page limit
+  if (!is.null(page_limit)) {
+    params$limit <- page_limit
+  }
+
   # Prepare the request
   req <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
+    httr2::req_url_query(!!!params) |>
     httr2::req_body_json(data, na = "null")
 
   # Make the request
