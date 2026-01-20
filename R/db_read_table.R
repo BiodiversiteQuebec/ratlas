@@ -33,6 +33,9 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #' @param .page_limit Optional. `integer` default `500000`. Maximum number of
 #' rows to download per page. This parameter is used to estimate the number of
 #' pages to download if `.n_pages` is `NULL`.
+#' @param .host Optional. `character` Atlas API host url.
+#' @param .token Optional. `character` Bearer token providing access to the web api.
+#' @param .header `list` Additional headers to provide to the request.
 #' @importFrom foreach %dopar%
 #' @return `tibble` or `sf` with rows associated with Atlas data object
 #' @export
@@ -44,16 +47,19 @@ db_read_table <- function(table_name,
                           limit = NULL,
                           select = NULL,
                           ...,
+                          .host = ATLAS_API_V4_HOST(),
+                          .token = ATLAS_API_TOKEN(),
                           .cores = 4,
                           .n_pages = NULL,
-                          .page_limit = 10000) {
+                          .page_limit = 10000,
+                          .header = list()) {
   # Argument validation
   if (!schema %in% SCHEMA_VALUES) {
     stop("Bad input: Unexpected value for argument `schema`")
   }
 
   # Set the url
-  url <- format_url(table_name)
+  url <- format_url(table_name, host = .host)
 
   # Prepare query parameters
   query <- postgrest_query_filter(list(...))
@@ -68,7 +74,10 @@ db_read_table <- function(table_name,
   }
 
   # Prepare header parameters
-  header <- format_header(schema)
+  header <- format_header(schema, token = .token, method = "GET")
+
+  # Overrride default header with user provided ones
+  header <- modifyList(header, .header)
 
   if (output_geometry) {
     header$`Accept` <- "application/geo+json"
