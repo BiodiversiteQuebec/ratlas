@@ -20,9 +20,10 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' @param schema `character` Schema from the database where is located the data
 #' object is located. Accept either values `api` or `public` (default)
 #' @param .page_limit `integer` Count of objects returned through pagination
+#' @param .host  `character` Atlas API host url
 #' @param .token  `character` Bearer token providing access to the web api
-#' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' @param .header `list` Additional headers to provide to the request.
+#' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' improve rapidity
 #' @export
 
@@ -31,9 +32,9 @@ db_write_table <- function(
     data,
     ...,
     schema = "public",
-    host = ATLAS_API_V4_HOST(),
-    .page_limit = 50000,
+    .host = ATLAS_API_V4_HOST(),
     .token = ATLAS_API_TOKEN(),
+    .page_limit = 50000,
     .cores = 4,
     .header = list()) {
 
@@ -43,10 +44,10 @@ db_write_table <- function(
   }
 
   # Set the url
-  url <- format_url(table_name, host)
+  url <- format_url(table_name, .host)
 
   # Prepare header parameters
-  header <- format_header(schema, .token = .token, method = "POST")
+  header <- format_header(schema, token = .token, method = "POST")
 
   # Overrride default header with user provided ones
   header <- modifyList(header, .header)

@@ -17,6 +17,7 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api")
 #' returns an `sf` object using the `geometry` column from the function output.
 #' @param output_flatten Optional. `logical` default `FALSE`. If `TRUE`,
 #' returns a `data.frame` object with nested objects flattened.
+#' @param .host Optional. `character` Atlas API host url.
 #' @param .token Optional. `character` Bearer token providing access to the web
 #' api.
 #' @param .header `list` Additional headers to provide to the request.
@@ -27,7 +28,8 @@ db_call_function <- function(name,
                              schema = "public",
                              output_geometry = FALSE,
                              output_flatten = TRUE,
-                             .token = NULL,
+                             .host = ATLAS_API_V4_HOST(),
+                             .token = ATLAS_API_TOKEN(),
                              .header = list(),
                              ...) {
   # Argument validation
@@ -48,15 +50,15 @@ db_call_function <- function(name,
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- httr::modify_url(ATLAS_API_V4_HOST(),
+  url <- httr::modify_url(.host,
     path = paste(
-      httr::parse_url(ATLAS_API_V4_HOST())$path,
+      httr::parse_url(.host)$path,
       name,
       sep = "/"
     )
   )
   body <- list(...)
-  header <- format_header(schema, .token = .token, method = "POST")
+  header <- format_header(schema, token = .token, method = "POST")
 
   # Overrride default header with user provided ones
   header <- modifyList(header, .header)

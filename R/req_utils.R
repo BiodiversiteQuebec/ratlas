@@ -11,7 +11,7 @@ format_url <- function(endpoint, host = ATLAS_API_V4_HOST()) {
 }
 
 VALID_METHODS <- c("GET", "POST")
-format_header <- function(schema, .token = ATLAS_API_TOKEN(), method = "GET") {
+format_header <- function(schema, token = ATLAS_API_TOKEN(), method = "GET") {
 
   # If method is not valid, stop
   if (!method %in% VALID_METHODS) {
@@ -26,7 +26,7 @@ format_header <- function(schema, .token = ATLAS_API_TOKEN(), method = "GET") {
   }
 
   header <- list(
-    Authorization = paste("Bearer", .token),
+    Authorization = paste("Bearer", token),
     `User-Agent` = USER_AGENT(), # defined in zzz.R
     `Content-type` = "application/json;charset=UTF-8"
   )
