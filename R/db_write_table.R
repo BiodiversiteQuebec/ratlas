@@ -44,7 +44,12 @@ db_write_table <- function(
   url <- format_url(table_name, host)
 
   # Prepare header parameters
-  header <- format_header(schema)
+  header <- list(
+    Authorization = paste("Bearer", .token),
+    `User-Agent` = USER_AGENT(), # defined in zzz.R
+    `Content-type` = "application/json;charset=UTF-8",
+    `Content-Profile` = schema
+  )
 
   # Post to the database
   response <-  postgrest_post(url = url, header = header, data = data)
