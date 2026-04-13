@@ -84,8 +84,14 @@ db_read_table <- function(table_name,
   }
 
   # Estimate number of pages if not provided
-  if (is.null(limit)) limit <- postgrest_get_table_count(url, query, header)
-  if (is.null(.n_pages)) .n_pages <- ceiling(limit / .page_limit)
+  total_rows <- if (is.null(limit)) {
+    postgrest_get_table_count(url, query, header)
+  } else {
+    limit
+  }
+  if (is.null(.n_pages)) {
+    .n_pages <- ceiling(total_rows / .page_limit)
+  }
 
   # Define parallelization parameters
   .cores <- min(.cores, .n_pages)
@@ -106,15 +112,18 @@ db_read_table <- function(table_name,
                   "postgrest_stop_if_err",
                   "postgrest_resp_to_data",
                   ".page_limit",
+                  "total_rows",
                   "output_flatten",
                   "output_geometry")
     ) %dopar% {
+      current_limit <- min(.page_limit, total_rows - (page - 1) * .page_limit)
       response <- postgrest_get_page(
         url = url,
         query = query,
         header = header,
         page = page,
-        limit = .page_limit
+        limit = current_limit,
+        page_limit = .page_limit
       )
       postgrest_stop_if_err(response)
       postgrest_resp_to_data(response)
@@ -124,12 +133,14 @@ db_read_table <- function(table_name,
       out <- sf::st_sf(sf::st_sfc(), crs = sf::st_crs("+proj=longlat +datum=WGS84"))
     } else {out <- list()}
     for (page in 1:.n_pages) {
+      current_limit <- min(.page_limit, total_rows - (page - 1) * .page_limit)
       response <- postgrest_get_page(
         url = url,
         query = query,
         header = header,
         page = page,
-        limit = min(.page_limit, limit)
+        limit = current_limit,
+        page_limit = .page_limit
       )
       postgrest_stop_if_err(response)
       page_out <- postgrest_resp_to_data(
@@ -161,8 +172,8 @@ postgrest_query_filter <- function(parameters) {
   return(parameters)
 }
 
-postgrest_get_page <- function(url, query, header, page, limit) {
-  offset <- (page - 1) * limit
+postgrest_get_page <- function(url, query, header, page, limit, page_limit) {
+  offset <- (page - 1) * page_limit
   query$limit <- format(limit, scientific = FALSE)
   query$offset <- format(offset, scientific = FALSE)
 
