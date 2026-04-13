@@ -180,6 +180,7 @@ postgrest_get_page <- function(url, query, header, page, limit, page_limit) {
   # Create a request object
   req <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
+    httr2::req_headers(`Accept-Encoding` = "identity") |>
     httr2::req_url_query(!!!query) |>
     httr2::req_error(is_error = ~ FALSE)
 
