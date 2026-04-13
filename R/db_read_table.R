@@ -49,9 +49,9 @@ db_read_table <- function(table_name,
                           ...,
                           .host = ATLAS_API_V4_HOST(),
                           .token = ATLAS_API_TOKEN(),
-                          .cores = 4,
+                          .cores = 2,
                           .n_pages = NULL,
-                          .page_limit = 10000,
+                          .page_limit = 2000,
                           .header = list()) {
   # Argument validation
   if (!schema %in% SCHEMA_VALUES) {
