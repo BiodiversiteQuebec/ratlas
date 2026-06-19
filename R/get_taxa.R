@@ -5,7 +5,7 @@
 #' individual species. The function returns a dataframe for all species if no
 #' parameters are specified. The function filters returned taxa record by
 #' attributes corresponding to atlas table columns specified as parameters
-#' (ie. `id`, `scientific_name`, `col`, `gbif`, `etc`)
+#' (ie. `id`, `scientific_name`, `group_fr`, `lemv_status`, `etc`)
 #' with accepted values either being scalar or vector for single or multiple
 #' records
 #'
@@ -31,9 +31,8 @@
 #' # Returns taxa record for the scientific name
 #' taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
 #'
-#' # Return taxa filtered by the atlas table column `col`
-#' results <- get_taxa(col = 35520954)
-#' @import magrittr
+#' # Return taxa filtered by the atlas table column `group_fr`
+#' results <- get_taxa(group_fr = "Amphibiens")
 #' @export
 
 get_taxa <- function(
@@ -54,9 +53,10 @@ get_taxa <- function(
     match_taxa <- lapply(
       scientific_name,
       function(x) {
-        db_call_function("match_taxa", schema = "api", taxa_name = x)
+        validated_name <- db_call_function(function_name = "taxa_autocomplete", schema = "atlas_api", name = scientific_name)$scientific_name
+        db_call_function("match_taxa", schema = "api", taxa_name = validated_name)
       }
-    ) %>% dplyr::bind_rows()
+    ) |> dplyr::bind_rows()
     return(match_taxa)
   }
 
@@ -64,9 +64,10 @@ get_taxa <- function(
     match_taxa <- lapply(
       match_name,
       function(x) {
-        db_call_function("match_taxa", schema = "api", taxa_name = x)
+        validated_name <- db_call_function(function_name = "taxa_autocomplete", schema = "atlas_api", name = scientific_name)$scientific_name
+        db_call_function("match_taxa", schema = "api", taxa_name = validated_name)
       }
-    ) %>% dplyr::bind_rows()
+    ) |> dplyr::bind_rows()
     return(match_taxa)
   }
   if (! is.null(id_group)) {
