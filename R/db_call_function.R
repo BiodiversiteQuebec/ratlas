@@ -24,7 +24,7 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api")
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
 
-db_call_function <- function(name,
+db_call_function <- function(function_name,
                              schema = "public",
                              output_geometry = FALSE,
                              output_flatten = TRUE,
@@ -43,18 +43,17 @@ db_call_function <- function(name,
 
   # Prefix the function name with 'rpc' if it is not already the case
   # as required by PostgREST syntax for functions
-  if (!grepl("^rpc", name)) {
+  if (!grepl("^rpc", function_name)) {
     # Strip name for "/" or "\" characters
-    name <- gsub("[/\\\\]", "", name)
-    name <- paste("rpc", name, sep = "/")
+    function_name <- gsub("[/\\\\]", "", function_name)
+    function_name <- paste("rpc", function_name, sep = "/")
   }
 
   # Prepare HTTP request with url, header abd query parameters
   url <- httr::modify_url(.host,
-    path = paste(
+    path = paste0(
       httr::parse_url(.host)$path,
-      name,
-      sep = "/"
+      function_name
     )
   )
   body <- list(...)
