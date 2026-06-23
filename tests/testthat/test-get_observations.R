@@ -1,19 +1,19 @@
 test_that("get observations works", {
   results <- get_observations(limit = 10)
   testthat::expect_type(results, "list")
-  testthat::expect_true('sf' %in% class(results))
+  testthat::expect_true("sf" %in% class(results))
   testthat::expect_true(nrow(results) == 10)
 })
 
 test_that("combining filters works", {
-  results <- get_observations(year_obs = 2014, id_taxa = 6450, id_datasets = 70, limit = 10)
+  results <- get_observations(year_obs = 2021, id_taxa_obs = 983253, id_datasets = "4fa7b334-ce0d-4e88-aaae-2e0c138d049e", limit = 10)
   testthat::expect_true(nrow(results) > 1)
 })
 
 test_that("no geometry", {
   results <- get_observations(limit = 10, geometry = FALSE)
   testthat::expect_type(results, "list")
-  testthat::expect_false('sf' %in% class(results))
+  testthat::expect_false("sf" %in% class(results))
   testthat::expect_true(nrow(results) == 10)
 })
 

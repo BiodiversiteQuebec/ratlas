@@ -25,9 +25,7 @@ random_value <- list(
       collapse = ":"
     )
   },
-  "enum_qc" = function(...) NULL,
-  "enum_ranks" = function(...) "species",
-  "enum_sp_categories" = function(...) NULL
+  "enum_ranks" = function(...) "species"
 )
 
 schema_tables <- list(
@@ -41,27 +39,20 @@ schema_tables <- list(
     month_obs = list(type = "integer"),
     day_obs = list(type = "integer"),
     time_obs = list(type = "time"),
-    id_taxa = list(type = "integer", int_range = c(1, 4365)),
+    id_taxa_obs = list(type = "integer", int_range = c(1, 4365)),
     id_variables = list(type = "integer", int_range = c(1, 9)),
     obs_value = list(type = "numeric"),
     issue = list(type = "logical"),
     geom = list(type = "geometry")
   ),
-  taxa = list(
-        id = list(type = "integer"),
-        scientific_name = list(type = "character"),
-        rank = list(type = "enum_ranks"),
-        valid = list(type = "logical"),
-        valid_taxa_id = list(type = "integer"),
-        gbif = list(type = "integer"),
-        col = list(type = "integer"),
-        family = list(type = "character"),
-        species_gr = list(type = "enum_sp_categories"),
-        authorship = list(type = "character"),
-        updated_at = list(type = "date"),
-        qc_status = list(type = "enum_qc"),
-        exotic = list(type = "logical")
-    )
+  taxa_obs = list(
+    id = list(type = "integer"),
+    scientific_name = list(type = "character"),
+    rank = list(type = "enum_ranks"),
+    authorship = list(type = "character"),
+    parent_scientific_name = list(type = "character"),
+    updated_at = list(type = "date")
+  )
 )
 random_data <- function(table_name, nrows) {
   row_schema <- schema_tables[[table_name]]
@@ -79,58 +70,147 @@ random_data <- function(table_name, nrows) {
   return(out)
 }
 
-test_that("injection observations works", {
+# Dummy host/token. The mock layer intercepts every request inside the block
+# before it leaves the machine, so nothing is ever sent over the network. We
+# deliberately use a non-routable dummy host (NOT the real staging URL) so that
+# if a mock were ever mis-scoped, the test fails to connect instead of writing
+# to a real database. We only ever assert on the *constructed* request, never
+# connect to this host.
+TEST_HOST <- "https://dummy.test/api/v2"
+TEST_TOKEN <- "fake-test-token"
+
+capturing_mock <- function(env) {
+  function(req) {
+    env$req <- req
+    httr2::response(
+      status_code = 201,
+      method = "POST",
+      headers = list("content-type" = "application/json"),
+      body = raw(0)
+    )
+  }
+}
+
+# Mock that returns a PostgREST-style error response.
+error_mock <- function(status_code, body) {
+  function(req) {
+    httr2::response_json(status_code = status_code, body = body)
+  }
+}
+
+test_that("POST request to observations is built correctly", {
+  env <- new.env()
+
   # singleton, list
-  table_name <- "observations"
-  data <- as.list(random_data(table_name, 1))
-  response <- db_write_table(table_name, data, host = "https://staging.biodiversite-quebec.ca/api/v2")
+  data <- as.list(random_data("observations", 1))
+  response <- httr2::with_mocked_responses(
+    mock = capturing_mock(env),
+    db_write_table("observations", data, .host = TEST_HOST, .token = TEST_TOKEN)
+  )
+
+  # Response is surfaced (empty POST body -> raw response returned)
   testthat::expect_true(httr2::resp_status(response) == 201)
 
-  # singleton, data.frame
-  data <- random_data(table_name, 1)
-  response <- db_write_table(table_name, data, host = "https://staging.biodiversite-quebec.ca/api/v2")
-  testthat::expect_true(httr2::resp_status(response) == 201)
-
-  # multiple lines, data.frame
-  data <- random_data(table_name, 20)
-  response <- db_write_table(table_name, data, host = "https://staging.biodiversite-quebec.ca/api/v2")
-  testthat::expect_true(httr2::resp_status(response) == 201)
+  # Request was built as expected. The URL carries the pagination query
+  # (?limit=...), so match the path rather than anchoring on end-of-string.
+  testthat::expect_match(env$req$url, "/observations(\\?|$)")
+  # postgrest_post() does not set $method explicitly; httr2 infers POST from the
+  # JSON body at perform time, so query the effective method via req_get_method.
+  testthat::expect_equal(httr2::req_get_method(env$req), "POST")
+  testthat::expect_equal(env$req$body$type, "json")
+  testthat::expect_equal(
+    httr2::req_get_headers(env$req, "reveal")$Authorization,
+    paste("Bearer", TEST_TOKEN)
+  )
+  # Default schema is sent as the Content-Profile header
+  testthat::expect_equal(env$req$headers$`Content-Profile`, "public")
 })
 
-test_that("injection taxa works", {
-  # singleton, list
-  table_name <- "taxa"
-  data <- as.list(random_data(table_name, 1))
-  response <- db_write_table(table_name, data, host = "https://staging.biodiversite-quebec.ca/api/v2")
+test_that("data.frame payloads (single and multiple rows) are sent verbatim", {
+  env <- new.env()
+
+  # singleton, data.frame
+  data <- random_data("observations", 1)
+  httr2::with_mocked_responses(
+    mock = capturing_mock(env),
+    db_write_table("observations", data, .host = TEST_HOST, .token = TEST_TOKEN)
+  )
+  testthat::expect_equal(nrow(env$req$body$data), 1)
+
+  # multiple lines, data.frame
+  data <- random_data("observations", 20)
+  httr2::with_mocked_responses(
+    mock = capturing_mock(env),
+    db_write_table("observations", data, .host = TEST_HOST, .token = TEST_TOKEN)
+  )
+  testthat::expect_equal(nrow(env$req$body$data), 20)
+})
+
+test_that("POST request to taxa_obs is built correctly", {
+  env <- new.env()
+  data <- as.list(random_data("taxa_obs", 1))
+  response <- httr2::with_mocked_responses(
+    mock = capturing_mock(env),
+    db_write_table("taxa_obs", data, .host = TEST_HOST, .token = TEST_TOKEN)
+  )
   testthat::expect_true(httr2::resp_status(response) == 201)
+  testthat::expect_match(env$req$url, "/taxa_obs(\\?|$)")
+})
+
+test_that("schema argument is passed as the Content-Profile header", {
+  env <- new.env()
+  data <- as.list(random_data("taxa_obs", 1))
+  httr2::with_mocked_responses(
+    mock = capturing_mock(env),
+    db_write_table("taxa_obs", data, schema = "api",
+                   .host = TEST_HOST, .token = TEST_TOKEN)
+  )
+  testthat::expect_equal(env$req$headers$`Content-Profile`, "api")
+})
+
+test_that("bad schema argument fails before any request is made", {
+  testthat::expect_error(
+    db_write_table("observations", list(), schema = "bad_schema",
+                   .host = TEST_HOST, .token = TEST_TOKEN),
+    regexp = "Bad input"
+  )
 })
 
 test_that("Duplicate rows fails", {
-  data <- list(
-    id = 39363658L,
-    org_parent_event = NA,
-    org_event = "S5637032",
-    org_id_obs = "URN:CornellLabOfOrnithology:EBIRD:OBS79380280",
-    id_datasets = 61L,
-    year_obs = 2009L,
-    month_obs = 11L,
-    day_obs = 24L,
-    time_obs = "09:15:00",
-    id_taxa = 216L,
-    id_variables = 1L,
-    obs_value = 1L,
-    issue = NA,
-    geom = sf::st_as_text(sf::st_point(c(-77.5786, 43.0629)))
-  )
+  # PostgREST returns 409 with a unique-violation payload on duplicate keys
+  data <- as.list(random_data("observations", 1))
   testthat::expect_error(
-    db_write_table("observations", data, host = "https://staging.biodiversite-quebec.ca/api/v2")
-    )
+    httr2::with_mocked_responses(
+      mock = error_mock(
+        409,
+        list(
+          code = "23505",
+          message = "duplicate key value violates unique constraint",
+          details = "Key (id)=(39363658) already exists."
+        )
+      ),
+      db_write_table("observations", data, .host = TEST_HOST, .token = TEST_TOKEN)
+    ),
+    regexp = "HTTP error: 409"
+  )
 })
 
 test_that("Unexistant foreign key fails", {
-  data <- random_data('observations', 1)
-  data[1, 'id_variables'] = 30000
+  # PostgREST returns 409 with a foreign-key-violation payload
+  data <- random_data("observations", 1)
+  data[1, "id_variables"] <- 30000
   testthat::expect_error(
-    db_write_table("observations", data, host = "https://staging.biodiversite-quebec.ca/api/v2")
-    )
-  })
+    httr2::with_mocked_responses(
+      mock = error_mock(
+        409,
+        list(
+          code = "23503",
+          message = "insert or update on table violates foreign key constraint",
+          details = "Key (id_variables)=(30000) is not present in table \"variables\"."
+        )
+      ),
+      db_write_table("observations", data, .host = TEST_HOST, .token = TEST_TOKEN)
+    ),
+    regexp = "HTTP error: 409"
+  )
+})
