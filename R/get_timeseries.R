@@ -13,7 +13,7 @@
 #' @export
 get_timeseries <- function(
   id = NULL,
-  id_taxa = NULL,
+  id_taxa_obs = NULL,
   ...
 ) {
   query <- list(...)
@@ -23,8 +23,8 @@ get_timeseries <- function(
   if (! is.null(id)) {
     query$id <- id
   }
-  if (! is.null(id_taxa)) {
-    query$id_taxa <- id_taxa
+  if (! is.null(id_taxa_obs)) {
+    query$id_taxa <- id_taxa_obs
   }
 
   timeseries <- do.call(db_read_table, query)
