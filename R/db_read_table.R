@@ -23,20 +23,14 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #' return. If `NULL`, all rows are returned. From the PostgREST API syntax.
 #' @param select Optional. `character` default `NULL`. List of columns to
 #' return. All columns are returned if `NULL`. From the PostgREST API syntax.
-#' @param .cores Optional. `integer` default `4`. Number of cores to use for
-#' parallel processing. If `1`, no parallel processing is used. If `NULL`, the
-#' function will automatically determine the number of cores to use based on
-#' the number of available cores on the system.
-#' @param .n_pages Optional. `integer` default `NULL`. Number of pages to
-#' download. ' If `NULL`, the number of pages is estimated from the number of
-#' rows in the table.
-#' @param .page_limit Optional. `integer` default `500000`. Maximum number of
-#' rows to download per page. This parameter is used to estimate the number of
-#' pages to download if `.n_pages` is `NULL`.
+#' @param .max_active Optional. `integer` default `4`. Number of active connections
+#' that are alive at all time to process the request.
+#' @param .page_limit Optional. `integer` default `10000`. Maximum number of
+#' rows to download per page. This determines how many requests (pages) the
+#' download is split into.
 #' @param .host Optional. `character` Atlas API host url.
 #' @param .token Optional. `character` Bearer token providing access to the web api.
 #' @param .header `list` Additional headers to provide to the request.
-#' @importFrom foreach %dopar%
 #' @return `tibble` or `sf` with rows associated with Atlas data object
 #' @export
 
@@ -49,8 +43,7 @@ db_read_table <- function(table_name,
                           ...,
                           .host = ATLAS_API_V4_HOST(),
                           .token = ATLAS_API_TOKEN(),
-                          .cores = 4,
-                          .n_pages = NULL,
+                          .max_active = 4,
                           .page_limit = 10000,
                           .header = list()) {
   # Argument validation
@@ -85,60 +78,37 @@ db_read_table <- function(table_name,
 
   # Estimate number of pages if not provided
   if (is.null(limit)) limit <- postgrest_get_table_count(url, query, header)
-  if (is.null(.n_pages)) .n_pages <- ceiling(limit / .page_limit)
+  n_pages <- ceiling(limit / .page_limit)
 
-  # Define parallelization parameters
-  .cores <- min(.cores, .n_pages)
-  debug <- as.logical(Sys.getenv("DEBUG"))
-  if (is.na(debug)) debug <- FALSE
+  page_limit <- min(.page_limit, limit)
 
-  parallel <- (!debug & .cores > 1)
+  # Build one request per page
+  reqs <- lapply(seq_len(n_pages), function(page) {
+    postgrest_page_req(url, query, header, page = page, limit = page_limit)
+  })
 
-  # Send request in parallel if more than one page
-  if (parallel) {
-    doParallel::registerDoParallel(cores = .cores)
-    on.exit(doParallel::stopImplicitCluster())
-    out <- foreach::foreach(
-      page = 1:.n_pages,
-      .combine = rbind,
-      .export = c(
-                  "postgrest_get_page",
-                  "postgrest_stop_if_err",
-                  "postgrest_resp_to_data",
-                  ".page_limit",
-                  "output_flatten",
-                  "output_geometry")
-    ) %dopar% {
-      response <- postgrest_get_page(
-        url = url,
-        query = query,
-        header = header,
-        page = page,
-        limit = .page_limit
-      )
-      postgrest_stop_if_err(response)
-      postgrest_resp_to_data(response)
+  debug <- isTRUE(as.logical(Sys.getenv("DEBUG")))
+  max_active <- if (debug) 1L else max(1L, min(.max_active, n_pages))
+
+  # Perform all requests concurrently
+  responses <- httr2::req_perform_parallel(
+    reqs,
+    on_error = "continue",
+    max_active = max_active,
+    progress = FALSE
+  )
+
+  # Convert each page, surfacing failures clearly
+  pages <- lapply(seq_along(responses), function(i) {
+    resp <- responses[[i]]
+    if (inherits(resp, "condition")) {
+      stop("Failed to fetch page ", i, ": ", conditionMessage(resp))
     }
-  } else {
-    if (output_geometry == TRUE) {
-      out <- sf::st_sf(sf::st_sfc(), crs = sf::st_crs("+proj=longlat +datum=WGS84"))
-    } else {out <- list()}
-    for (page in 1:.n_pages) {
-      response <- postgrest_get_page(
-        url = url,
-        query = query,
-        header = header,
-        page = page,
-        limit = min(.page_limit, limit)
-      )
-      postgrest_stop_if_err(response)
-      page_out <- postgrest_resp_to_data(
-        response,
-        output_flatten = output_flatten
-      )
-      out <- rbind(out, page_out)
-    }
-  }
+    postgrest_stop_if_err(resp)
+    postgrest_resp_to_data(resp, output_flatten = output_flatten)
+  })
+
+  out <- do.call(rbind, pages)
   return(out)
 }
 
@@ -161,21 +131,16 @@ postgrest_query_filter <- function(parameters) {
   return(parameters)
 }
 
-postgrest_get_page <- function(url, query, header, page, limit) {
+postgrest_page_req <- function(url, query, header, page, limit) {
   offset <- (page - 1) * limit
   query$limit <- format(limit, scientific = FALSE)
   query$offset <- format(offset, scientific = FALSE)
 
-  # Create a request object
-  req <- httr2::request(url) |>
+  httr2::request(url) |>
     httr2::req_headers(!!!header) |>
     httr2::req_url_query(!!!query) |>
+    httr2::req_retry(max_tries = 3, retry_on_failure = TRUE) |>
     httr2::req_error(is_error = ~ FALSE)
-
-  # Perform the request and get the response
-  response <- httr2::req_perform(req)
-
-  return(response)
 }
 
 postgrest_get_table_count <- function(url, query = NULL, header = NULL) {
