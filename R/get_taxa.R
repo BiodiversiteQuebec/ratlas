@@ -1,3 +1,7 @@
+GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
+            "VASCULAR_PLANTS", "NON_VASCULAR_PLANTS", "ARTHROPODS",
+            "FUNGI", "ALGAE", "MOLLUSKS", "OTHER_INVERTEBRATES", "MICROORGANISMS")
+
 #' Get taxa
 #'
 #' The function downloads and returns a list or dataframe containing a taxonomic
@@ -5,12 +9,12 @@
 #' individual species. The function returns a dataframe for all species if no
 #' parameters are specified. The function filters returned taxa record by
 #' attributes corresponding to atlas table columns specified as parameters
-#' (ie. `id`, `scientific_name`, `group_fr`, `lemv_status`, `etc`)
+#' (ie. `id_taxa_obs`, `scientific_name`, `group_name`, `lemv_status`, `etc`)
 #' with accepted values either being scalar or vector for single or multiple
 #' records
 #'
-#' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
-#' taxon with the specified id
+#' @param id_taxa_obs Optional. `integer` scalar or vector. Returns a dataframe for the
+#' taxon with the specified id_taxa_obs
 #' @param group_name Optional. `char` scalar or vector, Returns a dataframe for
 #' the taxa belonging to the specified group(s). Must be one (or several) of the
 #' following accepted values, written exactly in uppercase:
@@ -28,37 +32,32 @@
 #' # Returns all available taxa records in atlas
 #' taxa <- get_taxa()
 #'
-#' # Returns all taxa filtered by the column id values
-#' taxa <- get_taxa(id = c(188, 201, 294, 392))
+#' # Returns all taxa filtered by the column id_taxa_obs values
+#' taxa <- get_taxa(id_taxa_obs = c(188, 201, 294, 392))
 #'
 #' # Returns taxa record for the scientific name
 #' taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
 #'
-#' # Return taxa filtered by the atlas table column `group_fr`
-#' results <- get_taxa(group_fr = "Amphibiens")
+#' # Return taxa filtered by the atlas table column `group_name`
+#' results <- get_taxa(group_name = "AMPHIBIANS")
 #' @export
 
-GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
-            "VASCULAR_PLANTS", "NON_VASCULAR_PLANTS", "ARTHROPODS",
-            "FUNGI", "ALGAE", "MOLLUSKS", "OTHER_INVERTEBRATES", "MICROORGANISMS")
-
 get_taxa <- function(
-  id = NULL,
+  id_taxa_obs = NULL,
   group_name = NULL,
   scientific_name = NULL,
-  match_name = NULL,
   ...
 ) {
   query <- list(...)
   query$table_name <- "taxa"
   query$schema <- "api"
 
-  if (is.null(id) && is.null(group_name) && is.null(scientific_name) && is.null(match_name)) {
+  if (is.null(id_taxa_obs) && is.null(group_name) && is.null(scientific_name)) {
     stop("Bad input: must provide either id_taxa_obs, a group name or a scientific name")
   }
 
-  if (! is.null(id)) {
-    return(db_read_table(table_name = "taxa", schema = "api", id_taxa_obs = id))
+  if (! is.null(id_taxa_obs)) {
+    return(db_read_table(table_name = "taxa", schema = "api", id_taxa_obs = id_taxa_obs))
   }
 
   if (! is.null(group_name)) {

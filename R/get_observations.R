@@ -5,36 +5,35 @@
 #' containing all records if no parameters are specified (STRONGLY DISCOURAGED
 #' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 #' The function filters returned records by attributes corresponding to atlas
-#' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa`,
-#' `id_datasets`, `id_variables`, `fid_region`, `etc`) with accepted values 
+#' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa_obs`,
+#' `id_datasets`, `id_variables`, `fid_region`, `etc`) with accepted values
 #' either being scalar or vector for single or multiple records.
 #'
 #' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
 #' observation with the specified id
 #' @param year Optional. `integer` scalar or vector. Returns a dataframe for
-#' the observations related to the `id_taxa`
-#' @param id_taxa Optional. `integer` scalar or vector. Returns a dataframe
-#' for the taxa_obs record related to the value. `id_taxa` is translated to
-#' `id_taxa_obs`
-#' @param fid_region Optional. `integer` scalar or vector. Returns observations
+#' the observations related to the specified `year`
+#' @param id_taxa_obs Optional. `integer` scalar or vector. Returns a dataframe
+#' for the taxa_obs record related to the value.
+#' @param region_fid Optional. `integer` scalar or vector. Returns observations
 #' for the region with the specified id
+#' @param geometry Optional. `logical` default `TRUE`. If `TRUE`,
+#' returns an `sf` object using the `geometry` column from the table. IF `FALSE`
+#' returns a tibble.
 #' @param within_quebec Optional. `logical` default NULL. If `TRUE`, returns
 #' only observations within Quebec. If `FALSE`, returns only observations
 #' outside Quebec. If `NULL`, returns all observations.
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
-#' @param .cores Optional. `integer` default `4`. Number of cores used to
-#' parallelize and improve rapidity
 #' @return `tibble` with rows associated with Atlas observations
-#'
-#' @import magrittr
+#
 #' @export
 
 get_observations <- function(
   id = NULL,
   year = NULL,
-  id_taxa = NULL,
+  id_taxa_obs = NULL,
   region_fid = NULL,
   geometry = TRUE,
   within_quebec = NULL,
@@ -47,8 +46,8 @@ get_observations <- function(
   if (! is.null(id)) {
     query$id <- id
   }
-  if (! is.null(id_taxa)) {
-    query$id_taxa_obs <- id_taxa
+  if (! is.null(id_taxa_obs)) {
+    query$id_taxa_obs <- id_taxa_obs
   }
   if (! is.null(year)) {
     query$year_obs <- year

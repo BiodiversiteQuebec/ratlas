@@ -7,8 +7,8 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api")
 #'
 #' This function is designed to interface with a web API deployed with PostgREST
 #'
-#' @param name `character`. Name of the atlas function to be accessed.
-#' data. Can be either `api`, `public` or `atlas_api`.
+#' @param function_name `character`. Name of the atlas function to be accessed.
+#' data. Can be either `public`, `api` or `atlas_api`.
 #' @param ... `character` or `numeric` scalar or vector. Arguments to be passed
 #' to the function.
 #' @param schema Optional. `character` Schema from the database where is located
@@ -49,13 +49,9 @@ db_call_function <- function(function_name,
     function_name <- paste("rpc", function_name, sep = "/")
   }
 
-  # Prepare HTTP request with url, header abd query parameters
-  url <- httr::modify_url(.host,
-    path = paste0(
-      httr::parse_url(.host)$path,
-      function_name
-    )
-  )
+  # Prepare HTTP request with url, header and query parameters
+  url <- format_url(function_name, .host)
+
   body <- list(...)
   header <- format_header(schema, token = .token, method = "POST")
 

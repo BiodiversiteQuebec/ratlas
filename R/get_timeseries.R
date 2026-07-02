@@ -5,12 +5,13 @@
 #' individual population.
 #'
 #' @param id Returns a dataframe for the population with the specified id
-#' @param id_taxa Returns a dataframe containing time series with species
+#' @param id_taxa_obs Returns a dataframe containing time series with species
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `observations` table columns specified as parameter
 #'
 #' @return A list or dataframe with rows corresponding to individual population.
 #' @export
+
 get_timeseries <- function(
   id = NULL,
   id_taxa_obs = NULL,

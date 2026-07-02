@@ -12,8 +12,7 @@ POSTGREST_QUERY_PARAMETERS <- c(
 #'
 #' @param table_name `character`. Name of the table to be accessed.
 #' @param schema `character` default 'public'. Schema from the database where
-#' the table is located.
-#' Can be either `public`, `api`, `public_api`, or `atlas_api`.
+#' the table is located. Can be either `public`, `api` or `atlas_api`.
 #' @param ... Additional parameters to be passed as query to the API table_name.
 #' @param output_geometry Optional. `logical` default `FALSE`. If `TRUE`,
 #' returns an `sf` object using the `geometry` column from the table.
