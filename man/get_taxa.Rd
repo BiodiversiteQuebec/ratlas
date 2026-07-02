@@ -4,18 +4,21 @@
 \alias{get_taxa}
 \title{Get taxa}
 \usage{
-get_taxa(id = NULL, scientific_name = NULL, match_name = NULL, ...)
+get_taxa(id_taxa_obs = NULL, group_name = NULL, scientific_name = NULL, ...)
 }
 \arguments{
-\item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
-taxon with the specified id}
+\item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
+taxon with the specified id_taxa_obs}
+
+\item{group_name}{Optional. \code{char} scalar or vector, Returns a dataframe for
+the taxa belonging to the specified group(s). Must be one (or several) of the
+following accepted values, written exactly in uppercase:
+\code{AMPHIBIANS}, \code{REPTILES}, \code{BIRDS}, \code{MAMMALS}, \code{FISH}, \code{VASCULAR_PLANTS},
+\code{NON_VASCULAR_PLANTS}, \code{ARTHROPODS}, \code{FUNGI}, \code{ALGAE}, \code{MOLLUSKS},
+\code{OTHER_INVERTEBRATES}, \code{MICROORGANISMS}.}
 
 \item{scientific_name}{Optional. \code{char} scalar or vector. Returns a dataframe
 for the taxon with the specified scientific name}
-
-\item{match_name}{Optional. \code{char} scalar or vector. Returns a dataframe
-for the taxon with the specified scientific name or vernacular name.
-Vernacular names in french or english are accepted.}
 
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
 atlas \code{taxa} table columns specified as parameter}
@@ -29,7 +32,7 @@ description for each requested species where a row corresponds to an
 individual species. The function returns a dataframe for all species if no
 parameters are specified. The function filters returned taxa record by
 attributes corresponding to atlas table columns specified as parameters
-(ie. \code{id}, \code{scientific_name}, \code{col}, \code{gbif}, \code{etc})
+(ie. \code{id_taxa_obs}, \code{scientific_name}, \code{group_name}, \code{lemv_status}, \code{etc})
 with accepted values either being scalar or vector for single or multiple
 records
 }
@@ -37,12 +40,12 @@ records
 # Returns all available taxa records in atlas
 taxa <- get_taxa()
 
-# Returns all taxa filtered by the column id values
-taxa <- get_taxa(id = c(188, 201, 294, 392))
+# Returns all taxa filtered by the column id_taxa_obs values
+taxa <- get_taxa(id_taxa_obs = c(188, 201, 294, 392))
 
 # Returns taxa record for the scientific name
 taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
 
-# Return taxa filtered by the atlas table column `col`
-results <- get_taxa(col = 35520954)
+# Return taxa filtered by the atlas table column `group_name`
+results <- get_taxa(group_name = "AMPHIBIANS")
 }

@@ -2,11 +2,8 @@
 
 export(db_call_function)
 export(db_read_table)
-export(db_write_table)
 export(get_datasets)
 export(get_observations)
 export(get_regions)
 export(get_taxa)
 export(get_timeseries)
-import(magrittr)
-importFrom(foreach,"%dopar%")

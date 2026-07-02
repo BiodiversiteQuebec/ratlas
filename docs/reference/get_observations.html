@@ -4,14 +4,14 @@ observations with a single record per row. The function returns a dataframe
 containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
-table columns specified as parameters (ie. id, year_obs, id_taxa,
+table columns specified as parameters (ie. id, year_obs, id_taxa_obs,
 id_datasets, id_variables, fid_region, etc) with accepted values
 either being scalar or vector for single or multiple records."><meta property="og:description" content="The function downloads and returns a list or dataframe containing
 observations with a single record per row. The function returns a dataframe
 containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
-table columns specified as parameters (ie. id, year_obs, id_taxa,
+table columns specified as parameters (ie. id, year_obs, id_taxa_obs,
 id_datasets, id_variables, fid_region, etc) with accepted values
 either being scalar or vector for single or multiple records."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -21,7 +21,7 @@ either being scalar or vector for single or multiple records."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">ratlas</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,7 +33,6 @@ either being scalar or vector for single or multiple records."></head><body>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/database-access-functions.html">Functions to directly access the database ressources</a></li>
-    <li><a class="dropdown-item" href="../articles/download-obs.html">Download observations from Atlas</a></li>
     <li><a class="dropdown-item" href="../articles/download-regions-observations.html">Download observations by region from Atlas</a></li>
     <li><a class="dropdown-item" href="../articles/post-dataset.html">Write and insert dataset metadata to Atlas</a></li>
   </ul></li>
@@ -58,7 +57,7 @@ observations with a single record per row. The function returns a dataframe
 containing all records if no parameters are specified (STRONGLY DISCOURAGED
 DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 The function filters returned records by attributes corresponding to atlas
-table columns specified as parameters (ie. <code>id</code>, <code>year_obs</code>, <code>id_taxa</code>,
+table columns specified as parameters (ie. <code>id</code>, <code>year_obs</code>, <code>id_taxa_obs</code>,
 <code>id_datasets</code>, <code>id_variables</code>, <code>fid_region</code>, <code>etc</code>) with accepted values
 either being scalar or vector for single or multiple records.</p>
     </div>
@@ -68,7 +67,7 @@ either being scalar or vector for single or multiple records.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_observations</span><span class="op">(</span></span>
 <span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  year <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  id_taxa <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  id_taxa_obs <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  region_fid <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  geometry <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  within_quebec <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -90,7 +89,7 @@ observation with the specified id</p></dd>
 the observations related to the <code>id_taxa</code></p></dd>
 
 
-<dt id="arg-id-taxa">id_taxa<a class="anchor" aria-label="anchor" href="#arg-id-taxa"></a></dt>
+<dt id="arg-id-taxa-obs">id_taxa_obs<a class="anchor" aria-label="anchor" href="#arg-id-taxa-obs"></a></dt>
 <dd><p>Optional. <code>integer</code> scalar or vector. Returns a dataframe
 for the taxa_obs record related to the value. <code>id_taxa</code> is translated to
 <code>id_taxa_obs</code></p></dd>
@@ -112,11 +111,6 @@ atlas <code>observations</code> table columns specified as parameter
 <dd><p>Optional. <code>integer</code> scalar or vector. Returns observations
 for the region with the specified id</p></dd>
 
-
-<dt id="arg--cores">.cores<a class="anchor" aria-label="anchor" href="#arg--cores"></a></dt>
-<dd><p>Optional. <code>integer</code> default <code>4</code>. Number of cores used to
-parallelize and improve rapidity</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -128,11 +122,11 @@ parallelize and improve rapidity</p></dd>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Vincent Beauregard.</p>
+  <p>Developed by Vincent Beauregard, Benjamin Mercier.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.9000.</p>
 </div>
 
     </footer></div>

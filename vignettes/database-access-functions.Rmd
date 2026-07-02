@@ -55,7 +55,7 @@ data <- db_read_table("taxa_obs", schema = "public", id = 1)
 
 # Or
 
-data <- db_read_table("taxa_obs", schema = "public", scientific_name = 'Acer saccharum')
+data <- db_read_table("taxa_obs", schema = "public", scientific_name = "Acer saccharum")
 head(data)
 
 # Using a list of values
@@ -63,7 +63,7 @@ head(data)
 data <- db_read_table("taxa_obs", schema = "public", id = c(1, 2, 3))
 head(data)
 
-data <- db_read_table("taxa_obs", schema = "public", scientific_name = c('Acer saccharum', 'Acer rubrum'))
+data <- db_read_table("taxa_obs", schema = "public", scientific_name = c("Acer saccharum", "Acer rubrum"))
 head(data)
 ```
 

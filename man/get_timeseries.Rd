@@ -4,12 +4,12 @@
 \alias{get_timeseries}
 \title{Get timeseries}
 \usage{
-get_timeseries(id = NULL, id_taxa = NULL, ...)
+get_timeseries(id = NULL, id_taxa_obs = NULL, ...)
 }
 \arguments{
 \item{id}{Returns a dataframe for the population with the specified id}
 
-\item{id_taxa}{Returns a dataframe containing time series with species}
+\item{id_taxa_obs}{Returns a dataframe containing time series with species}
 
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
 atlas \code{observations} table columns specified as parameter}
