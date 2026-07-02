@@ -22,8 +22,8 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' @param .host  `character` Atlas API host url
 #' @param .token  `character` Bearer token providing access to the web api
 #' @param .header `list` Additional headers to provide to the request.
-#' 
-#' @export
+#'
+#' @keywords internal
 
 db_write_table <- function(
     table_name,
