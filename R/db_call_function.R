@@ -50,12 +50,8 @@ db_call_function <- function(function_name,
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- httr::modify_url(.host,
-    path = paste0(
-      httr::parse_url(.host)$path,
-      function_name
-    )
-  )
+  url <- format_url(function_name, .host)
+
   body <- list(...)
   header <- format_header(schema, token = .token, method = "POST")
 
