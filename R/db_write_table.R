@@ -1,5 +1,3 @@
-SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
-
 #' Generic function to post data into Atlas databases
 #'
 #' Data records attributes (list names or columns) must corresponds to the
@@ -26,6 +24,8 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' improve rapidity
 #'
 #' @keywords internal
+
+SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 
 db_write_table <- function(
     table_name,

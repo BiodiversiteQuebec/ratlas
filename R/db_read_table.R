@@ -1,6 +1,3 @@
-SCHEMA_VALUES <- c("public", "api", "atlas_api")
-POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
-
 #' Generic function to directly access data in Atlas database
 #'
 #' Return data objects stored in tables and views in the Atlas database.
@@ -10,8 +7,7 @@ POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
 #'
 #' @param table_name `character`. Name of the table to be accessed.
 #' @param schema `character` default 'public'. Schema from the database where
-#' the table is located.
-#' Can be either `public`, `api` or `atlas_api`.
+#' the table is located. Can be either `public`, `api` or `atlas_api`.
 #' @param output_geometry Optional. `logical` default `FALSE`. If `TRUE`,
 #' returns an `sf` object using the `geometry` column from the table.
 #' @param output_flatten `logical` default `TRUE`. If `TRUE`, returns a
@@ -32,6 +28,9 @@ POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
 #'
 #' @return `tibble` or `sf` with rows associated with Atlas data object.
 #' @export
+
+SCHEMA_VALUES <- c("public", "api", "atlas_api")
+POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
 
 db_read_table <- function(table_name,
                           schema = "public",

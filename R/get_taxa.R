@@ -19,6 +19,8 @@
 #' `OTHER_INVERTEBRATES`, `MICROORGANISMS`.
 #' @param scientific_name Optional. `char` scalar or vector. Returns a dataframe
 #' for the taxon with the specified scientific name
+#' @param vernacular_name Optional. `char` scalar or vector. Returns a dataframe
+#' for the taxon with the specified vernacular name
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `taxa` table columns specified as parameter
 #'
@@ -31,11 +33,15 @@
 #' # Returns all taxa filtered by the column id_taxa_obs values
 #' taxa <- get_taxa(id_taxa_obs = c(188, 201, 294, 392))
 #'
+#' # Return taxa filtered by the atlas table column `group_name`
+#' results <- get_taxa(group_name = "AMPHIBIANS")
+#'
 #' # Returns taxa record for the scientific name
 #' taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
 #'
-#' # Return taxa filtered by the atlas table column `group_name`
-#' results <- get_taxa(group_name = "AMPHIBIANS")
+#' # Return taxa record for the vernacular name
+#' taxa <- get_taxa(scientific_name = "Pic chevelu")
+#'
 #' @export
 
 GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
@@ -54,7 +60,7 @@ get_taxa <- function(
   query$schema <- "api"
 
   if (is.null(id_taxa_obs) && is.null(group_name) && is.null(scientific_name) && is.null(vernacular_name)) {
-    stop("Bad input: must provide either id_taxa_obs, a group name or a scientific name")
+    stop("Bad input: must provide either id_taxa_obs, a group name, a scientific name or a vernacular name")
   }
 
   if (! is.null(id_taxa_obs)) {

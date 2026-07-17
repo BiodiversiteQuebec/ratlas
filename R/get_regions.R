@@ -6,7 +6,7 @@
 #' and Hexagonal Grfid) and each region type is organized by scale. It is
 #' recommended to explore regions using the Biodiversité Québec Atlas web
 #' application to determine the region type and scale of interest.
-#' 
+#'
 #' IMPORTANT : Running the function without any parameters will return all
 #' regions in the atlas. This can be a very large dataset and may take a long
 #' time to download. It is recommended to use the `fid` parameter to return a
@@ -14,15 +14,17 @@
 #' It is also possible to exclude the geometry from the results by setting the
 #' `geometry` parameter to `FALSE`.
 #'
-#' @param fid_region Optional. `integer` scalar or vector. Returns a dataframe
+#' @param fid Optional. `integer` scalar or vector. Returns a dataframe
 #' for the region with the specified fid
 #' @param type Optional. `character` scalar or vector. Returns a dataframe
 #' filtered by the atlas `regions` table column `type` specified as parameter.
-#' Accepted values are `cadre_eco`, `admin`, and `hex`
-#' @param zoom Optional. `integer` scalar or vector. Returns a dataframe
+#' Accepted values are `admin`, `hex`, `cadre_eco`, 'dom_bio', 'watershed' and 'protected'
+#' @param scale Optional. `integer` scalar or vector. Returns a dataframe
+#' for the region with the specified scale
+#' @param geometry Optional. `boolean` which returns a sf object if TRUE
+#' or a tibble if FALSE
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
 #' atlas `regions` table columns specified as parameter.
-#'
 #'
 #' @export
 
