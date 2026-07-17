@@ -1,7 +1,7 @@
 Package: ratlas
-Title: R Package For Access and Analysis Of Data Aggregated By Biodiversité Québec 
+Title: Biodiversité Québec 'Atlas' Client
 Version: 2.1.2
-Authors@R:
+Authors@R: 
   c(
     person(given = "Vincent",
            family = "Beauregard",
@@ -14,44 +14,24 @@ Authors@R:
            email = "benjamin.b.mercier@usherbrooke.ca"
     )
   )
-Description: ratlas est une librarie R permettant l'accès et l'analyse des données de biodiversité aggrégées par le réseau d'observation de la biodiversité du Québec.
+Description: Provides access to biodiversity data aggregated by Biodiversité Québec through the 'Atlas' REST API.
 License: MIT + file LICENSE
 Encoding: UTF-8
-LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Config/testthat/edition: 3
+Depends:  
+    R (>= 4.1.0)
 Imports: 
-    devtools,
-    doParallel,
     dplyr,
-    foreach,
     httr,
     sf,
-    tidyr,
     jsonlite,
-    geojsonsf,
-    httr2,
+    httr2 (>= 1.0.0),
     EML
-Remotes: 
-    r-lib/usethis,
-    r-lib/testthat,
-    r-lib/devtools,
-    IRkernel/IRkernel,
-    REditorSupport/languageserver,
-    github::ManuelHentschel/vscDebugger,
-    r-lib/pkgdown,
-    rstudio/rmarkdown
-Depends: 
-    R (>= 2.10)
 Suggests: 
-    languageserver (>= 0.3.16),
-    IRkernel (>= 1.3.2),
-    testthat (>= 3.2.1.9000),
-    usethis (>= 2.2.3.9000),
-    vscDebugger (>= 0.5.3),
+    testthat (>= 3.0.0),
     knitr,
     rmarkdown,
-    pkgdown (>= 2.0.9.9000),
     kableExtra
 VignetteBuilder: knitr
