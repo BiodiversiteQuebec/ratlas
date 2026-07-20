@@ -24,11 +24,12 @@ Depends:
     R (>= 4.1.0)
 Imports: 
     dplyr,
-    httr,
     sf,
     jsonlite,
     httr2 (>= 1.0.0),
-    EML
+    EML,
+    uuid,
+    tibble
 Suggests: 
     testthat (>= 3.0.0),
     knitr,

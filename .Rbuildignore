@@ -1,11 +1,9 @@
-^renv$
-^renv\.lock$
-^dev\.R$
-^LICENSE\.md$
-^dev_scratch$
+^dev\.R$ #ok
+^LICENSE\.md$ #ok
+^dev_scratch$ #ok
+^_pkgdown\.yml$ #ok
+^docs$ #ok
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^data-raw$
-^_pkgdown\.yml$
-^docs$
 ^pkgdown$
+^\.vscode$
