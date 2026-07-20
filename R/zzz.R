@@ -12,3 +12,12 @@ ATLAS_API_V4_HOST <- function() {
 ATLAS_API_TOKEN <- function() Sys.getenv("ATLAS_API_TOKEN")
 
 USER_AGENT <- function() "ratlas"
+
+SCHEMA_VALUES <- c("public", "api", "atlas_api")
+WRITE_SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
+
+POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
+
+GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
+            "VASCULAR_PLANTS", "NON_VASCULAR_PLANTS", "ARTHROPODS",
+            "FUNGI", "ALGAE", "MOLLUSKS", "OTHER_INVERTEBRATES", "MICROORGANISMS")

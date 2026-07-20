@@ -25,8 +25,6 @@
 #'
 #' @keywords internal
 
-SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
-
 db_write_table <- function(
     table_name,
     data,
@@ -38,7 +36,7 @@ db_write_table <- function(
     .header = list()) {
 
   # Argument validation
-  if (! schema %in% SCHEMA_VALUES) {
+  if (! schema %in% WRITE_SCHEMA_VALUES) {
     stop("Bad input: Unexpected value for argument `schema`")
   }
 

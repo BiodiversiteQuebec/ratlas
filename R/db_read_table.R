@@ -29,9 +29,6 @@
 #' @return `tibble` or `sf` with rows associated with Atlas data object.
 #' @export
 
-SCHEMA_VALUES <- c("public", "api", "atlas_api")
-POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
-
 db_read_table <- function(table_name,
                           schema = "public",
                           output_geometry = FALSE,

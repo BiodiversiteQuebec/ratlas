@@ -44,10 +44,6 @@
 #'
 #' @export
 
-GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
-            "VASCULAR_PLANTS", "NON_VASCULAR_PLANTS", "ARTHROPODS",
-            "FUNGI", "ALGAE", "MOLLUSKS", "OTHER_INVERTEBRATES", "MICROORGANISMS")
-
 get_taxa <- function(
   id_taxa_obs = NULL,
   group_name = NULL,

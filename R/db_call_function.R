@@ -23,8 +23,6 @@
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
 
-SCHEMA_VALUES <- c("public", "api", "atlas_api")
-
 db_call_function <- function(function_name,
                              schema = "public",
                              output_geometry = FALSE,
