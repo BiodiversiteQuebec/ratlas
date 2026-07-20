@@ -5,17 +5,19 @@
 \title{Generic function to access data from functions in Atlas database}
 \usage{
 db_call_function(
-  name,
+  function_name,
   schema = "public",
   output_geometry = FALSE,
   output_flatten = TRUE,
-  .token = NULL,
+  .host = ATLAS_API_V4_HOST(),
+  .token = ATLAS_API_TOKEN(),
+  .header = list(),
   ...
 )
 }
 \arguments{
-\item{name}{\code{character}. Name of the atlas function to be accessed.
-data. Can be either \code{api}, \code{public} or \code{atlas_api}.}
+\item{function_name}{\code{character}. Name of the atlas function to be accessed.
+data. Can be either \code{public}, \code{api} or \code{atlas_api}.}
 
 \item{schema}{Optional. \code{character} Schema from the database where is located
 the data. Can be either \code{api}, \code{public} or \code{atlas_api}.}
@@ -26,8 +28,12 @@ returns an \code{sf} object using the \code{geometry} column from the function o
 \item{output_flatten}{Optional. \code{logical} default \code{FALSE}. If \code{TRUE},
 returns a \code{data.frame} object with nested objects flattened.}
 
+\item{.host}{Optional. \code{character} Atlas API host url.}
+
 \item{.token}{Optional. \code{character} Bearer token providing access to the web
 api.}
+
+\item{.header}{\code{list} Additional headers to provide to the request.}
 
 \item{...}{\code{character} or \code{numeric} scalar or vector. Arguments to be passed
 to the function.}

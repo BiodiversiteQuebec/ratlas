@@ -7,17 +7,21 @@
 get_regions(fid = NULL, type = NULL, scale = NULL, geometry = TRUE, ...)
 }
 \arguments{
+\item{fid}{Optional. \code{integer} scalar or vector. Returns a dataframe
+for the region with the specified fid}
+
 \item{type}{Optional. \code{character} scalar or vector. Returns a dataframe
 filtered by the atlas \code{regions} table column \code{type} specified as parameter.
-Accepted values are \code{cadre_eco}, \code{admin}, and \code{hex}}
+Accepted values are \code{admin}, \code{hex}, \code{cadre_eco}, 'dom_bio', 'watershed' and 'protected'}
+
+\item{scale}{Optional. \code{integer} scalar or vector. Returns a dataframe
+for the region with the specified scale}
+
+\item{geometry}{Optional. \code{boolean} which returns a sf object if TRUE
+or a tibble if FALSE}
 
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
 atlas \code{regions} table columns specified as parameter.}
-
-\item{fid_region}{Optional. \code{integer} scalar or vector. Returns a dataframe
-for the region with the specified fid}
-
-\item{zoom}{Optional. \code{integer} scalar or vector. Returns a dataframe}
 }
 \description{
 The function downloads and returns a list or dataframe containing geometries
