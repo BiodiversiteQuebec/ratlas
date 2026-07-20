@@ -1,14 +1,13 @@
 # usethis::create_package("~/dev/ratlas")
 usethis::use_build_ignore("dev.R")
 usethis::use_build_ignore("dev_scratch")
-usethis::use_mit_license(copyright_holder = "Vincent Beauregard")
+usethis::use_mit_license(copyright_holder = c("Vincent Beauregard", "Benjamin Mercier"))
 
 usethis::use_dev_package("usethis", type = "Suggests", remote = NULL)
 usethis::use_dev_package("testthat", type = "Suggests", remote = NULL)
 usethis::use_dev_package("devtools", type = "Imports", remote = NULL)
 usethis::use_dev_package("pkgdown", type = "Suggests", remote = NULL)
 usethis::use_dev_package("rmarkdown", type = "Suggests", remote = NULL)
-# usethis::use_dev_package("pandoc", type = "Suggests", remote = NULL)
 
 # Use packages for development in vscode environment
 usethis::use_dev_package("languageserver", type = "Suggests", remote = NULL)
@@ -20,12 +19,12 @@ usethis::use_dev_package("IRkernel", type = "Suggests", remote = NULL)
 
 # Package dependencies
 usethis::use_package("dplyr", type = "Imports")
-usethis::use_package("httr2", type = "Imports")
 usethis::use_package("sf",  type = "Imports")
-usethis::use_package("tidyr",  type = "Imports")
-usethis::use_package("foreach",  type = "Imports")
-usethis::use_package("doParallel", type = "Imports")
+usethis::use_package("jsonlite",  type = "Imports")
+usethis::use_package("httr2", type = "Imports")
 usethis::use_package("EML", type = "Imports")
+usethis::use_package("uuid", type = "Imports")
+usethis::use_package("tibble", type = "Imports")
 
 # Package modules and tests
 usethis::use_r("db_read_table")
@@ -61,13 +60,9 @@ usethis::use_vignette("write_dataset", title = "Write and insert dataset metadat
 # Use pkgdown for package website
 usethis::use_pkgdown()
 
-# Use raw data
-usethis::use_data_raw("taxa_data")
-source("data-raw//taxa_data.R")
-
 # Load, test and build package and documentation
 devtools::load_all()
-# devtools::test()
+testthat::test_local()
 devtools::document()
 devtools::install()
 
