@@ -111,19 +111,6 @@ In this example, the results are paginated into multiple pages of 100 rows each.
 data <- db_read_table("taxa_obs", schema = "public", .page_limit = 100)
 ```
 
-
-## Parallelization of Requests
-
-To handle downloading data with very large number of rows, the function makes requests in parallel using multiple cores. The db_read_table() function provides an optional parameter, `.cores`, to specify the number of cores to use for parallel processing.
-
-By default, the function downloads the results using parallelization using 4 cores, as defined by default value of `.cores`. The function will automatically determine the number of pages to download and split the work across the specified number of cores. The results are then combined into a single data frame.
-
-Here's an example of how to use the db_read_table() function to download four pages of data in parallel using 4 cores:
-
-```{r, eval = TRUE, echo = TRUE}
-data <- db_read_table("observations", schema = "public", .n_pages = 4, .cores = 4)
-```
-
 # Reading functions data
 
 The db_call_function() function is used to read data from a PostgreSQL function. It takes several arguments, including the name of the function, the schema that the function belongs to, and the authentication token that is required to access the database. Functions arguments can be passed to the function using the `...` argument.
