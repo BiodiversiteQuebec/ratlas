@@ -142,6 +142,13 @@ db_read_table <- function(table_name,
   return(out)
 }
 
+postgrest_escape <- function(x) {
+  x <- as.character(x)
+  needs <- grepl('[",()]', x)
+  x[needs] <- paste0('"', gsub('"', '\\\\"', x[needs]), '"')
+  x
+}
+
 postgrest_query_filter <- function(parameters) {
   for (name in names(parameters)) {
     if (name == "select" && length(parameters[[name]]) > 1) {
@@ -152,10 +159,10 @@ postgrest_query_filter <- function(parameters) {
       next
     }
     if (length(parameters[[name]]) > 1) {
-      v_array <- paste0(parameters[[name]], collapse = ",")
+      v_array <- paste0(postgrest_escape(parameters[[name]]), collapse = ",")
       parameters[[name]] <- paste0("in.(", v_array, ")", sep = "")
     } else {
-      parameters[[name]] <- paste0("eq.", parameters[[name]], sep = "")
+      parameters[[name]] <- paste0("eq.", postgrest_escape(parameters[[name]]))
     }
   }
   return(parameters)
