@@ -83,7 +83,7 @@ get_taxa <- function(
           warning(paste("No match found for", x))
           return(NULL)
         }
-        db_call_function("match_taxa", schema = "api", taxa_name = validated_names$scientific_name[1])
+        db_call_function(function_name = "match_taxa", schema = "api", taxa_name = validated_names$scientific_name[1])
       }
     ) |> dplyr::bind_rows()
     if (nrow(match_taxa) == 0) stop("No match found")
@@ -99,7 +99,7 @@ get_taxa <- function(
           warning(paste("No match found for", x))
           return(NULL)
         }
-        db_call_function("match_taxa", schema = "api", taxa_name = validated_names$scientific_name[1])
+        db_call_function(function_name = "match_taxa", schema = "api", taxa_name = validated_names$scientific_name[1])
       }
     ) |> dplyr::bind_rows()
     if (nrow(match_taxa) == 0) stop("No match found")

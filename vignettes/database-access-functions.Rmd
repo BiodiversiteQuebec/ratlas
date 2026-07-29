@@ -118,9 +118,9 @@ The db_call_function() function is used to read data from a PostgreSQL function.
 Accepted arguments are described in the function documentation. For example, the `atlas_api.obs_summary` function takes the following optionnal arguments (`taxa_keys`, `min_year`, `max_year`, `region_fid`, `region_type`).
 
 ```{r, eval = TRUE, echo = TRUE}
-data <- db_call_function("obs_summary", schema = "atlas_api")
+data <- db_call_function(function_name = "obs_summary", schema = "atlas_api")
 head(data)
 
-data <- db_call_function("obs_summary", schema = "atlas_api", taxa_keys = c(1, 2, 3), min_year = 2010, max_year = 2015, region_fid = 1, region_type = 'admin')
+data <- db_call_function(function_name = "obs_summary", schema = "atlas_api", taxa_keys = c(1, 2, 3), min_year = 2010, max_year = 2015, region_fid = 1, region_type = 'admin')
 head(data)
 ```
