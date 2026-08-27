@@ -56,3 +56,12 @@ test_that("select works", {
   testthat::expect_equal(nrow(results), 1)
   testthat::expect_equal(ncol(results), 2)
 })
+
+test_that("escape special char", {
+  results <- db_read_table(
+    table_name = "taxa_obs",
+    scientific_name = c("Leptasterias (Hexasterias) polaris", "Dryobates villosus")
+  )
+  testthat::expect_true(nrow(results) > 0)
+  testthat::expect_true(!is.null(results))
+})
