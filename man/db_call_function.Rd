@@ -17,7 +17,7 @@ db_call_function(
 }
 \arguments{
 \item{function_name}{\code{character}. Name of the atlas function to be accessed.
-data. Can be either \code{public}, \code{api} or \code{atlas_api}.}
+data.}
 
 \item{schema}{Optional. \code{character} Schema from the database where is located
 the data. Can be either \code{api}, \code{public} or \code{atlas_api}.}
