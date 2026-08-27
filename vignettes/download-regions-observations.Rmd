@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 # Downloading observations by region
 
-Regions shown in the Biodiversité Québec atlas portal can be accessed through the `ratlas` package and be used to filter downloaded observations. Regions are organized by type (ie. Ecological Region, Administrative Region, and Hexagonal Grid) and each region type is organized by scale. It is recommended to explore regions using the Biodiversité Québec Atlas web application to determine the region type and scale of interest.
+Regions shown in the Biodiversité Québec atlas portal can be accessed through the `ratlas` package and be used to filter downloaded observations. Regions are organized by type (ie. Administrative Region, Ecological Region, Ecological Classification, Hydrographic regions, Protected areas and Hexagonal Grid) and each region type is organized by scale. It is recommended to explore regions using the Biodiversité Québec Atlas web application to determine the region type and scale of interest.
 
 For this exercices we want to only return the Municipalities of Quebec. Specifically, we will extract observations for the city of Sherbrooke in 2002.
 
@@ -37,7 +37,7 @@ kable <- function(data) {
 The `get_regions()` function returns a data frame with the regions available in the atlas portal. The function returns a data frame with the following columns:
 
 - `fid`: the unique identifier of the region
-- `type`: the type of region. Can be one of `cadre_eco`, `admin`, and `hex`
+- `type`: the type of region. Can be one of `admin`, `cadre_eco`, `dom_bio`, `watershed`, `protected` and `hex`
 - `scale`: integer for the scale of the region. Example : 1 for the province of
   Quebec, 2 for the administrative regions, 3 for MRC, 4 for
   the Municipalities
@@ -56,25 +56,8 @@ Let's filter the results to only return the Municipalities of Quebec. And search
 
 ```{r, eval = TRUE, echo = TRUE}
 municipalities_desc <- get_regions(type = "admin", scale = 4, geometry = FALSE)
-sherbrooke <- municipalities_desc |> filter(name == "Sherbrooke")
+sherbrooke <- municipalities_desc |> filter(name == "Ville de Sherbrooke")
 sherbrooke |> kable()
-```
-
-## Count observations for a region
-
-The database `obs_regions_taxa_datasets_counts` view contains the number of observations for each region, taxa and datasets. We can query it directly with the `db_read_table()` function.
-
-```{r, eval = TRUE, echo = TRUE}	
-sherbrooke_count_response <- db_read_table(
-  table_name = "obs_regions_taxa_datasets_counts",
-  schema = "atlas_api",
-  fid = sherbrooke$fid
-  # id_taxa_obs = 735,
-  )
-
-# Total number of observations for the city of Sherbrooke can be summed
-sherbrooke_count <- sum(sherbrooke_count_response$count_obs)
-print (paste("Number of observations in Sherbrooke:", sherbrooke_count))
 ```
 
 ## Download observations for a region

@@ -105,7 +105,7 @@ post_dataset <- function(
 
   # Call your db_call_function
   result <- db_call_function(
-    name = "dataset_insert_eml",
+    function_name = "dataset_insert_eml",
     schema = schema,
     eml_input = eml_xml,
     methods = methods,

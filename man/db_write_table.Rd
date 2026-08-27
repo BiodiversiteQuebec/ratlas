@@ -9,16 +9,15 @@ db_write_table(
   data,
   ...,
   schema = "public",
-  host = ATLAS_API_V4_HOST(),
-  .page_limit = 50000,
+  .host = ATLAS_API_V4_HOST(),
   .token = ATLAS_API_TOKEN(),
-  .cores = 4
+  .page_limit = 50000,
+  .header = list()
 )
 }
 \arguments{
 \item{table_name}{\code{character}. Name of the atlas data object destination.
-Corresponds to the name of a within Atlas Postgresql database, stored within
-schema \code{public} ou \code{api}}
+Corresponds to the name of a within Atlas Postgresql database.}
 
 \item{data}{\code{list} or \code{data.frame}. Either a single record as a \code{list} with
 names as attributes or multiple records as a \code{data.frame} with attributes as
@@ -29,11 +28,15 @@ Additional parameters to provide to the request. May correspond to postgrest
 http request parameters and syntax.}
 
 \item{schema}{\code{character} Schema from the database where is located the data
-object is located. Accept either values \code{api} or \code{public} (default)}
+object is located. Can be either \code{public}, \code{api}, \code{atlas_api} or \code{indicators}.}
+
+\item{.host}{\code{character} Atlas API host url}
+
+\item{.token}{\code{character} Bearer token providing access to the web api}
 
 \item{.page_limit}{\code{integer} Count of objects returned through pagination}
 
-\item{.token}{\code{character} Bearer token providing access to the web api}
+\item{.header}{\code{list} Additional headers to provide to the request.}
 
 \item{.cores}{\code{integer} default \code{4}. Number of cores used to parallelize and
 improve rapidity}
@@ -46,3 +49,4 @@ table columns it is sent to.
 \details{
 This function is designed to interface with a web API deployed with PostgREST
 }
+\keyword{internal}

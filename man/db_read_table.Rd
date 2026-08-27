@@ -2,7 +2,7 @@
 % Please edit documentation in R/db_read_table.R
 \name{db_read_table}
 \alias{db_read_table}
-\title{Generic function to access data from tables and views in Atlas database}
+\title{Generic function to directly access data in Atlas database}
 \usage{
 db_read_table(
   table_name,
@@ -12,17 +12,18 @@ db_read_table(
   limit = NULL,
   select = NULL,
   ...,
-  .cores = 4,
-  .n_pages = NULL,
-  .page_limit = 10000
+  .host = ATLAS_API_V4_HOST(),
+  .token = ATLAS_API_TOKEN(),
+  .max_active = 4,
+  .page_limit = 10000,
+  .header = list()
 )
 }
 \arguments{
 \item{table_name}{\code{character}. Name of the table to be accessed.}
 
 \item{schema}{\code{character} default 'public'. Schema from the database where
-the table is located.
-Can be either \code{public}, \code{api}, \code{public_api}, or \code{atlas_api}.}
+the table is located. Can be either \code{public}, \code{api} or \code{atlas_api}.}
 
 \item{output_geometry}{Optional. \code{logical} default \code{FALSE}. If \code{TRUE},
 returns an \code{sf} object using the \code{geometry} column from the table.}
@@ -38,21 +39,21 @@ return. All columns are returned if \code{NULL}. From the PostgREST API syntax.}
 
 \item{...}{Additional parameters to be passed as query to the API table_name.}
 
-\item{.cores}{Optional. \code{integer} default \code{4}. Number of cores to use for
-parallel processing. If \code{1}, no parallel processing is used. If \code{NULL}, the
-function will automatically determine the number of cores to use based on
-the number of available cores on the system.}
+\item{.host}{Optional. \code{character} Atlas API host url.}
 
-\item{.n_pages}{Optional. \code{integer} default \code{NULL}. Number of pages to
-download. ' If \code{NULL}, the number of pages is estimated from the number of
-rows in the table.}
+\item{.token}{Optional. \code{character} Bearer token providing access to the web api.}
 
-\item{.page_limit}{Optional. \code{integer} default \code{500000}. Maximum number of
-rows to download per page. This parameter is used to estimate the number of
-pages to download if \code{.n_pages} is \code{NULL}.}
+\item{.max_active}{Optional. \code{integer} default \code{4}. Number of active connections
+that are alive at all time to process the request.}
+
+\item{.page_limit}{Optional. \code{integer} default \code{10000}. Maximum number of
+rows to download per page. This determines how many requests (pages) the
+download is split into.}
+
+\item{.header}{\code{list} Additional headers to provide to the request.}
 }
 \value{
-\code{tibble} or \code{sf} with rows associated with Atlas data object
+\code{tibble} or \code{sf} with rows associated with Atlas data object.
 }
 \description{
 Return data objects stored in tables and views in the Atlas database.

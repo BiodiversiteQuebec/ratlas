@@ -1,11 +1,11 @@
 #' Get datasets
 #'
-#' The function downloads and returns a list or dataframe containing a 
-#' description for each requested dataset where a row corresponds to an
+#' The function downloads and returns a list or dataframe containing a
+#' description for each requested dataset where a row corresponds to a
 #' record. The function returns a dataframe for all datasets if no
 #' parameters are specified. The function filters returned datasets record by
 #' attributes corresponding to atlas table columns specified as parameters
-#' (ie. `id`, `title`, `original_source`, `etc`)
+#' (ie. `id`, `title`, `source_alias`, `etc`)
 #' with accepted values either being scalar or vector for single or multiple
 #' records
 #'
@@ -20,11 +20,15 @@
 #' # Returns all available datasets records in atlas
 #' datasets <- get_datasets()
 #'
-#' # Returns all datasets filtered by the column `original_source`
-#' datasets <- get_datasets(original_source = "eBird")
+#' # Returns all datasets filtered by the column `source_alias`
+#' datasets <- get_datasets(source_alias = "GBIF")
 #'
-#' # Returns all datasets filtered by the column id corresponding to eBird
-#' datasets <- get_datasets(id = 55:102)
+#' Returns all datasets filtered by the column id corresponding to all
+#' Placettes-échantillons temporaires datasets
+#' datasets <- get_datasets(id = c(  "292302c5-32c2-4e14-b437-23ea9695fafe",
+#'  "8d865875-dd4d-41b4-9fee-6161ac73c471",
+#'  "be1252cf-385d-48d6-9836-232a8458f402",
+#'  "8b793526-db15-451b-bdac-6387825e6178"))
 #'
 #' @export
 

@@ -1,5 +1,3 @@
-SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
-
 #' Generic function to post data into Atlas databases
 #'
 #' Data records attributes (list names or columns) must corresponds to the
@@ -9,8 +7,7 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' This function is designed to interface with a web API deployed with PostgREST
 #'
 #' @param table_name `character`. Name of the atlas data object destination.
-#' Corresponds to the name of a within Atlas Postgresql database, stored within
-#' schema `public` ou `api`
+#' Corresponds to the name of a within Atlas Postgresql database.
 #' @param data `list` or `data.frame`. Either a single record as a `list` with
 #' names as attributes or multiple records as a `data.frame` with attributes as
 #' columns with attibutes corresponding to the destination column tables.
@@ -18,14 +15,15 @@ SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 #' Additional parameters to provide to the request. May correspond to postgrest
 #' http request parameters and syntax.
 #' @param schema `character` Schema from the database where is located the data
-#' object is located. Accept either values `api` or `public` (default)
+#' object is located. Can be either `public`, `api`, `atlas_api` or `indicators`.
 #' @param .page_limit `integer` Count of objects returned through pagination
 #' @param .host  `character` Atlas API host url
 #' @param .token  `character` Bearer token providing access to the web api
 #' @param .header `list` Additional headers to provide to the request.
 #' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' improve rapidity
-#' @export
+#'
+#' @keywords internal
 
 db_write_table <- function(
     table_name,
@@ -35,11 +33,10 @@ db_write_table <- function(
     .host = ATLAS_API_V4_HOST(),
     .token = ATLAS_API_TOKEN(),
     .page_limit = 50000,
-    .cores = 4,
     .header = list()) {
 
   # Argument validation
-  if (! schema %in% SCHEMA_VALUES) {
+  if (! schema %in% WRITE_SCHEMA_VALUES) {
     stop("Bad input: Unexpected value for argument `schema`")
   }
 
