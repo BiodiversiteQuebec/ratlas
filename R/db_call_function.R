@@ -27,51 +27,54 @@ db_call_function <- function(function_name,
                              schema = "public",
                              output_geometry = FALSE,
                              output_flatten = TRUE,
+                             ...,
+                             .filters = list(),
+                             .paginate = FALSE,
                              .host = ATLAS_API_V4_HOST(),
                              .token = ATLAS_API_TOKEN(),
                              .header = list(),
-                             ...) {
+                             .max_active = 4,
+                             .page_limit = 10000) {
   # Argument validation
-  if (!schema %in% SCHEMA_VALUES) {
-    stop("Bad input: Unexpected value for argument `schema`")
-  }
-
-  if (is.null(.token)) {
-    .token <- ATLAS_API_TOKEN()
-  }
+  if (!schema %in% SCHEMA_VALUES) stop("Bad input: Unexpected value for argument `schema`")
 
   # Prefix the function name with 'rpc' if it is not already the case
   # as required by PostgREST syntax for functions
   if (!grepl("^rpc", function_name)) {
     # Strip name for "/" or "\" characters
-    function_name <- gsub("[/\\\\]", "", function_name)
-    function_name <- paste("rpc", function_name, sep = "/")
+    function_name <- paste("rpc", gsub("[/\\\\]", "", function_name), sep = "/")
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- format_url(function_name, .host)
+  url <- format_url(endpoint = function_name, host = .host)
 
   body <- list(...)
+  query <- postgrest_query_filter(.filters)
+  limit <- query$limit
+  query$limit <- NULL
+
   header <- format_header(schema, token = .token, method = "POST")
 
   # Overrride default header with user provided ones
   header <- modifyList(header, .header)
 
-  if (output_geometry) {
-    header$`Accept` <- "application/geo+json"
+  if (output_geometry) header$`Accept` <- "application/geo+json"
+
+  # Big request, for example get_observations
+  if (.paginate) {
+    return(postgrest_read_paged(url, query, header, body = body,
+                                limit = limit, output_flatten = output_flatten,
+                                page_limit = .page_limit, max_active = .max_active))
   }
 
-  # Create and send the request
+  # Single request, for example get_taxa
   response <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
+    httr2::req_url_query(!!!query) |>
     httr2::req_body_json(body) |>
     httr2::req_error(is_error = ~ FALSE) |>
     httr2::req_perform()
 
-  # Stop if error
   postgrest_stop_if_err(response)
-
-  # Parse response
-  out <- postgrest_resp_to_data(response, output_flatten = output_flatten)
-  return(out)
+  postgrest_resp_to_data(response, output_flatten = output_flatten)
 }
