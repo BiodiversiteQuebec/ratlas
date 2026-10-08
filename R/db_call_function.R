@@ -13,12 +13,20 @@
 #' returns an `sf` object using the `geometry` column from the function output.
 #' @param output_flatten Optional. `logical` default `FALSE`. If `TRUE`,
 #' returns a `data.frame` object with nested objects flattened.
+#' @param ... `character` or `numeric` scalar or vector. Arguments to be passed
+#' to the function.
 #' @param .host Optional. `character` Atlas API host url.
 #' @param .token Optional. `character` Bearer token providing access to the web
 #' api.
-#' @param .header `list` Additional headers to provide to the request.
-#' @param ... `character` or `numeric` scalar or vector. Arguments to be passed
-#' to the function.
+#' @param .header Optional. `list` Additional headers to provide to the request.
+#' @param .filters Optional. `list` Additional filters to provide to the request.
+#' @param .paginate Optional. `logical` default FALSE. If `TRUE` the request will
+#' be paginated.
+#' @param .max_active Optional. `integer` default `4`. Number of active connections
+#' that are alive at all time to process the request.
+#' @param .page_limit Optional. `integer` default `10000`. Maximum number of
+#' rows to download per page. This determines how many requests (pages) the
+#' download is split into.
 #'
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
@@ -28,11 +36,11 @@ db_call_function <- function(function_name,
                              output_geometry = FALSE,
                              output_flatten = TRUE,
                              ...,
-                             .filters = list(),
-                             .paginate = FALSE,
                              .host = ATLAS_API_V4_HOST(),
                              .token = ATLAS_API_TOKEN(),
                              .header = list(),
+                             .filters = list(),
+                             .paginate = FALSE,
                              .max_active = 4,
                              .page_limit = 10000) {
   # Argument validation
@@ -60,7 +68,8 @@ db_call_function <- function(function_name,
 
   if (output_geometry) header$`Accept` <- "application/geo+json"
 
-  # Big request, for example get_observations
+  # Request that calls a function that returns a setof
+  # of a table, for example: get_observations()
   if (.paginate) {
     return(postgrest_read_paged(url, query, header, body = body,
                                 limit = limit, output_flatten = output_flatten,

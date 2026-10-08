@@ -17,6 +17,9 @@
 #' for the taxa_obs record related to the value.
 #' @param region_fid Optional. `integer` scalar or vector. Returns observations
 #' for the region with the specified id
+#' @param polygon Optional. `sf, sfc, bbox` objects accepted and a valid associated
+#' CRS is required. Multiple features will be merged, and points on the boundaries
+#' will be included with an intersect.
 #' @param geometry Optional. `logical` default `TRUE`. If `TRUE`,
 #' returns an `sf` object using the `geometry` column from the table. IF `FALSE`
 #' returns a tibble.
@@ -27,61 +30,56 @@
 #' atlas `observations` table columns specified as parameter
 #' (ie. `id_datasets`, `id_variables`, `month_obs`, `day_obs`)
 #'
-#' @return `tibble` with rows associated with Atlas observations
+#' @return An `sf` object when `geometry = TRUE`, a `tibble` otherwise.
+#' A 0-row `tibble` is returned when no observations match.
 #' @export
 
-get_observations <- function(
-  id = NULL,
-  year = NULL,
-  id_taxa_obs = NULL,
-  region_fid = NULL,
-  geometry = TRUE,
-  within_quebec = NULL,
-  ...
-) {
-  query <- list(...)
-  query$table_name <- "observations"
-  query$schema <- "api"
+get_observations <- function(id = NULL, year = NULL, id_taxa_obs = NULL,
+                             region_fid = NULL, polygon = NULL,
+                             geometry = TRUE, within_quebec = NULL, ...) {
 
-  if (! is.null(id)) {
-    query$id <- id
-  }
-  if (! is.null(id_taxa_obs)) {
-    query$id_taxa_obs <- id_taxa_obs
-  }
-  if (! is.null(year)) {
-    query$year_obs <- year
-  }
-  if (! is.null(within_quebec)) {
-    if (within_quebec) {
-      query$within_quebec <- "true"
-    } else {
-      query$within_quebec <- "false"
-    }
+  if (!is.null(region_fid) && !is.null(polygon)) stop("Bad input: use either `region_fid` or `polygon`, not both")
+
+  # Filters (assigning NULL leaves them out)
+  filters <- list(...)
+  filters$id <- id
+  filters$id_taxa_obs <- id_taxa_obs
+  filters$year_obs <- year
+  filters$order <- "id"
+  if (!is.null(within_quebec)) filters$within_quebec <- if (within_quebec) "true" else "false"
+  if (!is.null(region_fid)) filters$region_fid <- region_fid
+
+  table_name <- if (is.null(region_fid)) "observations" else "observations_regions"
+
+  if (!geometry) {
+    sample <- db_read_table(table_name, schema = "api", limit =1)
+    filters$select <- grep("^geom", colnames(sample), value = TRUE, invert = TRUE)
   }
 
-  if (! is.null(region_fid)) {
-    query$table_name <- "observations_regions"
-    query$region_fid <- region_fid
-  }
-
-  if (geometry) {
-    query$output_geometry <- TRUE
+  if (is.null(polygon)) {
+    do.call(db_read_table, c(list(table_name = table_name, schema = "api",
+                                  output_geometry = geometry), filters))
   } else {
-    query$output_geometry <- FALSE
-
-    # List of columns from single call
-    sample_query <- query
-    sample_query$limit <- 1
-    sample <- do.call(db_read_table, sample_query)
-    sample_cols <- colnames(sample)
-    # Remove cols that starts with 'geom'
-    sample_cols <- sample_cols[!grepl("^geom", sample_cols)]
-    query$select <- sample_cols
+    db_call_function("filter_observations_wkt", schema = "api",
+                     output_geometry = geometry,
+                     wkt = as_wkt_polygon(polygon),
+                     .filters = filters, .paginate = TRUE)
   }
+}
 
-  # Get observations
-  observations <- do.call(db_read_table, query)
+as_wkt_polygon <- function(polygon) {
+  if (inherits(polygon, "bbox")) polygon <- sf::st_as_sfc(polygon)
 
-  return(observations)
+  geom <- sf::st_geometry(polygon)
+  if (is.na(sf::st_crs(geom))) stop("Bad input: `polygon` has no CRS")
+
+  geom <- geom |>
+    sf::st_transform(4326) |>
+    sf::st_make_valid() |>
+    sf::st_union()
+
+  if (!as.character(sf::st_geometry_type(geom)) %in% c("POLYGON", "MULTIPOLYGON")) {
+    stop("Bad input: `polygon` must be a POLYGON or MULTIPOLYGON")
+  }
+  sf::st_as_text(geom, digits = 15)
 }

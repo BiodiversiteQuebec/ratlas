@@ -130,7 +130,10 @@ postgrest_get_table_count <- function(url, query = list(), header = list(), body
     httr2::req_url_query(!!!query)
   if (!is.null(body)) req <- httr2::req_body_json(req, body)
 
-  response <- httr2::req_perform(req)
+  response <- req |>
+    httr2::req_error(is_error = ~ FALSE) |>
+    httr2::req_perform()
+  postgrest_stop_if_err(response)
   content_range <- httr2::resp_headers(response)$`Content-Range`
   as.numeric(strsplit(content_range, "/")[[1]][2])
 }
