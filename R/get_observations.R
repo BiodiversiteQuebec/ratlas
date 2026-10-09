@@ -5,8 +5,8 @@
 #' containing all records if no parameters are specified (STRONGLY DISCOURAGED
 #' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
 #' The function filters returned records by attributes corresponding to atlas
-#' table columns specified as parameters (ie. `id`, `year_obs`, `id_taxa_obs`,
-#' `id_datasets`, `id_variables`, `fid_region`, `etc`) with accepted values
+#' table columns specified as parameters (ie. `id`, `year`, `id_taxa_obs`,
+#' `id_datasets`, `id_variables`, `region_fid`, `etc`) with accepted values
 #' either being scalar or vector for single or multiple records.
 #'
 #' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
@@ -52,7 +52,7 @@ get_observations <- function(id = NULL, year = NULL, id_taxa_obs = NULL,
   table_name <- if (is.null(region_fid)) "observations" else "observations_regions"
 
   if (!geometry) {
-    sample <- db_read_table(table_name, schema = "api", limit =1)
+    sample <- db_read_table(table_name, schema = "api", limit = 1)
     filters$select <- grep("^geom", colnames(sample), value = TRUE, invert = TRUE)
   }
 
@@ -65,24 +65,4 @@ get_observations <- function(id = NULL, year = NULL, id_taxa_obs = NULL,
                      wkt = as_wkt_polygon(polygon),
                      .filters = filters, .paginate = TRUE)
   }
-}
-
-as_wkt_polygon <- function(polygon) {
-  if (inherits(polygon, "bbox")) polygon <- sf::st_as_sfc(polygon)
-
-  geom <- sf::st_geometry(polygon)
-  if (is.na(sf::st_crs(geom))) stop("Bad input: `polygon` has no CRS")
-
-  # Repair and merge in planar lon/lat, like PostGIS does with geometry(4326).
-  # Dropping the CRS sends these steps to GEOS instead of s2.
-  geom <- sf::st_transform(geom, 4326) |>
-    sf::st_set_crs(NA) |>
-    sf::st_make_valid() |>
-    sf::st_union() |>
-    sf::st_set_crs(4326)
-
-  if (!as.character(sf::st_geometry_type(geom)) %in% c("POLYGON", "MULTIPOLYGON")) {
-    stop("Bad input: `polygon` must be a POLYGON or MULTIPOLYGON")
-  }
-  sf::st_as_text(geom, digits = 15)
 }
