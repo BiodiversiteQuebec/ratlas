@@ -10,6 +10,7 @@ postgrest_resp_to_data <- function(response, output_flatten = TRUE) {
   # Check the content type of the response
   content_type <- httr2::resp_headers(response)$`content-type`
   if (!is.null(content_type) && grepl("application/geo\\+json", content_type)) {
+    if (grepl('"features"\\s*:\\s*\\[\\s*\\]', textresp)) return(tibble::tibble())
     data <- sf::st_read(textresp, quiet = TRUE)
     return(data)
   } else if (!is.null(content_type) && grepl("application/json", content_type)) {
@@ -78,6 +79,8 @@ postgrest_read_paged <- function(url, query, header, body = NULL,
     postgrest_resp_to_data(resp, output_flatten = output_flatten)
   })
 
+  pages <- Filter(function(p) nrow(p) > 0, pages)
+  if (length(pages) == 0) return(tibble::tibble())
   do.call(rbind,pages)
 }
 
