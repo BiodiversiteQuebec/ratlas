@@ -13,12 +13,20 @@
 #' returns an `sf` object using the `geometry` column from the function output.
 #' @param output_flatten Optional. `logical` default `FALSE`. If `TRUE`,
 #' returns a `data.frame` object with nested objects flattened.
+#' @param ... `character` or `numeric` scalar or vector. Arguments to be passed
+#' to the function.
 #' @param .host Optional. `character` Atlas API host url.
 #' @param .token Optional. `character` Bearer token providing access to the web
 #' api.
-#' @param .header `list` Additional headers to provide to the request.
-#' @param ... `character` or `numeric` scalar or vector. Arguments to be passed
-#' to the function.
+#' @param .header Optional. `list` Additional headers to provide to the request.
+#' @param .filters Optional. `list` Additional filters to provide to the request.
+#' @param .paginate Optional. `logical` default FALSE. If `TRUE` the request will
+#' be paginated.
+#' @param .max_active Optional. `integer` default `4`. Number of active connections
+#' that are alive at all time to process the request.
+#' @param .page_limit Optional. `integer` default `10000`. Maximum number of
+#' rows to download per page. This determines how many requests (pages) the
+#' download is split into.
 #'
 #' @return `tibble` with rows associated with Atlas data object
 #' @export
@@ -27,51 +35,55 @@ db_call_function <- function(function_name,
                              schema = "public",
                              output_geometry = FALSE,
                              output_flatten = TRUE,
+                             ...,
                              .host = ATLAS_API_V4_HOST(),
                              .token = ATLAS_API_TOKEN(),
                              .header = list(),
-                             ...) {
+                             .filters = list(),
+                             .paginate = FALSE,
+                             .max_active = 4,
+                             .page_limit = 10000) {
   # Argument validation
-  if (!schema %in% SCHEMA_VALUES) {
-    stop("Bad input: Unexpected value for argument `schema`")
-  }
-
-  if (is.null(.token)) {
-    .token <- ATLAS_API_TOKEN()
-  }
+  if (!schema %in% SCHEMA_VALUES) stop("Bad input: Unexpected value for argument `schema`")
 
   # Prefix the function name with 'rpc' if it is not already the case
   # as required by PostgREST syntax for functions
   if (!grepl("^rpc", function_name)) {
     # Strip name for "/" or "\" characters
-    function_name <- gsub("[/\\\\]", "", function_name)
-    function_name <- paste("rpc", function_name, sep = "/")
+    function_name <- paste("rpc", gsub("[/\\\\]", "", function_name), sep = "/")
   }
 
   # Prepare HTTP request with url, header abd query parameters
-  url <- format_url(function_name, .host)
+  url <- format_url(endpoint = function_name, host = .host)
 
   body <- list(...)
+  query <- postgrest_query_filter(.filters)
+  limit <- query$limit
+  query$limit <- NULL
+
   header <- format_header(schema, token = .token, method = "POST")
 
   # Overrride default header with user provided ones
   header <- modifyList(header, .header)
 
-  if (output_geometry) {
-    header$`Accept` <- "application/geo+json"
+  if (output_geometry) header$`Accept` <- "application/geo+json"
+
+  # Request that calls a function that returns a setof
+  # of a table, for example: get_observations()
+  if (.paginate) {
+    return(postgrest_read_paged(url, query, header, body = body,
+                                limit = limit, output_flatten = output_flatten,
+                                page_limit = .page_limit, max_active = .max_active))
   }
 
-  # Create and send the request
+  # Single request, for example get_taxa
   response <- httr2::request(url) |>
     httr2::req_headers(!!!header) |>
+    httr2::req_url_query(!!!query) |>
     httr2::req_body_json(body) |>
     httr2::req_error(is_error = ~ FALSE) |>
     httr2::req_perform()
 
-  # Stop if error
   postgrest_stop_if_err(response)
-
-  # Parse response
-  out <- postgrest_resp_to_data(response, output_flatten = output_flatten)
-  return(out)
+  postgrest_resp_to_data(response, output_flatten = output_flatten)
 }
