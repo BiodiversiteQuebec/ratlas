@@ -58,7 +58,7 @@ get_regions <- function(
   } else {
     query$output_geometry <- FALSE
     query$select <- c("region_fid", "type", "name", "scale",
-                      "scale_desc_fr", "scale_desc_en",
+                      "scale_description_fr", "scale_description_en",
                       "updated_at", "id_datasets")
   }
 
