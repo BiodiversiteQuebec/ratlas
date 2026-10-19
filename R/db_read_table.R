@@ -27,7 +27,7 @@
 #' @param .header `list` Additional headers to provide to the request.
 #'
 #' @return `tibble` or `sf` with rows associated with Atlas data object.
-#' @export
+#' @keywords internal
 
 db_read_table <- function(table_name,
                           schema = "public",
@@ -47,19 +47,11 @@ db_read_table <- function(table_name,
   }
 
   # Set the url
-  url <- format_url(table_name, host = .host)
+  url <- format_url(endpoint = table_name, host = .host)
 
   # Prepare query parameters
   query <- postgrest_query_filter(list(...))
-  if (!is.null(select)) {
-    if (length(select) > 1) {
-      select <- paste0(select, collapse = ",")
-    }
-    query$select <- select
-  }
-  if (!is.null(limit)) {
-    query$limit <- limit
-  }
+  if (!is.null(select)) query$select <- paste0(select, collapse = ",")
 
   # Prepare header parameters
   header <- format_header(schema, token = .token, method = "GET")
@@ -67,103 +59,9 @@ db_read_table <- function(table_name,
   # Overrride default header with user provided ones
   header <- modifyList(header, .header)
 
-  if (output_geometry) {
-    header$`Accept` <- "application/geo+json"
-  }
+  if (output_geometry) header$`Accept` <- "application/geo+json"
 
-  # Estimate number of pages if not provided
-  if (is.null(limit)) limit <- postgrest_get_table_count(url, query, header)
-  n_pages <- ceiling(limit / .page_limit)
-
-  page_limit <- min(.page_limit, limit)
-
-  # Build one request per page
-  reqs <- lapply(seq_len(n_pages), function(page) {
-    postgrest_page_req(url, query, header, page = page, limit = page_limit)
-  })
-
-  debug <- isTRUE(as.logical(Sys.getenv("DEBUG")))
-  max_active <- if (debug) 1L else max(1L, min(.max_active, n_pages))
-
-  # Perform all requests concurrently
-  responses <- httr2::req_perform_parallel(
-    reqs,
-    on_error = "continue",
-    max_active = max_active,
-    progress = FALSE
-  )
-
-  # Convert each page, surfacing failures clearly
-  pages <- lapply(seq_along(responses), function(i) {
-    resp <- responses[[i]]
-    if (inherits(resp, "condition")) {
-      stop("Failed to fetch page ", i, ": ", conditionMessage(resp))
-    }
-    postgrest_stop_if_err(resp)
-    postgrest_resp_to_data(resp, output_flatten = output_flatten)
-  })
-
-  out <- do.call(rbind, pages)
-  return(out)
-}
-
-postgrest_escape <- function(x) {
-  x <- as.character(x)
-  needs <- grepl('[",()]', x)
-  x[needs] <- paste0('"', gsub('"', '\\\\"', x[needs]), '"')
-  x
-}
-
-postgrest_query_filter <- function(parameters) {
-  for (name in names(parameters)) {
-    if (name == "select" && length(parameters[[name]]) > 1) {
-      parameters[[name]] <- paste0(parameters[[name]], collapse = ",")
-    }
-    if (name %in% POSTGREST_QUERY_PARAMETERS ||
-          is.null(parameters[[name]])) {
-      next
-    }
-    if (length(parameters[[name]]) > 1) {
-      v_array <- paste0(postgrest_escape(parameters[[name]]), collapse = ",")
-      parameters[[name]] <- paste0("in.(", v_array, ")", sep = "")
-    } else {
-      parameters[[name]] <- paste0("eq.", postgrest_escape(parameters[[name]]))
-    }
-  }
-  return(parameters)
-}
-
-postgrest_page_req <- function(url, query, header, page, limit) {
-  offset <- (page - 1) * limit
-  query$limit <- format(limit, scientific = FALSE)
-  query$offset <- format(offset, scientific = FALSE)
-
-  httr2::request(url) |>
-    httr2::req_headers(!!!header) |>
-    httr2::req_url_query(!!!query) |>
-    httr2::req_retry(max_tries = 3, retry_on_failure = TRUE) |>
-    httr2::req_error(is_error = ~ FALSE)
-}
-
-postgrest_get_table_count <- function(url, query = NULL, header = NULL) {
-  if (is.null(query)) {
-    query <- list()
-  }
-  if (is.null(header)) {
-    header <- list()
-  }
-
-  header$`Prefer` <- "count=exact"
-  query$limit <- 1
-
-  response <- httr2::request(url) |>
-    httr2::req_headers(!!!header) |>
-    httr2::req_url_query(!!!query) |>
-    httr2::req_perform()
-
-  # Get the content range from the response header
-  content_range <- httr2::resp_headers(response)$`Content-Range`
-  range_count <- as.numeric(strsplit(content_range, "/")[[1]][2])
-
-  return(range_count)
+  postgrest_read_paged(url, query, header,
+                       limit = limit, output_flatten = output_flatten,
+                       page_limit = .page_limit, max_active = .max_active)
 }

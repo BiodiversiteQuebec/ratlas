@@ -33,7 +33,7 @@
 #' @param schema obligatory api, as function resides in this schema on the backend.
 
 #' @return newly generated dataset UUID.
-#' @keywords internal
+#' @noRd
 
 post_dataset <- function(
   title,
