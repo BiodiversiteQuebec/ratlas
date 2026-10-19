@@ -70,7 +70,7 @@ test_that("region_fid without geometry returns a tibble", {
 })
 
 test_that("get_regions() output is accepted for region_fid", {
-  regions <- get_regions(fid = 858284, geometry = FALSE)
+  regions <- get_regions(region_fid = 858284, geometry = FALSE)
   from_df <- get_observations(region_fid = regions, year = 2013, limit = 10)
   from_id <- get_observations(region_fid = 858284, year = 2013, limit = 10)
   testthat::expect_true(nrow(from_df) > 0)
