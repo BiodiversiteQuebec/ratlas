@@ -5,14 +5,14 @@
 #' record. The function returns a dataframe for all datasets if no
 #' parameters are specified. The function filters returned datasets record by
 #' attributes corresponding to atlas table columns specified as parameters
-#' (ie. `id`, `title`, `source_alias`, `etc`)
+#' (ie. `id_datasets`, `title`, `license`, `publisher`, `etc`)
 #' with accepted values either being scalar or vector for single or multiple
 #' records
 #'
-#' @param id Optional. `integer` scalar or vector. Returns a dataframe for the
+#' @param id_datasets Optional. `uuid` scalar or vector. Returns a dataframe for the
 #' dataset with the specified id
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
-#' atlas `datasets` table columns specified as parameter
+#' atlas `datasets_mv` table columns specified as parameter
 #'
 #' @return `tibble` with rows associated with Atlas data object
 #'
@@ -20,12 +20,9 @@
 #' # Returns all available datasets records in atlas
 #' datasets <- get_datasets()
 #'
-#' # Returns all datasets filtered by the column `source_alias`
-#' datasets <- get_datasets(source_alias = "GBIF")
-#'
-#' Returns all datasets filtered by the column id corresponding to all
-#' Placettes-échantillons temporaires datasets
-#' datasets <- get_datasets(id = c(  "292302c5-32c2-4e14-b437-23ea9695fafe",
+#' # Returns all datasets filtered by the column id_datasets corresponding to all
+#' # Placettes-échantillons temporaires datasets
+#' datasets <- get_datasets(id_datasets = c(  "292302c5-32c2-4e14-b437-23ea9695fafe",
 #'  "8d865875-dd4d-41b4-9fee-6161ac73c471",
 #'  "be1252cf-385d-48d6-9836-232a8458f402",
 #'  "8b793526-db15-451b-bdac-6387825e6178"))
@@ -33,17 +30,16 @@
 #' @export
 
 get_datasets <- function(
-  id = NULL,
+  id_datasets = NULL,
   ...
 ) {
   query <- list(...)
-  query$table_name <- "datasets"
-  query$schema <- "public"
+  query$table_name <- "datasets_mv"
+  query$schema <- "api"
 
-  if (! is.null(id)) {
-    query$id <- id
+  if (! is.null(id_datasets)) {
+    query$id_datasets <- id_datasets
   }
 
-  datasets <- do.call(db_read_table, query)
-  return(datasets)
+  do.call(db_read_table, query)
 }
