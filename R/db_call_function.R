@@ -29,7 +29,7 @@
 #' download is split into.
 #'
 #' @return `tibble` with rows associated with Atlas data object
-#' @export
+#' @keywords internal
 
 db_call_function <- function(function_name,
                              schema = "public",
