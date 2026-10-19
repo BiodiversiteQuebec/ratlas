@@ -27,7 +27,7 @@
 #' @param .header `list` Additional headers to provide to the request.
 #'
 #' @return `tibble` or `sf` with rows associated with Atlas data object.
-#' @export
+#' @keywords internal
 
 db_read_table <- function(table_name,
                           schema = "public",
