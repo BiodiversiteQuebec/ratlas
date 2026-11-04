@@ -85,7 +85,14 @@ postgrest_read_paged <- function(url, query, header, body = NULL,
 }
 
 postgrest_escape <- function(x) {
-  x <- as.character(x)
+  if (is.numeric(x)) {
+    whole <- !is.na(x) & x %% 1 == 0
+    out <- as.character(x)
+    out[whole] <- sprintf("%.0f", x[whole])
+    x <- out
+  } else {
+    x <- as.character(x)
+  }
   needs <- grepl('[",()]', x)
   x[needs] <- paste0('"', gsub('"', '\\\\"', x[needs]), '"')
   x
