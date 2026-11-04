@@ -12,7 +12,7 @@
 #' @param id_datasets Optional. `uuid` scalar or vector. Returns a dataframe for the
 #' dataset with the specified id
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
-#' atlas `datasets_mv` table columns specified as parameter
+#' atlas `datasets` table columns specified as parameter
 #'
 #' @return `tibble` with rows associated with Atlas data object
 #'
@@ -34,7 +34,7 @@ get_datasets <- function(
   ...
 ) {
   query <- list(...)
-  query$table_name <- "datasets_mv"
+  query$table_name <- "datasets"
   query$schema <- "api"
 
   if (! is.null(id_datasets)) {
