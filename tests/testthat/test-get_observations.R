@@ -136,3 +136,8 @@ test_that("empty values are rejected", {
 test_that("wrong argument types are rejected", {
   testthat::expect_error(get_observations(id_taxa_obs = "983253"), "must be numeric")
 })
+
+test_that("calling without any filter or limit is rejected", {
+  testthat::expect_error(get_observations(), "at least one filter")
+  testthat::expect_error(get_observations(geometry = FALSE), "at least one filter")
+})

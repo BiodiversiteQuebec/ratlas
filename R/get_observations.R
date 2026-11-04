@@ -1,9 +1,9 @@
 #' Get observations
 #'
 #' The function downloads and returns either an sf or tibble containing
-#' observations with a single record per row. The function returns
-#' all records if no parameters are specified (STRONGLY DISCOURAGED
-#' DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+#' observations with a single record per row. At least one filter or a
+#' `limit` is required, as the atlas contains too many observations to
+#' download them all at once.
 #' The function filters returned records by attributes corresponding to atlas
 #' table columns specified as parameters (ie. `id_observations`, `year`,
 #' `id_taxa_obs`, `id_datasets`, `id_variables`, `etc`) with accepted values
@@ -67,6 +67,13 @@ get_observations <- function(id_observations = NULL, year = NULL,
   if (!is.null(id_regions) && length(id_regions) == 0) stop("Bad input: empty value for id_regions")
   empty <- names(Filter(function(v) length(v) == 0, filters))
   if (length(empty) > 0) stop("Bad input: empty value for ", paste(empty, collapse = ", "))
+
+  # Safeguard against downloading the whole table (~50M rows) by accident
+  column_filters <- setdiff(names(filters), POSTGREST_QUERY_PARAMETERS)
+  column_filters <- column_filters[!startsWith(column_filters, ".")]
+  if (length(column_filters) == 0 && is.null(id_regions) && is.null(polygon) && is.null(filters$limit)) {
+    stop("Bad input: provide at least one filter or a `limit` (e.g. `limit = 100` for a sample)")
+  }
 
   if (!geometry) {
     sample <- db_read_table("observations_public", schema = "api", limit = 1)

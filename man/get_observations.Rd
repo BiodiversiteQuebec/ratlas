@@ -49,9 +49,9 @@ A 0-row \code{tibble} is returned when no observations match.
 }
 \description{
 The function downloads and returns either an sf or tibble containing
-observations with a single record per row. The function returns
-all records if no parameters are specified (STRONGLY DISCOURAGED
-DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+observations with a single record per row. At least one filter or a
+\code{limit} is required, as the atlas contains too many observations to
+download them all at once.
 The function filters returned records by attributes corresponding to atlas
 table columns specified as parameters (ie. \code{id_observations}, \code{year},
 \code{id_taxa_obs}, \code{id_datasets}, \code{id_variables}, \code{etc}) with accepted values
