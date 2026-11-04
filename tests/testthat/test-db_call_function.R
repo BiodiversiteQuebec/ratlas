@@ -15,7 +15,7 @@ test_that("read function data works with filter", {
   region_type <- "admin"
 
   data <- db_call_function(function_name, schema, output_flatten,
-                           id_regions = id_regions,
+                           region_fid = id_regions,
                            region_type = region_type)
   expect_true(nrow(data) > 0)
 })

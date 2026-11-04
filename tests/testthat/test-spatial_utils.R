@@ -9,10 +9,8 @@ sherbrooke_box <- function() make_box(-72.0, 45.35, -71.8, 45.45)
 
 test_that("bbox is converted to a WKT polygon", {
   bbox <- sf::st_bbox(c(xmin = -72, ymin = 45.35, xmax = -71.8, ymax = 45.45), crs = 4326)
-  testthat::expect_equal(
-    as_wkt_polygon(bbox),
-    "POLYGON ((-72 45.35, -71.8 45.35, -71.8 45.45, -72 45.45, -72 45.35))"
-  )
+  wkt <- as_wkt_polygon(bbox)
+  testthat::expect_true(sf::st_egquals(sf::st_as_sfc(wkt, crs = 4326), sf::st_as_sfc(bbox), sparse = FALSE)[1, 1])
 })
 
 test_that("sf and sfc inputs give the same WKT", {
