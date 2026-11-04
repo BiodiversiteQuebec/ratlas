@@ -17,8 +17,8 @@
 #' the observations related to the specified `id_datasets`
 #' @param id_taxa_obs Optional. `integer` scalar or vector. Returns a dataframe
 #' for the taxa_obs record related to the value
-#' @param region_fid Optional. `integer` scalar or vector. Returns observations
-#' for the region with the specified region_fid
+#' @param id_regions Optional. `integer` scalar or vector. Returns observations
+#' for the region with the specified id_regions
 #' @param polygon Optional. `sf, sfc, bbox` objects accepted and a valid associated
 #' CRS is required. Multiple features will be merged, and points on the boundaries
 #' will be included with an intersect.
@@ -40,19 +40,19 @@
 
 get_observations <- function(id_observations = NULL, year = NULL,
                              id_datasets = NULL, id_taxa_obs = NULL,
-                             region_fid = NULL, polygon = NULL,
+                             id_regions = NULL, polygon = NULL,
                              geometry = TRUE, ...) {
 
   # Verify that conflicting parameters are not provided together
-  if (!is.null(region_fid) && !is.null(polygon)) stop("Bad input: use either `region_fid` or `polygon`, not both")
+  if (!is.null(id_regions) && !is.null(polygon)) stop("Bad input: use either `id_regions` or `polygon`, not both")
 
   # Verify arguments type
   stopifnot(
     "Bad input: `id_observations` must be numeric"   = is.null(id_observations) || is.numeric(id_observations),
     "Bad input: `year` must be numeric"              = is.null(year) || is.numeric(year),
     "Bad input: `id_taxa_obs` must be numeric"       = is.null(id_taxa_obs) || is.numeric(id_taxa_obs),
-    "Bad input: `region_fid` must be numeric"        = is.null(region_fid) || is.numeric(region_fid),
-    "Bad input: `id_datasets` must be character"     = is.null(id_datasets) || is.character(id_datasets),
+    "Bad input: `id_regions` must be numeric"        = is.null(id_regions) || is.numeric(id_regions),
+    "Bad input: `id_datasets` must be character"     = is.null(id_datasets) || is.character(id_datasets)
   )
 
   # Build the filters
@@ -64,7 +64,7 @@ get_observations <- function(id_observations = NULL, year = NULL,
   filters$order <- "id_observations"
 
   # Safeguard if any parameters are provided empty
-  if (!is.null(region_fid) && length(region_fid) == 0) stop("Bad input: empty value for region_fid")
+  if (!is.null(id_regions) && length(id_regions) == 0) stop("Bad input: empty value for id_regions")
   empty <- names(Filter(function(v) length(v) == 0, filters))
   if (length(empty) > 0) stop("Bad input: empty value for ", paste(empty, collapse = ", "))
 
@@ -78,10 +78,10 @@ get_observations <- function(id_observations = NULL, year = NULL,
                      output_geometry = geometry,
                      wkt = as_wkt_polygon(polygon),
                      .filters = filters, .paginate = TRUE)
-  } else if (!is.null(region_fid)) {
+  } else if (!is.null(id_regions)) {
     db_call_function("filter_observations_region", schema = "api",
                      output_geometry = geometry,
-                     region_fid = as.list(region_fid),
+                     region_fid = as.list(id_regions),
                      .filters = filters, .paginate = TRUE)
   } else {
     do.call(db_read_table, c(list(table_name = "observations_public", schema = "api",

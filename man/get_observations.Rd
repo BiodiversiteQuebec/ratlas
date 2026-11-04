@@ -9,7 +9,7 @@ get_observations(
   year = NULL,
   id_datasets = NULL,
   id_taxa_obs = NULL,
-  region_fid = NULL,
+  id_regions = NULL,
   polygon = NULL,
   geometry = TRUE,
   ...
@@ -28,8 +28,8 @@ the observations related to the specified \code{id_datasets}}
 \item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns a dataframe
 for the taxa_obs record related to the value}
 
-\item{region_fid}{Optional. \code{integer} scalar or vector. Returns observations
-for the region with the specified region_fid}
+\item{id_regions}{Optional. \code{integer} scalar or vector. Returns observations
+for the region with the specified id_regions}
 
 \item{polygon}{Optional. \verb{sf, sfc, bbox} objects accepted and a valid associated
 CRS is required. Multiple features will be merged, and points on the boundaries

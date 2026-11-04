@@ -4,11 +4,11 @@
 \alias{get_regions}
 \title{Get regions}
 \usage{
-get_regions(region_fid = NULL, type = NULL, scale = NULL, geometry = TRUE, ...)
+get_regions(id_regions = NULL, type = NULL, scale = NULL, geometry = TRUE, ...)
 }
 \arguments{
-\item{region_fid}{Optional. \code{integer} scalar or vector. Returns a dataframe
-for the region with the specified region_fid}
+\item{id_regions}{Optional. \code{integer} scalar or vector. Returns a dataframe
+for the region with the specified id_regions}
 
 \item{type}{Optional. \code{character} scalar or vector. Returns a dataframe
 filtered by the atlas \code{regions} table column \code{type} specified as parameter.
@@ -37,7 +37,7 @@ application to determine the region type and scale of interest.
 \details{
 IMPORTANT : Running the function without any parameters will return all
 regions in the atlas. This can be a very large dataset and may take a long
-time to download. It is recommended to use the \code{region_fid} parameter to return a
+time to download. It is recommended to use the \code{id_regions} parameter to return a
 specific region or the \code{type} parameter to return a specific type of region.
 It is also possible to exclude the geometry from the results by setting the
 \code{geometry} parameter to \code{FALSE}.

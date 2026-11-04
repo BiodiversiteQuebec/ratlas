@@ -11,11 +11,11 @@ test_that("read function data works with filter", {
   function_name <- "obs_summary"
   schema <- "atlas_api"
   output_flatten <- FALSE
-  region_fid <- 749
+  id_regions <- 749
   region_type <- "admin"
 
   data <- db_call_function(function_name, schema, output_flatten,
-                           region_fid = region_fid,
+                           id_regions = id_regions,
                            region_type = region_type)
   expect_true(nrow(data) > 0)
 })

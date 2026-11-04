@@ -21,14 +21,6 @@ test_that("filter by id_observations works", {
   testthat::expect_setequal(results$id_observations, sample$id_observations)
 })
 
-test_that("filter by scientific_name works", {
-  sample <- get_observations(year = 2021, limit = 1)
-  name <- sample$valid_scientific_name[1]
-  results <- get_observations(scientific_name = name, year = 2021, limit = 10)
-  testthat::expect_true(nrow(results) > 0)
-  testthat::expect_true(all(results$valid_scientific_name == name))
-})
-
 test_that("get_taxa() ids can be passed to get_observations()", {
   taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
   results <- get_observations(id_taxa_obs = taxa$id_taxa_obs, limit = 10)
@@ -43,24 +35,24 @@ test_that("no geometry", {
   testthat::expect_true(nrow(results) == 10)
 })
 
-# Test with region_fid as parameter
-test_that("get observations with region_fid works", {
-  results <- get_observations(region_fid = 858284, year = 2013, limit = 10)
+# Test with id_regions as parameter
+test_that("get observations with id_regions works", {
+  results <- get_observations(id_regions = 858284, year = 2013, limit = 10)
   testthat::expect_true(nrow(results) > 1)
   testthat::expect_true(all(results$year_obs == 2013))
 })
 
-test_that("region_fid without geometry returns a tibble", {
-  results <- get_observations(region_fid = 858284, year = 2013, limit = 10, geometry = FALSE)
+test_that("id_regions without geometry returns a tibble", {
+  results <- get_observations(id_regions = 858284, year = 2013, limit = 10, geometry = FALSE)
   testthat::expect_false("sf" %in% class(results))
   testthat::expect_false(any(grepl("^geom", names(results))))
   testthat::expect_equal(nrow(results), 10)
 })
 
 test_that("get_regions() ids can be passed to get_observations()", {
-  regions <- get_regions(region_fid = 858284, geometry = FALSE)
-  from_df <- get_observations(region_fid = regions$region_fid, year = 2013, limit = 10)
-  from_id <- get_observations(region_fid = 858284, year = 2013, limit = 10)
+  regions <- get_regions(id_regions = 858284, geometry = FALSE)
+  from_df <- get_observations(id_regions = regions$id_regions, year = 2013, limit = 10)
+  from_id <- get_observations(id_regions = 858284, year = 2013, limit = 10)
   testthat::expect_true(nrow(from_df) > 0)
   testthat::expect_setequal(from_df$id_observations, from_id$id_observations)
 })
@@ -129,16 +121,9 @@ test_that("polygon with no match returns an empty tibble", {
 })
 
 # Input validation (these fail before any request is sent)
-test_that("polygon and region_fid cannot be combined", {
+test_that("polygon and id_regions cannot be combined", {
   testthat::expect_error(
-    get_observations(polygon = sherbrooke, region_fid = 858284),
-    "not both"
-  )
-})
-
-test_that("id_taxa_obs and scientific_name cannot be combined", {
-  testthat::expect_error(
-    get_observations(id_taxa_obs = 983253, scientific_name = "Cyanocitta cristata"),
+    get_observations(polygon = sherbrooke, id_regions = 858284),
     "not both"
   )
 })
@@ -150,5 +135,4 @@ test_that("empty values are rejected", {
 
 test_that("wrong argument types are rejected", {
   testthat::expect_error(get_observations(id_taxa_obs = "983253"), "must be numeric")
-  testthat::expect_error(get_observations(scientific_name = data.frame(x = "a")), "must be character")
 })

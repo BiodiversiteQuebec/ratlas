@@ -9,13 +9,13 @@
 #'
 #' IMPORTANT : Running the function without any parameters will return all
 #' regions in the atlas. This can be a very large dataset and may take a long
-#' time to download. It is recommended to use the `region_fid` parameter to return a
+#' time to download. It is recommended to use the `id_regions` parameter to return a
 #' specific region or the `type` parameter to return a specific type of region.
 #' It is also possible to exclude the geometry from the results by setting the
 #' `geometry` parameter to `FALSE`.
 #'
-#' @param region_fid Optional. `integer` scalar or vector. Returns a dataframe
-#' for the region with the specified region_fid
+#' @param id_regions Optional. `integer` scalar or vector. Returns a dataframe
+#' for the region with the specified id_regions
 #' @param type Optional. `character` scalar or vector. Returns a dataframe
 #' filtered by the atlas `regions` table column `type` specified as parameter.
 #' Accepted values are `admin`, `hex`, `cadre_eco`, 'dom_bio', 'watershed' and 'protected'
@@ -31,7 +31,7 @@
 #' @export
 
 get_regions <- function(
-  region_fid = NULL,
+  id_regions = NULL,
   type = NULL,
   scale = NULL,
   geometry = TRUE,
@@ -41,8 +41,8 @@ get_regions <- function(
   query$table_name <- "regions"
   query$schema <- "api"
 
-  if (! is.null(region_fid)) {
-    query$region_fid <- region_fid
+  if (! is.null(id_regions)) {
+    query$id_regions <- id_regions
   }
 
   if (! is.null(type)) {
@@ -57,7 +57,7 @@ get_regions <- function(
     query$output_geometry <- TRUE
   } else {
     query$output_geometry <- FALSE
-    query$select <- c("region_fid", "type", "name", "scale",
+    query$select <- c("id_regions", "type", "name", "scale",
                       "scale_description_fr", "scale_description_en",
                       "updated_at", "id_datasets")
   }
