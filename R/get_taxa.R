@@ -50,9 +50,8 @@ get_taxa <- function(
 ) {
   filters <- list(...)
 
-  if (is.null(id_taxa_obs) && is.null(group_name) && is.null(scientific_name) && is.null(vernacular_name)) {
-    stop("Bad input: provide exactly one of `id_taxa_obs`, `group_name`, `scientific_name` or `vernacular_name`")
-  }
+  n_inputs <- sum(!vapply(list(id_taxa_obs, group_name, scientific_name, vernacular_name), is.null, logical(1)))
+  if (n_inputs != 1) stop("Bad input: provide exactly one of `id_taxa_obs`, `group_name`, `scientific_name` or `vernacular_name`")
 
   if (! is.null(id_taxa_obs)) {
     return(do.call(db_read_table, c(list(table_name = "taxa", schema = "api",
