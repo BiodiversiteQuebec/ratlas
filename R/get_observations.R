@@ -17,8 +17,6 @@
 #' the observations related to the specified `id_datasets`
 #' @param id_taxa_obs Optional. `integer` scalar or vector. Returns a dataframe
 #' for the taxa_obs record related to the value
-#' @param scientific_name Optional. `char` scalar or vector. Returns a dataframe
-#' for the scientific_name records related to the value
 #' @param region_fid Optional. `integer` scalar or vector. Returns observations
 #' for the region with the specified region_fid
 #' @param polygon Optional. `sf, sfc, bbox` objects accepted and a valid associated
@@ -28,7 +26,7 @@
 #' returns an `sf` object using the `geometry` column from the table. IF `FALSE`
 #' returns a tibble.
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
-#' atlas `observations_mv` table columns specified as parameter
+#' atlas `observations_public` table columns specified as parameter
 #' (ie. `id_variables`, `month_obs`, `day_obs`)
 #'
 #' @return An `sf` object when `geometry = TRUE`, a `tibble` otherwise.
@@ -40,14 +38,13 @@
 #' }
 #' @export
 
-get_observations <- function(id_observations = NULL, year = NULL, id_datasets = NULL,
-                             id_taxa_obs = NULL, scientific_name = NULL,
+get_observations <- function(id_observations = NULL, year = NULL,
+                             id_datasets = NULL, id_taxa_obs = NULL,
                              region_fid = NULL, polygon = NULL,
                              geometry = TRUE, ...) {
 
   # Verify that conflicting parameters are not provided together
   if (!is.null(region_fid) && !is.null(polygon)) stop("Bad input: use either `region_fid` or `polygon`, not both")
-  if (!is.null(id_taxa_obs) && !is.null(scientific_name)) stop("Bad input: use either `id_taxa_obs` or `scientific_name`, not both")
 
   # Verify arguments type
   stopifnot(
@@ -56,7 +53,6 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
     "Bad input: `id_taxa_obs` must be numeric"       = is.null(id_taxa_obs) || is.numeric(id_taxa_obs),
     "Bad input: `region_fid` must be numeric"        = is.null(region_fid) || is.numeric(region_fid),
     "Bad input: `id_datasets` must be character"     = is.null(id_datasets) || is.character(id_datasets),
-    "Bad input: `scientific_name` must be character" = is.null(scientific_name) || is.character(scientific_name)
   )
 
   # Build the filters
@@ -65,7 +61,6 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
   if (!is.null(year)) filters$year_obs <- year
   if (!is.null(id_datasets)) filters$id_datasets <- id_datasets
   if (!is.null(id_taxa_obs)) filters$id_taxa_obs <- id_taxa_obs
-  if (!is.null(scientific_name)) filters$valid_scientific_name <- scientific_name
   filters$order <- "id_observations"
 
   # Safeguard if any parameters are provided empty
@@ -74,7 +69,7 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
   if (length(empty) > 0) stop("Bad input: empty value for ", paste(empty, collapse = ", "))
 
   if (!geometry) {
-    sample <- db_read_table("observations_mv", schema = "api", limit = 1)
+    sample <- db_read_table("observations_public", schema = "api", limit = 1)
     filters$select <- grep("^geom", colnames(sample), value = TRUE, invert = TRUE)
   }
 
@@ -89,7 +84,7 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
                      region_fid = as.list(region_fid),
                      .filters = filters, .paginate = TRUE)
   } else {
-    do.call(db_read_table, c(list(table_name = "observations_mv", schema = "api",
+    do.call(db_read_table, c(list(table_name = "observations_public", schema = "api",
                                   output_geometry = geometry), filters))
   }
 }
