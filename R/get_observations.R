@@ -14,17 +14,13 @@
 #' @param year Optional. `integer` scalar or vector. Returns a dataframe for
 #' the observations related to the specified `year`
 #' @param id_datasets Optional. `uuid` scalar or vector. Returns a dataframe for
-#' the observations related to the specified `id_datasets`. The parameter accepts
-#' the output of ratlas::get_datasets()
+#' the observations related to the specified `id_datasets`
 #' @param id_taxa_obs Optional. `integer` scalar or vector. Returns a dataframe
-#' for the taxa_obs record related to the value. The parameters accepts
-#' the output of ratlas::get_taxa()
+#' for the taxa_obs record related to the value
 #' @param scientific_name Optional. `char` scalar or vector. Returns a dataframe
-#' for the scientific_name records related to the value. The parameter accepts
-#' the output of ratlas::get_taxa()
+#' for the scientific_name records related to the value
 #' @param region_fid Optional. `integer` scalar or vector. Returns observations
-#' for the region with the specified region_fid. The parameter accepts the
-#' output of ratlas::get_regions()
+#' for the region with the specified region_fid
 #' @param polygon Optional. `sf, sfc, bbox` objects accepted and a valid associated
 #' CRS is required. Multiple features will be merged, and points on the boundaries
 #' will be included with an intersect.
@@ -37,6 +33,11 @@
 #'
 #' @return An `sf` object when `geometry = TRUE`, a `tibble` otherwise.
 #' A 0-row `tibble` is returned when no observations match.
+#' @examples
+#' \dontrun{
+#' taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
+#' obs <- get_observations(id_taxa_obs = taxa$id_taxa_obs, limit = 10)
+#' }
 #' @export
 
 get_observations <- function(id_observations = NULL, year = NULL, id_datasets = NULL,
@@ -48,24 +49,15 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
   if (!is.null(region_fid) && !is.null(polygon)) stop("Bad input: use either `region_fid` or `polygon`, not both")
   if (!is.null(id_taxa_obs) && !is.null(scientific_name)) stop("Bad input: use either `id_taxa_obs` or `scientific_name`, not both")
 
-  # Allow input parameter to be the output of other ratlas functions
-  # like get_taxa(), get_datasets() and get_regions()
-  if (is.data.frame(scientific_name)) {
-    if (!"valid_scientific_name" %in% names(scientific_name)) stop("Bad input: `scientific_name` data frame must have a `valid_scientific_name` column")
-    scientific_name <- unique(scientific_name$valid_scientific_name)
-  }
-  if (is.data.frame(id_taxa_obs)) {
-    if (!"id_taxa_obs" %in% names(id_taxa_obs)) stop("Bad input: `id_taxa_obs` data frame must have an `id_taxa_obs` column")
-    id_taxa_obs <- unique(id_taxa_obs$id_taxa_obs)
-  }
-  if (is.data.frame(id_datasets)) {
-    if (!"id_datasets" %in% names(id_datasets)) stop("Bad input: `id_datasets` data frame must have an `id_datasets` column")
-    id_datasets <- unique(id_datasets$id_datasets)
-  }
-  if (is.data.frame(region_fid)) {
-    if (!"region_fid" %in% names(region_fid)) stop("Bad input: `region_fid` data frame must have a `region_fid` column")
-    region_fid <- unique(region_fid$region_fid)
-  }
+  # Verify arguments type
+  stopifnot(
+    "Bad input: `id_observations` must be numeric"   = is.null(id_observations) || is.numeric(id_observations),
+    "Bad input: `year` must be numeric"              = is.null(year) || is.numeric(year),
+    "Bad input: `id_taxa_obs` must be numeric"       = is.null(id_taxa_obs) || is.numeric(id_taxa_obs),
+    "Bad input: `region_fid` must be numeric"        = is.null(region_fid) || is.numeric(region_fid),
+    "Bad input: `id_datasets` must be character"     = is.null(id_datasets) || is.character(id_datasets),
+    "Bad input: `scientific_name` must be character" = is.null(scientific_name) || is.character(scientific_name)
+  )
 
   # Build the filters
   filters <- list(...)
@@ -101,3 +93,4 @@ get_observations <- function(id_observations = NULL, year = NULL, id_datasets = 
                                   output_geometry = geometry), filters))
   }
 }
+

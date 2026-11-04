@@ -29,23 +29,11 @@ test_that("filter by scientific_name works", {
   testthat::expect_true(all(results$valid_scientific_name == name))
 })
 
-test_that("get_taxa() output is accepted for taxa parameters", {
+test_that("get_taxa() ids can be passed to get_observations()", {
   taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
-
-  by_name <- get_observations(scientific_name = taxa, limit = 10)
-  testthat::expect_true(nrow(by_name) > 0)
-  testthat::expect_true(all(by_name$valid_scientific_name %in% taxa$valid_scientific_name))
-
-  by_id <- get_observations(id_taxa_obs = taxa, limit = 10)
-  testthat::expect_true(nrow(by_id) > 0)
-  testthat::expect_true(all(by_id$id_taxa_obs %in% taxa$id_taxa_obs))
-})
-
-test_that("data frame is accepted for id_datasets", {
-  datasets <- data.frame(id_datasets = "4fa7b334-ce0d-4e88-aaae-2e0c138d049e")
-  results <- get_observations(id_datasets = datasets, limit = 10)
+  results <- get_observations(id_taxa_obs = taxa$id_taxa_obs, limit = 10)
   testthat::expect_true(nrow(results) > 0)
-  testthat::expect_true(all(results$id_datasets == datasets$id_datasets))
+  testthat::expect_true(all(results$id_taxa_obs %in% taxa$id_taxa_obs))
 })
 
 test_that("no geometry", {
@@ -69,9 +57,9 @@ test_that("region_fid without geometry returns a tibble", {
   testthat::expect_equal(nrow(results), 10)
 })
 
-test_that("get_regions() output is accepted for region_fid", {
+test_that("get_regions() ids can be passed to get_observations()", {
   regions <- get_regions(region_fid = 858284, geometry = FALSE)
-  from_df <- get_observations(region_fid = regions, year = 2013, limit = 10)
+  from_df <- get_observations(region_fid = regions$region_fid, year = 2013, limit = 10)
   from_id <- get_observations(region_fid = 858284, year = 2013, limit = 10)
   testthat::expect_true(nrow(from_df) > 0)
   testthat::expect_setequal(from_df$id_observations, from_id$id_observations)
@@ -155,16 +143,12 @@ test_that("id_taxa_obs and scientific_name cannot be combined", {
   )
 })
 
-test_that("data frame without the expected column is rejected", {
-  wrong <- data.frame(foo = 1)
-  testthat::expect_error(get_observations(region_fid = wrong), "region_fid")
-  testthat::expect_error(get_observations(scientific_name = wrong), "valid_scientific_name")
-  testthat::expect_error(get_observations(id_taxa_obs = wrong), "id_taxa_obs")
-  testthat::expect_error(get_observations(id_datasets = wrong), "id_datasets")
-})
-
 test_that("empty values are rejected", {
   testthat::expect_error(get_observations(id_taxa_obs = integer(0)), "empty value for id_taxa_obs")
-  testthat::expect_error(get_observations(id_taxa_obs = data.frame(id_taxa_obs = integer(0))), "empty value for id_taxa_obs")
   testthat::expect_error(get_observations(month_obs = NULL), "empty value for month_obs")
+})
+
+test_that("wrong argument types are rejected", {
+  testthat::expect_error(get_observations(id_taxa_obs = "983253"), "must be numeric")
+  testthat::expect_error(get_observations(scientific_name = data.frame(x = "a")), "must be character")
 })
