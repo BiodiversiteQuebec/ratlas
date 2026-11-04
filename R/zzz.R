@@ -16,7 +16,7 @@ USER_AGENT <- function() "ratlas"
 SCHEMA_VALUES <- c("public", "api", "atlas_api")
 WRITE_SCHEMA_VALUES <- c("public", "api", "atlas_api", "indicators")
 
-POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "offset")
+POSTGREST_QUERY_PARAMETERS <- c("select", "limit", "order", "offset")
 
 GROUPS <- c("AMPHIBIANS", "REPTILES", "BIRDS", "MAMMALS", "FISH",
             "VASCULAR_PLANTS", "NON_VASCULAR_PLANTS", "ARTHROPODS",

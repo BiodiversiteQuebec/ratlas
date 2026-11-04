@@ -23,7 +23,7 @@
 #' @param .cores `integer` default `4`. Number of cores used to parallelize and
 #' improve rapidity
 #'
-#' @keywords internal
+#' @noRd
 
 db_write_table <- function(
     table_name,

@@ -4,10 +4,10 @@
 \alias{get_datasets}
 \title{Get datasets}
 \usage{
-get_datasets(id = NULL, ...)
+get_datasets(id_datasets = NULL, ...)
 }
 \arguments{
-\item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
+\item{id_datasets}{Optional. \code{uuid} scalar or vector. Returns a dataframe for the
 dataset with the specified id}
 
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
@@ -22,7 +22,7 @@ description for each requested dataset where a row corresponds to a
 record. The function returns a dataframe for all datasets if no
 parameters are specified. The function filters returned datasets record by
 attributes corresponding to atlas table columns specified as parameters
-(ie. \code{id}, \code{title}, \code{source_alias}, \code{etc})
+(ie. \code{id_datasets}, \code{title}, \code{license}, \code{publisher}, \code{etc})
 with accepted values either being scalar or vector for single or multiple
 records
 }
@@ -30,12 +30,9 @@ records
 # Returns all available datasets records in atlas
 datasets <- get_datasets()
 
-# Returns all datasets filtered by the column `source_alias`
-datasets <- get_datasets(source_alias = "GBIF")
-
-Returns all datasets filtered by the column id corresponding to all
-Placettes-échantillons temporaires datasets
-datasets <- get_datasets(id = c(  "292302c5-32c2-4e14-b437-23ea9695fafe",
+# Returns all datasets filtered by the column id_datasets corresponding to all
+# Placettes-échantillons temporaires datasets
+datasets <- get_datasets(id_datasets = c(  "292302c5-32c2-4e14-b437-23ea9695fafe",
  "8d865875-dd4d-41b4-9fee-6161ac73c471",
  "be1252cf-385d-48d6-9836-232a8458f402",
  "8b793526-db15-451b-bdac-6387825e6178"))

@@ -13,8 +13,8 @@ get_taxa(
 )
 }
 \arguments{
-\item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
-taxon with the specified id_taxa_obs}
+\item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns the taxa
+records with the specified \code{id_taxa_obs}.}
 
 \item{group_name}{Optional. \code{char} scalar or vector, Returns a dataframe for
 the taxa belonging to the specified group(s). Must be one (or several) of the
@@ -23,42 +23,39 @@ following accepted values, written exactly in uppercase:
 \code{NON_VASCULAR_PLANTS}, \code{ARTHROPODS}, \code{FUNGI}, \code{ALGAE}, \code{MOLLUSKS},
 \code{OTHER_INVERTEBRATES}, \code{MICROORGANISMS}.}
 
-\item{scientific_name}{Optional. \code{char} scalar or vector. Returns a dataframe
-for the taxon with the specified scientific name}
+\item{scientific_name}{Optional. \code{char} scalar or vector. Returns all taxa
+records sharing the valid name of each specified scientific name, synonyms
+included. Names must match exactly (case insensitive).}
 
-\item{vernacular_name}{Optional. \code{char} scalar or vector. Returns a dataframe
-for the taxon with the specified vernacular name}
+\item{vernacular_name}{Optional. \code{char} scalar or vector. Returns all taxa
+records sharing the valid name of each specified vernacular name. Names must
+match exactly (case insensitive).}
 
-\item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
-atlas \code{taxa} table columns specified as parameter}
+\item{...}{Optional. scalar or vector. Additional filters on the returned
+columns (ie. \code{rank}, \code{kingdom}, \code{sensitive}).}
 }
 \value{
-\code{tibble} with rows associated with Atlas data object
+\code{tibble} with one row per \code{id_taxa_obs}.
 }
 \description{
-The function downloads and returns a list or dataframe containing a taxonomic
-description for each requested species where a row corresponds to an
-individual species. The function returns a dataframe for all species if no
-parameters are specified. The function filters returned taxa record by
-attributes corresponding to atlas table columns specified as parameters
-(ie. \code{id_taxa_obs}, \code{scientific_name}, \code{group_name}, \code{lemv_status}, \code{etc})
-with accepted values either being scalar or vector for single or multiple
-records
+The function downloads and returns a tibble of taxa records matching the
+input. Each row corresponds to an observed name entry (\code{id_taxa_obs}) as it
+appears in source datasets, linked to its \code{valid_scientific_name}. A single
+species can therefore span several rows, one per synonym or spelling found
+in the data. Exactly one of \code{id_taxa_obs}, \code{group_name}, \code{scientific_name}
+or \code{vernacular_name} must be provided.
 }
 \examples{
-# Returns all available taxa records in atlas
-taxa <- get_taxa()
-
 # Returns all taxa filtered by the column id_taxa_obs values
 taxa <- get_taxa(id_taxa_obs = c(188, 201, 294, 392))
 
 # Return taxa filtered by the atlas table column `group_name`
 results <- get_taxa(group_name = "AMPHIBIANS")
 
-# Returns taxa record for the scientific name
-taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
+# Returns all records linked to the valid name, synonyms included
+taxa <- get_taxa(scientific_name = "Leuconotopicus villosus")
 
 # Return taxa record for the vernacular name
-taxa <- get_taxa(scientific_name = "Pic chevelu")
+taxa <- get_taxa(vernacular_name = "Pic chevelu")
 
 }
