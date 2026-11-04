@@ -17,14 +17,14 @@
 #' @param region_fid Optional. `integer` scalar or vector. Returns a dataframe
 #' for the region with the specified region_fid
 #' @param type Optional. `character` scalar or vector. Returns a dataframe
-#' filtered by the atlas `regions_mv` table column `type` specified as parameter.
+#' filtered by the atlas `regions` table column `type` specified as parameter.
 #' Accepted values are `admin`, `hex`, `cadre_eco`, 'dom_bio', 'watershed' and 'protected'
 #' @param scale Optional. `integer` scalar or vector. Returns a dataframe
 #' for the region with the specified scale
 #' @param geometry Optional. `boolean` which returns a sf object if TRUE
 #' or a tibble if FALSE
 #' @param ... Optional. scalar or vector. Returns a dataframe filtered by the
-#' atlas `regions_mv` table columns specified as parameter.
+#' atlas `regions` table columns specified as parameter.
 #'
 #' @return An `sf` object when `geometry = TRUE`, a `tibble` otherwise.
 #'
@@ -38,7 +38,7 @@ get_regions <- function(
   ...
 ) {
   query <- list(...)
-  query$table_name <- "regions_mv"
+  query$table_name <- "regions"
   query$schema <- "api"
 
   if (! is.null(region_fid)) {
