@@ -1,6 +1,6 @@
 Package: ratlas
 Title: Biodiversité Québec 'Atlas' Client
-Version: 2.1.2
+Version: 3.0.0
 Authors@R: 
   c(
     person(given = "Vincent",

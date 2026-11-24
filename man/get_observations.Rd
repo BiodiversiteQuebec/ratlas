@@ -5,50 +5,61 @@
 \title{Get observations}
 \usage{
 get_observations(
-  id = NULL,
+  id_observations = NULL,
   year = NULL,
+  id_datasets = NULL,
   id_taxa_obs = NULL,
-  region_fid = NULL,
+  id_regions = NULL,
+  polygon = NULL,
   geometry = TRUE,
-  within_quebec = NULL,
   ...
 )
 }
 \arguments{
-\item{id}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
+\item{id_observations}{Optional. \code{integer} scalar or vector. Returns a dataframe for the
 observation with the specified id}
 
 \item{year}{Optional. \code{integer} scalar or vector. Returns a dataframe for
 the observations related to the specified \code{year}}
 
-\item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns a dataframe
-for the taxa_obs record related to the value.}
+\item{id_datasets}{Optional. \code{uuid} scalar or vector. Returns a dataframe for
+the observations related to the specified \code{id_datasets}}
 
-\item{region_fid}{Optional. \code{integer} scalar or vector. Returns observations
-for the region with the specified id}
+\item{id_taxa_obs}{Optional. \code{integer} scalar or vector. Returns a dataframe
+for the taxa_obs record related to the value}
+
+\item{id_regions}{Optional. \code{integer} scalar or vector. Returns observations
+for the region with the specified id_regions}
+
+\item{polygon}{Optional. \verb{sf, sfc, bbox} objects accepted and a valid associated
+CRS is required. Multiple features will be merged, and points on the boundaries
+will be included with an intersect.}
 
 \item{geometry}{Optional. \code{logical} default \code{TRUE}. If \code{TRUE},
 returns an \code{sf} object using the \code{geometry} column from the table. IF \code{FALSE}
 returns a tibble.}
 
-\item{within_quebec}{Optional. \code{logical} default NULL. If \code{TRUE}, returns
-only observations within Quebec. If \code{FALSE}, returns only observations
-outside Quebec. If \code{NULL}, returns all observations.}
-
 \item{...}{Optional. scalar or vector. Returns a dataframe filtered by the
-atlas \code{observations} table columns specified as parameter
-(ie. \code{id_datasets}, \code{id_variables}, \code{month_obs}, \code{day_obs})}
+atlas \code{observations_public} table columns specified as parameter
+(ie. \code{id_variables}, \code{month_obs}, \code{day_obs})}
 }
 \value{
-\code{tibble} with rows associated with Atlas observations
+An \code{sf} object when \code{geometry = TRUE}, a \code{tibble} otherwise.
+A 0-row \code{tibble} is returned when no observations match.
 }
 \description{
-The function downloads and returns a list or dataframe containing
-observations with a single record per row. The function returns a dataframe
-containing all records if no parameters are specified (STRONGLY DISCOURAGED
-DUE TO LARGE AMOUNT OF OBSERVATIONS CONTAINED WITHIN ATLAS).
+The function downloads and returns either an sf or tibble containing
+observations with a single record per row. At least one filter or a
+\code{limit} is required, as the atlas contains too many observations to
+download them all at once.
 The function filters returned records by attributes corresponding to atlas
-table columns specified as parameters (ie. \code{id}, \code{year_obs}, \code{id_taxa_obs},
-\code{id_datasets}, \code{id_variables}, \code{fid_region}, \code{etc}) with accepted values
+table columns specified as parameters (ie. \code{id_observations}, \code{year},
+\code{id_taxa_obs}, \code{id_datasets}, \code{id_variables}, \code{etc}) with accepted values
 either being scalar or vector for single or multiple records.
+}
+\examples{
+\dontrun{
+taxa <- get_taxa(scientific_name = "Cyanocitta cristata")
+obs <- get_observations(id_taxa_obs = taxa$id_taxa_obs, limit = 10)
+}
 }
